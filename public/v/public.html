@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:v-show="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Cali</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- styles -->
+    <link href="css/styles.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Logo -->
+                <div class="logo">
+                    <h1><a href="#">Cali</a></h1>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="input-group form">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+	                         <button class="btn btn-primary" type="button">Search</button>
+	                       </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="col-md-2">-->
+                <!--<div class="navbar navbar-inverse" role="banner">-->
+                    <!--<nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">-->
+                        <!--<ul class="nav navbar-nav">-->
+                            <!--<li class="dropdown">-->
+                                <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account <b class="caret"></b></a>-->
+                                <!--<ul class="dropdown-menu animated fadeInUp">-->
+                                    <!--<li><a href="profile.html">Profile</a></li>-->
+                                    <!--<li><a href="login.html">Logout</a></li>-->
+                                <!--</ul>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</nav>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+
+<div id="root" class="page-content">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sidebar content-box" style="display: block;">
+                <ul class="nav">
+                    <!-- Main menu -->
+                    <li class="submenu open">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-list"></i> BROWSE
+                            <span class="caret pull-right"></span>
+                            <ul>
+                                <li @click="changeseen('hotbooks')" :class="booksseen.hotbooks?'current':''"><a href="#hotbooks"><i class="glyphicon glyphicon-star"></i> Hot Books</a></li>
+                                <li @click="changeseen('newbooks')" :class="booksseen.newbooks?'current':''"><a href="#newbooks"><i class="glyphicon glyphicon-open"></i> New Books</a></li>
+                                <li @click="changeseen('discover')" :class="booksseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> Discover</a></li>
+                                <li @click="changeseen('categories')" :class="booksseen.categories?'current':''"><a href="#categories"><i class="glyphicon glyphicon-list"></i> Categories</a></li>
+                                <li @click="changeseen('authors')" :class="booksseen.authors?'current':''"><a href="#authors"><i class="glyphicon glyphicon-user"></i> Authors</a></li>
+                                <li @click="changeseen('language')" :class="booksseen.language?'current':''"><a href="#language"><i class="glyphicon glyphicon-eye-close"></i> Language</a></li>
+                            </ul>
+                        </a>
+                    </li>
+                    <!--<li class="submenu open">-->
+                        <!--<a href="#">-->
+                            <!--<i class="glyphicon glyphicon-list"></i> PUBLIC SHELVES-->
+                            <!--<span class="caret pull-right"></span>-->
+                            <!--<ul>-->
+                                <!--<li><a href="#"><i class="glyphicon glyphicon-home"></i> A</a></li>-->
+                                <!--<li><a href="#"><i class="glyphicon glyphicon-calendar"></i> B</a></li>-->
+                                <!--<li><a href="#"><i class="glyphicon glyphicon-stats"></i> B</a></li>-->
+                            <!--</ul>-->
+                        <!--</a>-->
+                    <!--</li>-->
+
+                    <li class="submenu open">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-list"></i> YOUR SHELVES
+                            <span class="caret pull-right"></span>
+                            <ul>
+                                <li><a href="#"><i class="glyphicon glyphicon-home"></i> Login</a></li>
+                                <li><a href="#"><i class="glyphicon glyphicon-home"></i> A</a></li>
+                                <li><a href="#"><i class="glyphicon glyphicon-calendar"></i> B</a></li>
+                                <li><a href="#"><i class="glyphicon glyphicon-stats"></i> C</a></li>
+                            </ul>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div v-show="booksseen.hotbooks" class="row">
+                <div class="col-md-12">
+                    <div class="panel-heading">
+                        <h3>Hot Books</h3>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--hotbook-->
+                    <bookdiv v-for="item in hotbooks_computed" v-bind:book="item"></bookdiv>
+                </div>
+                <div class="col-md-12">
+                    <div id="hotbookspage"> </div>
+                </div>
+            </div>
+
+            <div v-show="booksseen.newbooks" class="row">
+                <div class="col-md-12">
+                    <div class="panel-heading">
+                        <h3>New Books</h3>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--newbook-->
+                    <bookdiv v-for="item in newbooks_computed" v-bind:book="item"></bookdiv>
+                </div>
+                <div class="col-md-12">
+                    <div id="newbookspage"> </div>
+                </div>
+
+            </div>
+
+            <div v-show="booksseen.discover" class="row">
+                <div class="col-md-12">
+                    <div class="panel-heading">
+                        <h3>Discover</h3>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--discover-->
+                    <bookdiv v-for="item in discover_computed" v-bind:book="item"></bookdiv>
+                </div>
+                <div class="col-md-12">
+                    <div id="discoverpage"> </div>
+                </div>
+            </div>
+
+            <div v-show="booksseen.categories" class="row">
+                <div class="col-md-12">
+                    <div class="panel-heading">
+                        <h3>Categories</h3>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--categories-->
+                    <tagdiv v-show="tagsseen" v-for="item in tags" v-bind:tag="item"></tagdiv>
+                    <bookdiv v-show="!tagsseen" v-for="item in categories_computed" v-bind:book="item"></bookdiv>
+                </div>
+                <div class="col-md-12">
+                    <div v-show="tagsseen" id="tagspage"> </div>
+                    <div v-show="!tagsseen" id="tagpage"> </div>
+                </div>
+            </div>
+
+            <div v-show="booksseen.authors" class="row">
+                <div class="col-md-12">
+                    <div class="panel-heading">
+                        <h3>Authors</h3>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--authors-->
+                    <authordiv v-show="authorsseen" v-for="item in authornames" v-bind:author="item"></authordiv>
+                    <bookdiv v-show="!authorsseen" v-for="item in authors_computed" v-bind:book="item"></bookdiv>
+                </div>
+                <div class="col-md-12">
+                    <div v-show="authorsseen" id="authornamespage"> </div>
+                    <div v-show="!authorsseen" id="authorspage"> </div>
+                </div>
+            </div>
+
+            <div v-show="booksseen.language" class="row">
+                <div class="col-md-12">
+                    <div class="panel-heading">
+                        <h3>Language</h3>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--authors-->
+                    <languagediv v-show="languagesseen" v-for="item in languagenames" v-bind:language="item"></languagediv>
+                    <bookdiv v-show="!languagesseen" v-for="item in languages_computed" v-bind:book="item"></bookdiv>
+                </div>
+                <div class="col-md-12">
+                    <div v-show="languagesseen" id="languagenamespage"> </div>
+                    <div v-show="!languagesseen" id="languagespage"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+
+        <div class="copy text-center">
+            Copyright 2017 <a href='#'>Cali</a>
+        </div>
+
+    </div>
+</footer>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/custom.js"></script>
+<link href="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
+<script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore.js"></script>
+<script src="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.js"></script>
+<script src="https://cdn.bootcss.com/fetch/2.0.3/fetch.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
+<script src="js/cali.js"></script>
+</body>
+</html>
