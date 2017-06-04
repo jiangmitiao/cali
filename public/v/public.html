@@ -7,6 +7,7 @@
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- styles -->
     <link href="css/styles.css" rel="stylesheet">
+    <link href="css/cali.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -114,8 +115,8 @@
                     <!--hotbook-->
                     <bookdiv v-for="item in hotbooks_computed" v-bind:book="item"></bookdiv>
                 </div>
-                <div class="col-md-12">
-                    <div id="hotbookspage"> </div>
+                <div class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
+                    <div id="hotbookspage" class="col-center-block"> </div>
                 </div>
             </div>
 
@@ -129,7 +130,7 @@
                     <!--newbook-->
                     <bookdiv v-for="item in newbooks_computed" v-bind:book="item"></bookdiv>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
                     <div id="newbookspage"> </div>
                 </div>
 
@@ -145,7 +146,7 @@
                     <!--discover-->
                     <bookdiv v-for="item in discover_computed" v-bind:book="item"></bookdiv>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
                     <div id="discoverpage"> </div>
                 </div>
             </div>
@@ -161,7 +162,7 @@
                     <tagdiv v-show="tagsseen" v-for="item in tags" v-bind:tag="item"></tagdiv>
                     <bookdiv v-show="!tagsseen" v-for="item in categories_computed" v-bind:book="item"></bookdiv>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
                     <div v-show="tagsseen" id="tagspage"> </div>
                     <div v-show="!tagsseen" id="tagpage"> </div>
                 </div>
@@ -178,7 +179,7 @@
                     <authordiv v-show="authorsseen" v-for="item in authornames" v-bind:author="item"></authordiv>
                     <bookdiv v-show="!authorsseen" v-for="item in authors_computed" v-bind:book="item"></bookdiv>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
                     <div v-show="authorsseen" id="authornamespage"> </div>
                     <div v-show="!authorsseen" id="authorspage"> </div>
                 </div>
@@ -195,7 +196,7 @@
                     <languagediv v-show="languagesseen" v-for="item in languagenames" v-bind:language="item"></languagediv>
                     <bookdiv v-show="!languagesseen" v-for="item in languages_computed" v-bind:book="item"></bookdiv>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6 col-md-offset-3 col-xs-6 col-xs-offset-3">
                     <div v-show="languagesseen" id="languagenamespage"> </div>
                     <div v-show="!languagesseen" id="languagespage"> </div>
                 </div>
