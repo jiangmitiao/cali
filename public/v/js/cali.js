@@ -6,7 +6,23 @@ window.onload = function() {
         // "prop"，类似于一个自定义属性
         // 这个属性名为 book。
         props: ['book'],
-        template: '<div class="col-md-3"><div class="content-box"><div class="panel-body"><img :src="book.img" width="100%" height="100%"> <p>bookname:<br/><span v-text="book.title" style="word-break: keep-all;        white-space: nowrap;"></span></p><p>rating:<span v-text="book.rating"></span></p><br><br></div></div></div>'
+        template: '\
+        <div class="col-md-3">\
+            <div class="content-box">\
+                <div class="panel-body">\
+                    <a :href="\'/public/v/book.html?bookid=\'+book.id" target="_blank">\
+                        <img :src="\'/book/bookimage?bookid=\'+book.id" width="100%" height="100%"/>\
+                    </a>\
+                    <p class="text-center">\
+                        <span v-text="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
+                    </p>\
+                    <p class="text-center"><span v-text="book.name"></span></p>\
+                    <p class="text-center">{{ $t("lang.rating") }}:<span v-text="book.rating"></span></p>\
+                    <br>\
+                </div>\
+            </div>\
+        </div>\
+        '
     });
 
     // 定义名为 tagdiv 的新组件
@@ -18,7 +34,7 @@ window.onload = function() {
         template: '<a @click="tagclick(tag.id)" class="btn btn-default"><span v-text="tag.name"></span></a>',
         methods:{
             tagclick:function (tagid) {
-                console.log(tagid);
+                //console.log(tagid);
                 app.tagclick(tagid);
             }
         }
@@ -33,7 +49,7 @@ window.onload = function() {
         template: '<a @click="authorclick(author.id)" class="btn btn-default"><span v-text="author.name"></span></a>',
         methods:{
             authorclick:function (tagid) {
-                console.log(tagid);
+                //console.log(tagid);
                 app.authorclick(tagid);
             }
         }
@@ -48,13 +64,14 @@ window.onload = function() {
         template: '<a @click="languageclick(language.id)" class="btn btn-default"><span v-text="language.lang_code"></span></a>',
         methods:{
             languageclick:function (lang_code) {
-                console.log(lang_code);
+                //console.log(lang_code);
                 app.languageclick(lang_code);
             }
         }
     });
 
     var app = new Vue({
+        i18n,
         el: "#root",
         data: {
             hotbooks:[],
@@ -93,23 +110,8 @@ window.onload = function() {
                     this.languagesseen = true;
                 }
             },
-            fillingbooks:function (e) {
-                //console.log(this);
-                //console.log("入参");
-                //console.log(e);
-                var books_tmp = [];
-                for(var i =0; i <e.length; i++){
-                    var tmp = {}//e[i];
-                    tmp.title = e[i].title;
-                    tmp.id = e[i].id;
-                    tmp.rating = e[i].rating;
-                    tmp.img = "/book/bookimage?bookid="+tmp.id;
-                    books_tmp.push(tmp);
-                }
-                return books_tmp
-            },
             tagclick:function (tagid) {
-                console.log("tagid"+tagid)
+                //console.log("tagid"+tagid)
                 fetch('/book/tagbookscount?tagid='+tagid).then(function(response) {
                     return response.json()
                 }).then(function(json) {
@@ -135,7 +137,7 @@ window.onload = function() {
                                 fetch('/book/tagbooks?start='+_.min(data)+'&limit='+data.length+'&tagid='+tagid).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
-                                    console.log('parsed json', json);
+                                    //console.log('parsed json', json);
                                     if (json.statusCode ==200){
                                         app.categories = json.info
                                     }
@@ -153,7 +155,7 @@ window.onload = function() {
                 this.tagsseen = false;
             },
             authorclick:function (authorid) {
-                console.log("authorid"+authorid);
+                //console.log("authorid"+authorid);
                 fetch('/book/authorbookscount?authorid='+authorid).then(function(response) {
                     return response.json()
                 }).then(function(json) {
@@ -179,7 +181,7 @@ window.onload = function() {
                                 fetch('/book/authorbooks?start='+_.min(data)+'&limit='+data.length+'&authorid='+authorid).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
-                                    console.log('parsed json', json);
+                                    //console.log('parsed json', json);
                                     if (json.statusCode ==200){
                                         app.authors = json.info
                                     }
@@ -197,7 +199,7 @@ window.onload = function() {
                 this.authorsseen = false;
             },
             languageclick:function (lang_code) {
-                console.log("lang_code"+lang_code);
+                //console.log("lang_code"+lang_code);
                 fetch('/book/languagebookscount?lang_code='+lang_code).then(function(response) {
                     return response.json()
                 }).then(function(json) {
@@ -223,7 +225,7 @@ window.onload = function() {
                                 fetch('/book/languagebooks?start='+_.min(data)+'&limit='+data.length+'&lang_code='+lang_code).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
-                                    console.log('parsed json', json);
+                                    //console.log('parsed json', json);
                                     if (json.statusCode ==200){
                                         app.language = json.info
                                     }
@@ -243,22 +245,22 @@ window.onload = function() {
         },
         computed: {
             hotbooks_computed : function () {
-                return this.fillingbooks(this.hotbooks);
+                return this.hotbooks;
             },
             newbooks_computed : function () {
-                return this.fillingbooks(this.newbooks);
+                return this.newbooks;
             },
             discover_computed : function () {
-                return this.fillingbooks(this.discover);
+                return this.discover;
             },
             categories_computed : function () {
-                return this.fillingbooks(this.categories);
+                return this.categories;
             },
             authors_computed:function () {
-                return this.fillingbooks(this.authors);
+                return this.authors;
             },
             languages_computed:function () {
-                return this.fillingbooks(this.language);
+                return this.language;
             }
         },
         created: function() {
@@ -291,7 +293,7 @@ window.onload = function() {
                             fetch('/book/ratingbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
-                                console.log('parsed json', json);
+                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.hotbooks = json.info
                                 }
@@ -335,7 +337,7 @@ window.onload = function() {
                             fetch('/book/newbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
-                                console.log('parsed json', json);
+                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.newbooks = json.info
                                 }
@@ -379,7 +381,7 @@ window.onload = function() {
                             fetch('/book/discoverbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
-                                console.log('parsed json', json);
+                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.discover = json.info
                                 }
@@ -421,7 +423,7 @@ window.onload = function() {
                             fetch('/tag/tags?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
-                                console.log('parsed json', json);
+                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.tags = json.info
                                 }
@@ -463,7 +465,7 @@ window.onload = function() {
                             fetch('/author/authors?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
-                                console.log('parsed json', json);
+                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.authornames = json.info
                                 }
@@ -505,7 +507,7 @@ window.onload = function() {
                             fetch('/language/languages?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
-                                console.log('parsed json', json);
+                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.languagenames = json.info
                                 }
@@ -537,7 +539,4 @@ window.onload = function() {
             //this.booksseen["hotbooks"] = true;
         }
     });
-
-
-
 }

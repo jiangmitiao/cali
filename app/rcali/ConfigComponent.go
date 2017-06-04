@@ -1,11 +1,11 @@
 package rcali
 
 import (
+	"errors"
 	"fmt"
 	"github.com/revel/revel"
 	"os"
 	"path/filepath"
-	"errors"
 )
 
 func GetBooksPath() (string, bool) {

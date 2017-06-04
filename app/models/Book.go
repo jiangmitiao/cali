@@ -38,5 +38,8 @@ type BookVo struct {
 	Uuid         string    `json:"uuid"  xorm:"'uuid'"`
 	HasCover     int       `json:"has_cover"  xorm:"'has_cover'"`
 	LastModified time.Time `json:"last_modified"  xorm:"'last_modified'"`
-	Rating       int       `json:"rating" xorm:"'rating'"`
+
+	Rating int `json:"rating" xorm:"'rating'"`
+
+	Name string `json:"name" xorm:"'name'"`
 }

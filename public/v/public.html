@@ -22,7 +22,7 @@
             <div class="col-md-6">
                 <!-- Logo -->
                 <div class="logo">
-                    <h1><a href="#">Cali</a></h1>
+                    <h1><a href="/">Cali</a></h1>
                 </div>
             </div>
             <div class="col-md-6">
@@ -64,15 +64,15 @@
                     <!-- Main menu -->
                     <li class="submenu open">
                         <a href="#">
-                            <i class="glyphicon glyphicon-list"></i> BROWSE
+                            <i class="glyphicon glyphicon-list"></i> {{ $t("lang.browse") }}
                             <span class="caret pull-right"></span>
                             <ul>
-                                <li @click="changeseen('hotbooks')" :class="booksseen.hotbooks?'current':''"><a href="#hotbooks"><i class="glyphicon glyphicon-star"></i> Hot Books</a></li>
-                                <li @click="changeseen('newbooks')" :class="booksseen.newbooks?'current':''"><a href="#newbooks"><i class="glyphicon glyphicon-open"></i> New Books</a></li>
-                                <li @click="changeseen('discover')" :class="booksseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> Discover</a></li>
-                                <li @click="changeseen('categories')" :class="booksseen.categories?'current':''"><a href="#categories"><i class="glyphicon glyphicon-list"></i> Categories</a></li>
-                                <li @click="changeseen('authors')" :class="booksseen.authors?'current':''"><a href="#authors"><i class="glyphicon glyphicon-user"></i> Authors</a></li>
-                                <li @click="changeseen('language')" :class="booksseen.language?'current':''"><a href="#language"><i class="glyphicon glyphicon-eye-close"></i> Language</a></li>
+                                <li @click="changeseen('hotbooks')" :class="booksseen.hotbooks?'current':''"><a href="#hotbooks"><i class="glyphicon glyphicon-star"></i> {{ $t("lang.hotbooks") }}</a></li>
+                                <li @click="changeseen('newbooks')" :class="booksseen.newbooks?'current':''"><a href="#newbooks"><i class="glyphicon glyphicon-open"></i> {{ $t("lang.newbooks") }}</a></li>
+                                <li @click="changeseen('discover')" :class="booksseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> {{ $t("lang.discover") }}</a></li>
+                                <li @click="changeseen('categories')" :class="booksseen.categories?'current':''"><a href="#categories"><i class="glyphicon glyphicon-list"></i> {{ $t("lang.categories") }}</a></li>
+                                <li @click="changeseen('authors')" :class="booksseen.authors?'current':''"><a href="#authors"><i class="glyphicon glyphicon-user"></i> {{ $t("lang.authors") }}</a></li>
+                                <li @click="changeseen('language')" :class="booksseen.language?'current':''"><a href="#language"><i class="glyphicon glyphicon-eye-close"></i> {{ $t("lang.language") }}</a></li>
                             </ul>
                         </a>
                     </li>
@@ -88,18 +88,18 @@
                         <!--</a>-->
                     <!--</li>-->
 
-                    <li class="submenu open">
-                        <a href="#">
-                            <i class="glyphicon glyphicon-list"></i> YOUR SHELVES
-                            <span class="caret pull-right"></span>
-                            <ul>
-                                <li><a href="#"><i class="glyphicon glyphicon-home"></i> Login</a></li>
-                                <li><a href="#"><i class="glyphicon glyphicon-home"></i> A</a></li>
-                                <li><a href="#"><i class="glyphicon glyphicon-calendar"></i> B</a></li>
-                                <li><a href="#"><i class="glyphicon glyphicon-stats"></i> C</a></li>
-                            </ul>
-                        </a>
-                    </li>
+                    <!--<li class="submenu open">-->
+                        <!--<a href="#">-->
+                            <!--<i class="glyphicon glyphicon-list"></i> YOUR SHELVES-->
+                            <!--<span class="caret pull-right"></span>-->
+                            <!--<ul>-->
+                                <!--<li><a href="#"><i class="glyphicon glyphicon-home"></i> Login</a></li>-->
+                                <!--<li><a href="#"><i class="glyphicon glyphicon-home"></i> A</a></li>-->
+                                <!--<li><a href="#"><i class="glyphicon glyphicon-calendar"></i> B</a></li>-->
+                                <!--<li><a href="#"><i class="glyphicon glyphicon-stats"></i> C</a></li>-->
+                            <!--</ul>-->
+                        <!--</a>-->
+                    <!--</li>-->
                 </ul>
             </div>
         </div>
@@ -107,7 +107,7 @@
             <div v-show="booksseen.hotbooks" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>Hot Books</h3>
+                        <h3>{{ $t("lang.hotbooks") }}</h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -122,7 +122,7 @@
             <div v-show="booksseen.newbooks" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>New Books</h3>
+                        <h3>{{ $t("lang.newbooks") }}</h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -138,7 +138,7 @@
             <div v-show="booksseen.discover" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>Discover</h3>
+                        <h3>{{ $t("lang.discover") }}</h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -153,7 +153,7 @@
             <div v-show="booksseen.categories" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>Categories</h3>
+                        <h3>{{ $t("lang.categories") }}</h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -170,7 +170,7 @@
             <div v-show="booksseen.authors" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>Authors</h3>
+                        <h3>{{ $t("lang.authors") }}</h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -187,7 +187,7 @@
             <div v-show="booksseen.language" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>Language</h3>
+                        <h3>{{ $t("lang.language") }}</h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -223,7 +223,10 @@
 <script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore.js"></script>
 <script src="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.js"></script>
 <script src="https://cdn.bootcss.com/fetch/2.0.3/fetch.js"></script>
+<!--https://github.com/kazupon/vue-i18n-->
+<script src="https://cdn.bootcss.com/vue-i18n/7.0.0/vue-i18n.js"></script>
 <script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
+<script src="js/cali.i18n.js"></script>
 <script src="js/cali.js"></script>
 </body>
 </html>

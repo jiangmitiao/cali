@@ -5,6 +5,8 @@ import (
 	"github.com/jiangmitiao/cali/app/rcali"
 	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
+	"net/http"
+	"io/ioutil"
 )
 
 type Book struct {
@@ -119,8 +121,33 @@ func (c Book) BookImage(bookid int) revel.Result {
 //book's download
 func (c Book) BookDown(bookid int) revel.Result {
 	//bytes := rcali.FILE(services.QueryBookFile(bookid))
-	if f, err:= services.QueryBookFile(bookid);err==nil {
-		return c.RenderFile(f,revel.Attachment)
+	if f, err := services.QueryBookFile(bookid); err == nil {
+		return c.RenderFile(f, revel.Attachment)
 	}
 	return c.RenderText("file is not exit")
+}
+
+func (c Book) Book(callback string, bookid int) revel.Result {
+	return c.RenderJSONP(
+		callback,
+		models.NewOKApiWithInfo(services.QueryBook(bookid)),
+	)
+}
+
+func (c Book) DoubanBook(callback string, bookid int) revel.Result  {
+	bookVo :=services.QueryBook(bookid)
+	rcali.DEBUG.Debug("https://api.douban.com/v2/book/search?q="+bookVo.Title)
+	resp, err := http.Get("https://api.douban.com/v2/book/search?q="+bookVo.Title)
+	if err != nil {
+		// handle error
+		return c.RenderJSONP(callback,models.NewErrorApi())
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// handle error
+		return c.RenderJSONP(callback,models.NewErrorApi())
+	}
+	return  c.RenderJSONP(callback,models.NewOKApiWithInfo(string(body)))
 }

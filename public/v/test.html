@@ -1,0 +1,13 @@
+<div class="col-md-3">
+	<div class="content-box">
+		<div class="panel-body">
+			<img :src="book.img" width="100%" height="100%"/>
+			<p class="text-center">
+				<span v-text="book.title" style="word-break: keep-all;white-space: nowrap;"></span>
+			</p>
+            <p class="text-center"><span v-text="book.name"></span></p>
+			<p class="text-center">rating:<span v-text="book.rating"></span></p>
+			<br>
+        </div>
+	</div>
+</div>
