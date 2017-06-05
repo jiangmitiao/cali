@@ -26,63 +26,63 @@ func QueryBooks(limit, start int) []models.BookVo {
 //rating books info
 func QueryRatingBooks(limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
-	engine.SQL("select books.*,ratings.rating,authors.name  from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author order by ratings.rating desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
+	engine.SQL("select books.*,ratings.rating,authors.name from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author order by ratings.rating desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //new books info
 func QueryNewBooks(limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
-	engine.SQL("select books.*,ratings.rating,authors.name  from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author order by books.timestamp desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
+	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book  where books.id=books_authors_link.book and authors.id=books_authors_link.author order by books.timestamp desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //discover books info
 func QueryDiscoverBooks(limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
-	engine.SQL("select books.*,ratings.rating,authors.name  from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author order by books.title,books.last_modified desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
+	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author order by books.title,books.last_modified desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //tag books info
 func QueryTagBooksCount(tagid int) int {
 	count := 0
-	engine.SQL("select count(1) from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_tags_link where tag=" + strconv.Itoa(tagid) + ") ").Get(&count)
+	engine.SQL("select count(1) from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_tags_link where tag=" + strconv.Itoa(tagid) + ") ").Get(&count)
 	return count
 }
 
 //tag books info
 func QueryTagBooks(tagid, limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
-	engine.SQL("select books.*,ratings.rating,authors.name  from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_tags_link where tag=" + strconv.Itoa(tagid) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
+	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_tags_link where tag=" + strconv.Itoa(tagid) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //author books info
 func QueryAuthorBooksCount(authorid int) int {
 	count := 0
-	engine.SQL("select count(1) from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_authors_link where author=" + strconv.Itoa(authorid) + ") ").Get(&count)
+	engine.SQL("select count(1) from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_authors_link where author=" + strconv.Itoa(authorid) + ") ").Get(&count)
 	return count
 }
 
 //author books info
 func QueryAuthorBooks(authorid, limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
-	engine.SQL("select books.*,ratings.rating,authors.name  from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_authors_link where author=" + strconv.Itoa(authorid) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
+	engine.SQL("select books.*,ratings.rating,authors.name from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_authors_link where author=" + strconv.Itoa(authorid) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //languages books info
 func QueryLanguageBooksCount(lang_code int) int {
 	count := 0
-	engine.SQL("select count(1) from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_languages_link where lang_code=" + strconv.Itoa(lang_code) + ") ").Get(&count)
+	engine.SQL("select count(1) from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_languages_link where lang_code=" + strconv.Itoa(lang_code) + ") ").Get(&count)
 	return count
 }
 
 //languages books info
 func QueryLanguageBooks(lang_code, limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
-	engine.SQL("select books.*,ratings.rating,authors.name  from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_languages_link where lang_code=" + strconv.Itoa(lang_code) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
+	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_languages_link where lang_code=" + strconv.Itoa(lang_code) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
@@ -144,6 +144,6 @@ func QueryBookFile(bookid int) (*os.File, error) {
 
 func QueryBook(bookid int) models.BookVo {
 	book := models.BookVo{}
-	engine.SQL("select books.* ,ratings.rating,authors.name from books,ratings,books_ratings_link,authors,books_authors_link where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id=" + strconv.Itoa(bookid)).Get(&book)
+	engine.SQL("select books.* ,ratings.rating,authors.name from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id=" + strconv.Itoa(bookid)).Get(&book)
 	return book
 }

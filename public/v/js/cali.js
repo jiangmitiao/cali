@@ -11,7 +11,7 @@ window.onload = function() {
             <div class="content-box">\
                 <div class="panel-body">\
                     <a :href="\'/public/v/book.html?bookid=\'+book.id" target="_blank">\
-                        <img :src="\'/book/bookimage?bookid=\'+book.id" width="100%" height="100%"/>\
+                        <img class="cover" :src="\'/book/bookimage?bookid=\'+book.id" width="100%" height="100%"/>\
                     </a>\
                     <p class="text-center">\
                         <span v-text="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
@@ -90,8 +90,6 @@ window.onload = function() {
         },
         methods: {
             changeseen:function (e) {
-                //console.log(this);
-                //console.log(e);
                 this.booksseen = {};
                 this.booksseen["hotbooks"] = false;
                 this.booksseen["newbooks"] = false;
@@ -132,8 +130,6 @@ window.onload = function() {
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 // template method of yourself
-                                //console.log(data);
-                                //console.log(pagination);
                                 fetch('/book/tagbooks?start='+_.min(data)+'&limit='+data.length+'&tagid='+tagid).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
@@ -176,8 +172,6 @@ window.onload = function() {
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 // template method of yourself
-                                //console.log(data);
-                                //console.log(pagination);
                                 fetch('/book/authorbooks?start='+_.min(data)+'&limit='+data.length+'&authorid='+authorid).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
@@ -220,8 +214,6 @@ window.onload = function() {
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 // template method of yourself
-                                //console.log(data);
-                                //console.log(pagination);
                                 fetch('/book/languagebooks?start='+_.min(data)+'&limit='+data.length+'&lang_code='+lang_code).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
