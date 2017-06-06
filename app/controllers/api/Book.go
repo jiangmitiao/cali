@@ -5,8 +5,8 @@ import (
 	"github.com/jiangmitiao/cali/app/rcali"
 	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
-	"net/http"
 	"io/ioutil"
+	"net/http"
 )
 
 type Book struct {
@@ -134,20 +134,20 @@ func (c Book) Book(callback string, bookid int) revel.Result {
 	)
 }
 
-func (c Book) DoubanBook(callback string, bookid int) revel.Result  {
-	bookVo :=services.QueryBook(bookid)
-	rcali.DEBUG.Debug("https://api.douban.com/v2/book/search?q="+bookVo.Title)
-	resp, err := http.Get("https://api.douban.com/v2/book/search?q="+bookVo.Title)
+func (c Book) DoubanBook(callback string, bookid int) revel.Result {
+	bookVo := services.QueryBook(bookid)
+	rcali.DEBUG.Debug("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
+	resp, err := http.Get("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
 	if err != nil {
 		// handle error
-		return c.RenderJSONP(callback,models.NewErrorApi())
+		return c.RenderJSONP(callback, models.NewErrorApi())
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		// handle error
-		return c.RenderJSONP(callback,models.NewErrorApi())
+		return c.RenderJSONP(callback, models.NewErrorApi())
 	}
-	return  c.RenderJSONP(callback,models.NewOKApiWithInfo(string(body)))
+	return c.RenderJSONP(callback, models.NewOKApiWithInfo(string(body)))
 }

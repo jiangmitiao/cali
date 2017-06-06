@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 //all books count
@@ -130,11 +131,11 @@ func QueryBookFile(bookid int) (*os.File, error) {
 	engine.Where("book=?", bookid).Get(&data)
 	book := models.Book{}
 	engine.Where("id=?", bookid).Get(&book)
-	if data.Format == "EPUB" {
+	if data.Format != "" {
 		if path, ok := rcali.GetBooksPath(); ok {
 			//fmt.Println(path + book.Path + string(filepath.Separator) + "cover.jpg")
 			//bytes, _ := ioutil.ReadFile(path + book.Path + string(filepath.Separator) +data.Name+ ".epub")
-			f, _ := os.Open(path + book.Path + string(filepath.Separator) + data.Name + ".epub")
+			f, _ := os.Open(path + book.Path + string(filepath.Separator) + data.Name + "." + strings.ToLower(data.Format))
 			return f, nil
 		}
 	}
