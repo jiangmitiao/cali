@@ -62,18 +62,18 @@
         <div class="col-md-3">
             <div class="sidebar content-box" style="display: block;">
                 <ul class="nav">
-                    <!-- Main menu -->
+                    <!--&lt;!&ndash; Main menu &ndash;&gt;<span v-text=""></span>-->
                     <li class="submenu open">
                         <a href="#">
-                            <i class="glyphicon glyphicon-list"></i> {{ $t("lang.browse") }}
+                            <i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.browse')"></span>
                             <span class="caret pull-right"></span>
                             <ul>
-                                <li @click="changeseen('hotbooks')" :class="booksseen.hotbooks?'current':''"><a href="#hotbooks"><i class="glyphicon glyphicon-star"></i> {{ $t("lang.hotbooks") }}</a></li>
-                                <li @click="changeseen('newbooks')" :class="booksseen.newbooks?'current':''"><a href="#newbooks"><i class="glyphicon glyphicon-open"></i> {{ $t("lang.newbooks") }}</a></li>
-                                <li @click="changeseen('discover')" :class="booksseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> {{ $t("lang.discover") }}</a></li>
-                                <li @click="changeseen('categories')" :class="booksseen.categories?'current':''"><a href="#categories"><i class="glyphicon glyphicon-list"></i> {{ $t("lang.categories") }}</a></li>
-                                <li @click="changeseen('authors')" :class="booksseen.authors?'current':''"><a href="#authors"><i class="glyphicon glyphicon-user"></i> {{ $t("lang.authors") }}</a></li>
-                                <li @click="changeseen('language')" :class="booksseen.language?'current':''"><a href="#language"><i class="glyphicon glyphicon-eye-close"></i> {{ $t("lang.language") }}</a></li>
+                                <li @click="changeseen('hotbooks')" :class="booksseen.hotbooks?'current':''"><a href="#hotbooks"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.hotbooks')"></span></a></li>
+                                <li @click="changeseen('newbooks')" :class="booksseen.newbooks?'current':''"><a href="#newbooks"><i class="glyphicon glyphicon-open"></i> <span v-text="$t('lang.newbooks')"></span></a></li>
+                                <li @click="changeseen('discover')" :class="booksseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> <span v-text="$t('lang.discover')"></span></a></li>
+                                <li @click="changeseen('categories')" :class="booksseen.categories?'current':''"><a href="#categories"><i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.categories')"></span></a></li>
+                                <li @click="changeseen('authors')" :class="booksseen.authors?'current':''"><a href="#authors"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.authors')"></span></a></li>
+                                <li @click="changeseen('language')" :class="booksseen.language?'current':''"><a href="#language"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.language')"></span></a></li>
                             </ul>
                         </a>
                     </li>
@@ -108,7 +108,7 @@
             <div v-show="booksseen.hotbooks" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>{{ $t("lang.hotbooks") }}</h3>
+                        <h3><span v-text="$t('lang.hotbooks')"></span></h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -123,7 +123,7 @@
             <div v-show="booksseen.newbooks" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>{{ $t("lang.newbooks") }}</h3>
+                        <h3><span v-text="$t('lang.newbooks')"></span></h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -139,7 +139,7 @@
             <div v-show="booksseen.discover" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>{{ $t("lang.discover") }}</h3>
+                        <h3><span v-text="$t('lang.discover')"></span></h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -154,7 +154,7 @@
             <div v-show="booksseen.categories" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>{{ $t("lang.categories") }}</h3>
+                        <h3><span v-text="$t('lang.categories')"></span></h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -171,7 +171,7 @@
             <div v-show="booksseen.authors" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>{{ $t("lang.authors") }}</h3>
+                        <h3><span v-text="$t('lang.authors')"></span></h3>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -188,7 +188,7 @@
             <div v-show="booksseen.language" class="row">
                 <div class="col-md-12">
                     <div class="panel-heading">
-                        <h3>{{ $t("lang.language") }}</h3>
+                        <h3><span v-text="$t('lang.language')"></span></h3>
                     </div>
                 </div>
                 <div class="col-md-12">

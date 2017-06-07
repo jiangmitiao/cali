@@ -64,7 +64,7 @@ const messages = {
             bookdblink:"豆瓣链接",
             bookpublisher:"出版者",
             bookpublishtime:"出版时间",
-            bookupdatetime:"更新事件",
+            bookupdatetime:"更新时间",
             bookmodifiedtime:"修改时间",
             bookisbn:"ISBN",
             bookrating:"评分",

@@ -14,15 +14,25 @@ window.onload = function() {
                         <img class="cover" :src="\'/book/bookimage?bookid=\'+book.id" width="100%" height="100%"/>\
                     </a>\
                     <p class="text-center">\
-                        <span v-text="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
+                        <span v-text="maxstring(book.title,10)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
                     </p>\
                     <p class="text-center"><span v-text="book.name"></span></p>\
-                    <p class="text-center">{{ $t("lang.rating") }}:<span v-text="book.rating"></span></p>\
+                    <p class="text-center"><span v-text="$t(\'lang.rating\')"></span>:<span v-text="book.rating"></span></p>\
                     <br>\
                 </div>\
             </div>\
         </div>\
-        '
+        ',
+        methods:{
+            //return a sub string ,sub's length is max .if src string not equals result the result add '...'
+            maxstring : function (str,max) {
+                var result = str.substr(0,max);
+                if (result != str){
+                    result+="...";
+                }
+                return result;
+            }
+        }
     });
 
     // 定义名为 tagdiv 的新组件
@@ -33,6 +43,7 @@ window.onload = function() {
         props: ['tag'],
         template: '<a @click="tagclick(tag.id)" class="btn btn-default"><span v-text="tag.name"></span></a>',
         methods:{
+            //the tagdiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods tagclick
             tagclick:function (tagid) {
                 //console.log(tagid);
                 app.tagclick(tagid);
@@ -48,6 +59,7 @@ window.onload = function() {
         props: ['author'],
         template: '<a @click="authorclick(author.id)" class="btn btn-default"><span v-text="author.name"></span></a>',
         methods:{
+            //the authordiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods authorclick
             authorclick:function (tagid) {
                 //console.log(tagid);
                 app.authorclick(tagid);
@@ -63,6 +75,7 @@ window.onload = function() {
         props: ['language'],
         template: '<a @click="languageclick(language.id)" class="btn btn-default"><span v-text="language.lang_code"></span></a>',
         methods:{
+            //the languagediv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods languageclick
             languageclick:function (lang_code) {
                 //console.log(lang_code);
                 app.languageclick(lang_code);
@@ -70,25 +83,40 @@ window.onload = function() {
         }
     });
 
+    //the instance is only one html's Vue's instance on public.html
     var app = new Vue({
         i18n,
         el: "#root",
         data: {
+            // the hotbooks control one div where is hotbooks which has 8 items
             hotbooks:[],
+            // the newbooks control one div where is newbooks which has 8 items
             newbooks:[],
+            // the discover control one div where is discover which has 8 items
             discover:[],
+            // the categories control one div where is categories which has 8 items
             categories:[],
+            // the authors control one div where is authors which has 8 items
             authors:[],
+            // the language control one div where is language which has 8 items
             language:[],
+            // booksseen is a object which has 6 attrs.one boolean attr control one div which in hotbooks,newbooks,discover,categories,authors,language.
             booksseen:{},
+            // the tags is an array ,which has a struct like '{id:0,name:"history"}'.and it is first display in categories.
             tags:[],  //tags
+            // tagsseen is a condition for dispaly or hide the tags.if tagsseen is true the display the tags then hide the categories.
             tagsseen:true,
+            // the authornames is an array,like the tags
             authornames:[],//authors
+            // authorsseen like tagsseen
             authorsseen : true,
+            // the languagenames like tags .item struct like '{id:0,lang_code:"zho"}'
             languagenames:[],//languages
+            // the languagesseen like tagsseen
             languagesseen:true
         },
         methods: {
+            // when user click one item on left bar,then invoke this method.to display one div
             changeseen:function (e) {
                 this.booksseen = {};
                 this.booksseen["hotbooks"] = false;
@@ -98,6 +126,7 @@ window.onload = function() {
                 this.booksseen["authors"] = false;
                 this.booksseen["language"] = false;
                 this.booksseen[e] = true;
+                // when user click the three items ,then display first display
                 if (e=="categories"){
                     this.tagsseen = true;
                 }
@@ -108,12 +137,14 @@ window.onload = function() {
                     this.languagesseen = true;
                 }
             },
+            // the categories first display,when click tag's item ,then hide first div,fetch 8 books items which has the click's item'tag to display
             tagclick:function (tagid) {
                 //console.log("tagid"+tagid)
                 fetch('/book/tagbookscount?tagid='+tagid).then(function(response) {
-                    return response.json()
+                    return response.json();
                 }).then(function(json) {
                     //console.log('parsed json', json);
+                    // when result code is 200, then rending div
                     if (json.statusCode ==200){
                         $('#tagpage').pagination({
                             dataSource:function (done) {
@@ -150,6 +181,7 @@ window.onload = function() {
                 });
                 this.tagsseen = false;
             },
+            // like tags click
             authorclick:function (authorid) {
                 //console.log("authorid"+authorid);
                 fetch('/book/authorbookscount?authorid='+authorid).then(function(response) {
@@ -192,6 +224,7 @@ window.onload = function() {
                 });
                 this.authorsseen = false;
             },
+            // like tags click
             languageclick:function (lang_code) {
                 //console.log("lang_code"+lang_code);
                 fetch('/book/languagebookscount?lang_code='+lang_code).then(function(response) {
@@ -236,6 +269,7 @@ window.onload = function() {
             }
         },
         computed: {
+            // we not use the data,we use the computed data
             hotbooks_computed : function () {
                 return this.hotbooks;
             },
@@ -256,6 +290,7 @@ window.onload = function() {
             }
         },
         created: function() {
+            //when page's instance created,we should get the data to render the page
             console.log("created");
             //hotbooks展示分页
             fetch('/book/bookscount').then(function(response) {
@@ -518,6 +553,7 @@ window.onload = function() {
 
         },
         beforeMount: function () {
+            // when instance created and prepare to render page ,we should confirm we display one div
             console.log("beforeMount");
             this.booksseen["hotbooks"] = true;
             this.booksseen["newbooks"] = false;
@@ -535,4 +571,4 @@ window.onload = function() {
 
         }
     });
-}
+};

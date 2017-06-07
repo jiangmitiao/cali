@@ -38,20 +38,21 @@ window.onload = function() {
                         <img width="100%" height="100%" :src="\'/book/bookimage?bookid=\'+book.id"/>\
                     </div>\
                     <div class="col-md-5">\
-                        <p>{{ $t("lang.bookname") }}: <span v-text="book.title"></span></p>\
-                        <p>{{ $t("lang.bookauthor") }}: <span v-text="book.name"></span></p>\
-                        <p>{{ $t("lang.bookpublishtime") }}: <span v-text="formatdate(book.pubdate)"></span></p>\
-                        <p>{{ $t("lang.bookupdatetime") }}: <span v-text="formatdate(book.timestamp)"></span></p>\
-                        <p>{{ $t("lang.bookisbn") }}: <span v-text="book.isbn"></span></p>\
-                        <p>{{ $t("lang.bookmodifiedtime") }}: <span v-text="formatdate(book.last_modified)"></span></p>\
-                        <p>{{ $t("lang.bookrating") }}: <span v-text="book.rating"></span></p>\
-                        <p>{{ $t("lang.bookdownloadlink") }}: <a :href="\'/book/bookdown?bookid=\'+book.id">{{ $t("lang.download") }}</a></p>\
+                        <p <span v-text="$t(\'lang.bookname\')"></span>: <span v-text="book.title"></span></p>\
+                        <p><span v-text="$t(\'lang.bookauthor\')"></span>: <span v-text="book.name"></span></p>\
+                        <p><span v-text="$t(\'lang.bookpublishtime\')"></span>: <span v-text="formatdate(book.pubdate)"></span></p>\
+                        <p><span v-text="$t(\'lang.bookupdatetime\')"></span>: <span v-text="formatdate(book.timestamp)"></span></p>\
+                        <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="book.isbn"></span></p>\
+                        <p><span v-text="$t(\'lang.bookmodifiedtime\')"></span>: <span v-text="formatdate(book.last_modified)"></span></p>\
+                        <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="book.rating"></span></p>\
+                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/book/bookdown?bookid=\'+book.id"><span v-text="$t(\'lang.download\')"></span></a></p>\
                     </div>\
                 </div>\
             </div>\
         </div>\
         ',
         methods:{
+            //format the data which from back to 'YYYY-MM-DD'
             formatdate:function (d) {
                 return StringFormatter.format("{Date:{format:'YYYY-MM-DD'}}", new Date(d))
             }
@@ -63,9 +64,13 @@ window.onload = function() {
         i18n,
         el: "#root",
         data: {
+            // the only one book's info
             book:{},
+            //if bookseen is true ,then display the book's div
             bookseen:false,
+            //douban's book info
             doubanbook:{},
+            //if doubanbookseen is true ,then display the doubanbook's div
             doubanbookseen:false
         },
         methods: {
