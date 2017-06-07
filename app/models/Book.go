@@ -25,7 +25,7 @@ func (Book) TableName() string {
 
 type BookVo struct {
 	Id           int       `json:"id" xorm:"pk 'id'"`
-	Title        string    `json:"title" xorm:"'title'"`
+	Title        string    `json:"title" xorm:"'title'"` // book name
 	Sort         string    `json:"sort" xorm:"'sort'"`
 	Timestamp    time.Time `json:"timestamp"  xorm:"'timestamp'"`
 	Pubdate      time.Time `json:"pubdate"  xorm:"'pubdate'"`
@@ -41,5 +41,7 @@ type BookVo struct {
 
 	Rating int `json:"rating" xorm:"'rating'"`
 
-	Name string `json:"name" xorm:"'name'"`
+	Name string `json:"name" xorm:"'name'"` //author name
+
+	Comments string `json:"comments" xorm:"'comments'"` //comments's text only use in single book
 }

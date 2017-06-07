@@ -46,6 +46,7 @@ window.onload = function() {
                         <p><span v-text="$t(\'lang.bookmodifiedtime\')"></span>: <span v-text="formatdate(book.last_modified)"></span></p>\
                         <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="book.rating"></span></p>\
                         <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/book/bookdown?bookid=\'+book.id"><span v-text="$t(\'lang.download\')"></span></a></p>\
+                        <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(book.comments)"></span></p>\
                     </div>\
                 </div>\
             </div>\
@@ -55,6 +56,13 @@ window.onload = function() {
             //format the data which from back to 'YYYY-MM-DD'
             formatdate:function (d) {
                 return StringFormatter.format("{Date:{format:'YYYY-MM-DD'}}", new Date(d))
+            },
+            markdown2html: function (m) {
+                showdown.setOption('simpleLineBreaks', true);
+                //showdown.setOption('\n', '<br/>');
+                var converter = new showdown.Converter();
+                var html      = converter.makeHtml(m);
+                return html;
             }
         }
     });

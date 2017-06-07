@@ -1,18 +1,18 @@
 package services
 
 import (
+	"bytes"
 	"errors"
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
+	"github.com/nfnt/resize"
+	"image"
+	"image/jpeg"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-	"image"
-	"github.com/nfnt/resize"
-	"bytes"
-	"image/jpeg"
 )
 
 //all books count
@@ -106,12 +106,12 @@ func QueryCoverImg(bookid int) []byte {
 		if path, ok := rcali.GetBooksPath(); ok {
 			//fmt.Println(path + book.Path + string(filepath.Separator) + "cover.jpg")
 			//bytes, _ := ioutil.ReadFile(path + book.Path + string(filepath.Separator) + "cover.jpg")
-			f,_:=os.Open(path + book.Path + string(filepath.Separator) + "cover.jpg")
-			img,_,_ :=image.Decode(f)
+			f, _ := os.Open(path + book.Path + string(filepath.Separator) + "cover.jpg")
+			img, _, _ := image.Decode(f)
 			//bound := img.Bounds()
 
 			//dst :=image.NewRGBA(image.Rect(0,0,bound.Dx()*300/bound.Dy(),300))
-			dst :=resize.Resize(200,300,img, resize.Lanczos3)
+			dst := resize.Resize(200, 300, img, resize.Lanczos3)
 			buf := new(bytes.Buffer)
 			jpeg.Encode(buf, dst, nil)
 			result := buf.Bytes()
@@ -158,6 +158,6 @@ func QueryBookFile(bookid int) (*os.File, error) {
 
 func QueryBook(bookid int) models.BookVo {
 	book := models.BookVo{}
-	engine.SQL("select books.* ,ratings.rating,authors.name from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id=" + strconv.Itoa(bookid)).Get(&book)
+	engine.SQL("select books.* ,ratings.rating,authors.name,comments.comments from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book left join (select book,text as comments from comments) as comments on comments.book=books.id where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id=" + strconv.Itoa(bookid)).Get(&book)
 	return book
 }
