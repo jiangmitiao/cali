@@ -9,6 +9,10 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"image"
+	"github.com/nfnt/resize"
+	"bytes"
+	"image/jpeg"
 )
 
 //all books count
@@ -101,8 +105,17 @@ func QueryCoverImg(bookid int) []byte {
 	if book.HasCover == 1 {
 		if path, ok := rcali.GetBooksPath(); ok {
 			//fmt.Println(path + book.Path + string(filepath.Separator) + "cover.jpg")
-			bytes, _ := ioutil.ReadFile(path + book.Path + string(filepath.Separator) + "cover.jpg")
-			return bytes
+			//bytes, _ := ioutil.ReadFile(path + book.Path + string(filepath.Separator) + "cover.jpg")
+			f,_:=os.Open(path + book.Path + string(filepath.Separator) + "cover.jpg")
+			img,_,_ :=image.Decode(f)
+			//bound := img.Bounds()
+
+			//dst :=image.NewRGBA(image.Rect(0,0,bound.Dx()*300/bound.Dy(),300))
+			dst :=resize.Resize(200,300,img, resize.Lanczos3)
+			buf := new(bytes.Buffer)
+			jpeg.Encode(buf, dst, nil)
+			result := buf.Bytes()
+			return result
 		}
 	}
 	return make([]byte, 0)

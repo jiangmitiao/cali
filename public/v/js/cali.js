@@ -7,7 +7,7 @@ window.onload = function() {
         // 这个属性名为 book。
         props: ['book'],
         template: '\
-        <div class="col-md-3">\
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">\
             <div class="content-box">\
                 <div class="panel-body">\
                     <a :href="\'/public/v/book.html?bookid=\'+book.id" target="_blank">\
@@ -529,6 +529,10 @@ window.onload = function() {
         mounted: function () {
             console.log("mounted");
             //this.booksseen["hotbooks"] = true;
+        },
+        activated:function () {
+            console.log("activated");
+
         }
     });
 }
