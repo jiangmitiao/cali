@@ -16,7 +16,7 @@ window.onload = function() {
                     <p class="text-center">\
                         <span v-text="maxstring(book.title,10)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
                     </p>\
-                    <p class="text-center"><span v-text="book.name"></span></p>\
+                    <p class="text-center"><span v-text="maxstring(book.name,10)"></span></p>\
                     <p class="text-center"><span v-text="$t(\'lang.rating\')"></span>:<span v-text="book.rating"></span></p>\
                     <br>\
                 </div>\

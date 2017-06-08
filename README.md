@@ -1,6 +1,7 @@
 # Cali
 
 [![Build Status](https://www.travis-ci.org/jiangmitiao/cali.svg?branch=master)](https://www.travis-ci.org/jiangmitiao/cali)
+[![License](https://img.shields.io/badge/Apache-License-blue.svg)](LICENSE)
 
 # Welcome to Cali
 
