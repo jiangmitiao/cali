@@ -9,7 +9,7 @@ script:
 deploy: 
  provider: releases
  api_key: 
-  secure: Z6oCytqapMMyPuyzC1r3
+  secure: project.hasProperty("mima") ? mima : System.getenv("mima")
  file: build/cali.tar.gz
  skip_cleanup: true
  on: 
