@@ -1,45 +1,62 @@
 # Cali
 
-# Welcome to Revel
+[![Build Status](https://www.travis-ci.org/jiangmitiao/cali.svg?branch=master)](https://www.travis-ci.org/jiangmitiao/cali)
 
-A high-productivity web framework for the [Go language](http://www.golang.org/).
+# Welcome to Cali
 
+A Web Library developed by [Revel](http://revel.github.io/).
+
+# Usages
+
+### Get Calibre
+
+you shoud have [calibre](https://calibre-ebook.com/) to manage your books like *.epub,*.mobi ,.etc
+
+then remenber your calibre library's path and the `metadata.db`.
+
+
+### Download SourceCode or Releases
+
+#### SourceCode
+
+```shell
+go get -u -v github.com/revel/revel
+go get -u -v github.com/revel/cmd/revel
+go get -u -v github.com/jiangmitiao/cali
+```
+#### Releases
+
+[Releases](https://github.com/jiangmitiao/cali/releases)
+
+### Modify Configuration
+
+you should open `conf/app.conf`
+
+then modify there:
+```ini
+books.path = your library        #/home/gavin/Calibre 书库/
+sqlitedb.path = the calibre's db #/home/gavin/Calibre 书库/metadata.db
+``` 
 
 ### Start the web server:
 
-   revel run myapp
+source code:
+```
+revel run github.com/jiangmitiao/cali
+```
+or releases:
+```
+sh run.sh
+```
+
 
 ### Go to http://localhost:9000/ and you'll see:
-
-    "It works"
-
-## Code Layout
-
-The directory structure of a generated Revel application:
-
-    conf/             Configuration directory
-        app.conf      Main app configuration file
-        routes        Routes definition file
-
-    app/              App sources
-        init.go       Interceptor registration
-        controllers/  App controllers go here
-        views/        Templates directory
-
-    messages/         Message files
-
-    public/           Public static assets
-        css/          CSS files
-        js/           Javascript files
-        images/       Image files
-
-    tests/            Test suites
+```
+ your library 
+```
 
 
-## Help
 
-* The [Getting Started with Revel](http://revel.github.io/tutorial/gettingstarted.html).
-* The [Revel guides](http://revel.github.io/manual/index.html).
-* The [Revel sample apps](http://revel.github.io/examples/index.html).
-* The [API documentation](https://godoc.org/github.com/revel/revel).
+# Help
+
 
