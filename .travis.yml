@@ -1,17 +1,17 @@
 language: go
 install: 
-	- go get github.com/revel/revel
-	- go get github.com/revel/cmd/revel
+ - go get github.com/revel/revel
+ - go get github.com/revel/cmd/revel
 
 script: 
-	- sh build.sh
+ - sh build.sh
 
 deploy: 
-	provider: releases
-	api_key: Z6oCytqapMMyPuyzC1r3
-		secure:
-	file: build/cali.tar.gz
-	skip_cleanup: true
-	on: 
-		tags: true
+ provider: releases
+ api_key: 
+  secure: Z6oCytqapMMyPuyzC1r3
+ file: build/cali.tar.gz
+ skip_cleanup: true
+ on: 
+  tags: true
 
