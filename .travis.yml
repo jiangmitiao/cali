@@ -1,4 +1,6 @@
 language: go
+env :
+ - MIMA=$MIMA
 install: 
  - go get github.com/revel/revel
  - go get github.com/revel/cmd/revel
@@ -9,7 +11,7 @@ script:
 deploy: 
  provider: releases
  api_key: 
-  secure: project.hasProperty("mima") ? mima : System.getenv("mima")
+  secure: MIMA
  file: build/cali.tar.gz
  skip_cleanup: true
  on: 
