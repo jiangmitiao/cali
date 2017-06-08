@@ -41,7 +41,12 @@ window.onload = function() {
         // "prop"，类似于一个自定义属性
         // 这个属性名为 tag。
         props: ['tag'],
-        template: '<a @click="tagclick(tag.id)" class="btn btn-default"><span v-text="tag.name"></span></a>',
+        template: '\
+            <a @click="tagclick(tag.id)" class="btn btn-default" style="margin-bottom: 25px;margin-left: 25px;">\
+                <span v-text="tag.name"></span>\
+            </a>\
+        '
+        ,
         methods:{
             //the tagdiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods tagclick
             tagclick:function (tagid) {
@@ -57,7 +62,11 @@ window.onload = function() {
         // "prop"，类似于一个自定义属性
         // 这个属性名为 tag。
         props: ['author'],
-        template: '<a @click="authorclick(author.id)" class="btn btn-default"><span v-text="author.name"></span></a>',
+        template: '\
+        <a @click="authorclick(author.id)" class="btn btn-default" style="margin-bottom: 25px;margin-left: 25px;">\
+            <span v-text="author.name"></span>\
+        </a>\
+        ',
         methods:{
             //the authordiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods authorclick
             authorclick:function (tagid) {
@@ -106,8 +115,12 @@ window.onload = function() {
             tags:[],  //tags
             // tagsseen is a condition for dispaly or hide the tags.if tagsseen is true the display the tags then hide the categories.
             tagsseen:true,
+            // one page display 20 tags
+            tagssize:20,
             // the authornames is an array,like the tags
             authornames:[],//authors
+            // like tagsize
+            authorsize:20,
             // authorsseen like tagsseen
             authorsseen : true,
             // the languagenames like tags .item struct like '{id:0,lang_code:"zho"}'
@@ -440,7 +453,7 @@ window.onload = function() {
                         },
                         pageRange:1,
                         totalNumber:json.info,
-                        pageSize: 8,
+                        pageSize: app.tagssize,
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
@@ -482,7 +495,7 @@ window.onload = function() {
                         },
                         pageRange:1,
                         totalNumber:json.info,
-                        pageSize: 8,
+                        pageSize: app.authorsize,
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
