@@ -9,6 +9,7 @@ import (
 	"github.com/go-xorm/xorm"
 	"github.com/jiangmitiao/cali/app/models"
 	_ "github.com/mattn/go-sqlite3"
+	"path"
 )
 
 var engine *xorm.Engine
@@ -77,6 +78,11 @@ func DbInit() (bool, error) {
 
 }
 
+func PathTest() {
+	fmt.Println(path.Join("/home", "path1/", "path2", "/path3/", "cover.jpeg"))
+}
+
 func main() {
-	DbInit()
+	//DbInit()
+	PathTest()
 }

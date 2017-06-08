@@ -1,15 +1,13 @@
 package services
 
 import (
-	"bytes"
 	"errors"
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
-	"github.com/nfnt/resize"
 	"image"
-	"image/jpeg"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -103,22 +101,18 @@ func QueryCoverImg(bookid int) []byte {
 	book := models.Book{}
 	engine.Where("id=?", bookid).Get(&book)
 	if book.HasCover == 1 {
-		if path, ok := rcali.GetBooksPath(); ok {
+		if basepath, ok := rcali.GetBooksPath(); ok {
 			//fmt.Println(path + book.Path + string(filepath.Separator) + "cover.jpg")
 			//bytes, _ := ioutil.ReadFile(path + book.Path + string(filepath.Separator) + "cover.jpg")
-			f, _ := os.Open(path + book.Path + string(filepath.Separator) + "cover.jpg")
-			img, _, _ := image.Decode(f)
-			//bound := img.Bounds()
-
-			//dst :=image.NewRGBA(image.Rect(0,0,bound.Dx()*300/bound.Dy(),300))
-			dst := resize.Resize(200, 300, img, resize.Lanczos3)
-			buf := new(bytes.Buffer)
-			jpeg.Encode(buf, dst, nil)
-			result := buf.Bytes()
-			return result
+			pathtmp := path.Join(basepath, book.Path, "cover.jpg")
+			if f, err := os.Open(pathtmp); err == nil {
+				img, _, _ := image.Decode(f)
+				result := rcali.JpegImage2Bytes(rcali.ResizeImage(200, 300, img))
+				return result
+			}
 		}
 	}
-	return make([]byte, 0)
+	return rcali.JpegImage2Bytes(rcali.EmptyIamge(200,300))
 }
 
 //book's file
