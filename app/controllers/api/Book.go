@@ -7,6 +7,7 @@ import (
 	"github.com/revel/revel"
 	"io/ioutil"
 	"net/http"
+	"fmt"
 )
 
 type Book struct {
@@ -150,4 +151,15 @@ func (c Book) DoubanBook(callback string, bookid int) revel.Result {
 		return c.RenderJSONP(callback, models.NewErrorApi())
 	}
 	return c.RenderJSONP(callback, models.NewOKApiWithInfo(string(body)))
+}
+
+func (c Book ) UploadBook()revel.Result  {
+	fmt.Printf("c.Request.Form %+v\n",c.Request.Form)
+	file, header, err := c.Request.FormFile("file1")
+	if err == nil {
+		defer file.Close()
+		b,_ := ioutil.ReadAll(file)
+		ioutil.WriteFile("/home/gavin/"+header.Filename,b,0755)
+	}
+	return c.RenderText("ok")
 }
