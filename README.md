@@ -8,7 +8,7 @@
 
 # Welcome to Cali
 
-A Web Library developed by [Revel](http://revel.github.io/).
+A Web Library based on [Revel](http://revel.github.io/).
 
 You can manage your books by [Cali](https://github.com/jiangmitial/cali).
 
