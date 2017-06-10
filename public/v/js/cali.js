@@ -577,7 +577,6 @@ window.onload = function() {
         },
         mounted: function () {
             console.log("mounted");
-            //this.booksseen["hotbooks"] = true;
         },
         activated:function () {
             console.log("activated");

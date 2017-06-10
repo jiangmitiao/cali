@@ -18,7 +18,6 @@ window.onload = function() {
     }
     var Request=new UrlSearch(); //实例化
 
-    //<div class="panel-heading"><div class="panel-title"><span v-text="book.title"></span></div></div><div class="panel-body"><div class="row"><div class="col-md-3 col-md-offset-1"><img width="100%" height="100%" src="/book/bookimage?bookid=2"></div><div class="col-md-5"><p>Book's Name:<span v-text="book.title"></span></p><p>Book's Author:<span v-text="book.name"></span></p><p>Book's Publish Time:<span v-text="book.pubdate"></span></p><p>Book's Update Time:<span v-text="book.timestamp"></span></p><p>Book's ISBN:<span v-text="book.isbn"></span></p><p>Book's Last Modified Time:<span v-text="book.last_modified"></span></p><p>Book's Rating:<span v-text="book.rating"></span></p></div></div></div>
     //https://developers.douban.com/wiki/?title=book_v2#get_isbn_book
 
     // 定义名为 bookinfodiv 的新组件
@@ -66,7 +65,6 @@ window.onload = function() {
             }
         }
     });
-
 
     var app = new Vue({
         i18n,
@@ -136,7 +134,4 @@ window.onload = function() {
             console.log("mounted");
         }
     });
-
-
-
-}
+};
