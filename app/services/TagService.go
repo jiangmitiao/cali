@@ -18,6 +18,7 @@ func QueryTags(limit, start int) []models.Tag {
 	return tags
 }
 
+//query more tags by bookid
 func QueryBookTags(bookid int)[]models.Tag  {
 	tags := make([]models.Tag, 0)
 	engine.SQL("select tags.* from tags,books_tags_link where tags.id=books_tags_link.tag and book="+strconv.Itoa(bookid)).Find(&tags)

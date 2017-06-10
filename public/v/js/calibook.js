@@ -4,7 +4,7 @@ window.onload = function() {
         var name,value;
         var str=location.href; //取得整个地址栏
         var num=str.indexOf("?");
-        str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+        str=str.substr(num+1); //取得所有参数stringvar.substr(start [, length ]
 
         var arr=str.split("&"); //各个参数放到数组里
         for(var i=0;i < arr.length;i++){
@@ -18,12 +18,9 @@ window.onload = function() {
     }
     var Request=new UrlSearch(); //实例化
 
-    //https://developers.douban.com/wiki/?title=book_v2#get_isbn_book
-
     // 定义名为 bookinfodiv 的新组件
     Vue.component('bookinfodiv', {
         // bookinfodiv 组件现在接受一个
-        // "prop"，类似于一个自定义属性
         // 这个属性名为 book。
         props: ['book'],
         template: '\

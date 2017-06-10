@@ -1,10 +1,8 @@
 $(document).ready(function(){
-
   $(".submenu > a").click(function(e) {
     e.preventDefault();
     var $li = $(this).parent("li");
     var $ul = $(this).next("ul");
-
     if($li.hasClass("open")) {
       $ul.slideUp(350);
       $li.removeClass("open");
@@ -15,5 +13,4 @@ $(document).ready(function(){
       $li.addClass("open");
     }
   });
-  
 });

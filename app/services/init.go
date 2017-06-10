@@ -18,6 +18,7 @@ func checkErr(err error) {
 	}
 }
 
+//init the db,should take a db filepath
 func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, database string
 	if bool, err := rcali.FileExists(SqliteDbPath); !bool {
 		rcali.DEBUG.Debug("sqlitedbpath is error", SqliteDbPath, err)

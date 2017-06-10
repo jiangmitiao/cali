@@ -3,7 +3,6 @@ window.onload = function() {
     // 定义名为 bookdiv 的新组件
     Vue.component('bookdiv', {
         // bookdiv 组件现在接受一个
-        // "prop"，类似于一个自定义属性
         // 这个属性名为 book。
         props: ['book'],
         template: '\
@@ -38,7 +37,6 @@ window.onload = function() {
     // 定义名为 tagdiv 的新组件
     Vue.component('tagdiv', {
         // tagdiv 组件现在接受一个
-        // "prop"，类似于一个自定义属性
         // 这个属性名为 tag。
         props: ['tag'],
         template: '\
@@ -50,7 +48,6 @@ window.onload = function() {
         methods:{
             //the tagdiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods tagclick
             tagclick:function (tagid) {
-                //console.log(tagid);
                 app.tagclick(tagid);
             }
         }
@@ -59,7 +56,6 @@ window.onload = function() {
     // 定义名为 authordiv 的新组件
     Vue.component('authordiv', {
         // tagdiv 组件现在接受一个
-        // "prop"，类似于一个自定义属性
         // 这个属性名为 tag。
         props: ['author'],
         template: '\
@@ -79,14 +75,12 @@ window.onload = function() {
     // 定义名为 languagediv 的新组件
     Vue.component('languagediv', {
         // languagediv 组件现在接受一个
-        // "prop"，类似于一个自定义属性
         // 这个属性名为 language。
         props: ['language'],
         template: '<a @click="languageclick(language.id)" class="btn btn-default"><span v-text="language.lang_code"></span></a>',
         methods:{
             //the languagediv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods languageclick
             languageclick:function (lang_code) {
-                //console.log(lang_code);
                 app.languageclick(lang_code);
             }
         }
@@ -152,11 +146,9 @@ window.onload = function() {
             },
             // the categories first display,when click tag's item ,then hide first div,fetch 8 books items which has the click's item'tag to display
             tagclick:function (tagid) {
-                //console.log("tagid"+tagid)
                 fetch('/book/tagbookscount?tagid='+tagid).then(function(response) {
                     return response.json();
                 }).then(function(json) {
-                    //console.log('parsed json', json);
                     // when result code is 200, then rending div
                     if (json.statusCode ==200){
                         $('#tagpage').pagination({
@@ -173,7 +165,6 @@ window.onload = function() {
                             showGoInput: true,
                             showGoButton: true,
                             callback: function(data, pagination) {
-                                // template method of yourself
                                 fetch('/book/tagbooks?start='+_.min(data)+'&limit='+data.length+'&tagid='+tagid).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
@@ -200,7 +191,6 @@ window.onload = function() {
                 fetch('/book/authorbookscount?authorid='+authorid).then(function(response) {
                     return response.json()
                 }).then(function(json) {
-                    //console.log('parsed json', json);
                     if (json.statusCode ==200){
                         $('#authorspage').pagination({
                             dataSource:function (done) {
@@ -216,7 +206,6 @@ window.onload = function() {
                             showGoInput: true,
                             showGoButton: true,
                             callback: function(data, pagination) {
-                                // template method of yourself
                                 fetch('/book/authorbooks?start='+_.min(data)+'&limit='+data.length+'&authorid='+authorid).then(function(response) {
                                     return response.json()
                                 }).then(function(json) {
@@ -327,9 +316,6 @@ window.onload = function() {
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            // template method of yourself
-                            //console.log(data);
-                            //console.log(pagination);
                             fetch('/book/ratingbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
@@ -371,9 +357,6 @@ window.onload = function() {
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            // template method of yourself
-                            //console.log(data);
-                            //console.log(pagination);
                             fetch('/book/newbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
@@ -415,9 +398,6 @@ window.onload = function() {
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            // template method of yourself
-                            //console.log(data);
-                            //console.log(pagination);
                             fetch('/book/discoverbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
@@ -457,9 +437,6 @@ window.onload = function() {
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            // template method of yourself
-                            //console.log(data);
-                            //console.log(pagination);
                             fetch('/tag/tags?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
@@ -499,9 +476,6 @@ window.onload = function() {
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            // template method of yourself
-                            //console.log(data);
-                            //console.log(pagination);
                             fetch('/author/authors?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {
@@ -541,9 +515,6 @@ window.onload = function() {
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            // template method of yourself
-                            //console.log(data);
-                            //console.log(pagination);
                             fetch('/language/languages?start='+_.min(data)+'&limit='+data.length).then(function(response) {
                                 return response.json()
                             }).then(function(json) {

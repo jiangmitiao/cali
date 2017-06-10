@@ -10,6 +10,7 @@ var (
 	dbok = false
 )
 
+//init db on first view
 func dbInterceptor(c *revel.Controller) revel.Result {
 	if c.Name == "Static" { //不拦截静态地址
 		return nil
@@ -41,6 +42,7 @@ func dbInterceptor(c *revel.Controller) revel.Result {
 	return nil
 }
 
+//init the debug on first view page
 func DebugInterceptor(c *revel.Controller) revel.Result {
 	if rcali.DEBUG == "" {
 		rcali.DEBUG = rcali.Debug(revel.RunMode)

@@ -128,6 +128,7 @@ func (c Book) BookDown(bookid int) revel.Result {
 	return c.RenderText("file is not exit")
 }
 
+//query a book by bookid
 func (c Book) Book(callback string, bookid int) revel.Result {
 	return c.RenderJSONP(
 		callback,
@@ -135,6 +136,7 @@ func (c Book) Book(callback string, bookid int) revel.Result {
 	)
 }
 
+//query a book's info from //https://developers.douban.com/wiki/?title=book_v2#get_isbn_book by bookid by bookname
 func (c Book) DoubanBook(callback string, bookid int) revel.Result {
 	bookVo := services.QueryBook(bookid)
 	rcali.DEBUG.Debug("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
