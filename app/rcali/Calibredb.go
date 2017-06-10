@@ -1,6 +1,9 @@
 package rcali
 
-import "os/exec"
+import (
+	"os/exec"
+	"strconv"
+)
 
 func hasCalibredb() bool {
 	_, err := exec.LookPath("calibredb")
@@ -22,6 +25,19 @@ func calibredbPath() string {
 func AddBook(bookpath string) bool {
 	if hasCalibredb() {
 		cmd := exec.Command(calibredbPath(), "add", bookpath)
+		err := cmd.Run()
+		if err == nil {
+			return cmd.ProcessState.Success()
+		}
+	} else {
+		return false
+	}
+	return false
+}
+
+func DeleteBook(bookid int)bool{
+	if hasCalibredb() {
+		cmd := exec.Command(calibredbPath(), "remove", strconv.Itoa(bookid))
 		err := cmd.Run()
 		if err == nil {
 			return cmd.ProcessState.Success()
