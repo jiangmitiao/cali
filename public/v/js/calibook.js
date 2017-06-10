@@ -55,7 +55,7 @@ window.onload = function() {
         methods:{
             //format the data which from back to 'YYYY-MM-DD'
             formatdate:function (d) {
-                return StringFormatter.format("{Date:{format:'YYYY-MM-DD'}}", new Date(d))
+                return moment(new Date(d)).format("YYYY-MM-DD")
             },
             markdown2html: function (m) {
                 showdown.setOption('simpleLineBreaks', true);
@@ -90,7 +90,7 @@ window.onload = function() {
                 return html;
             },
             formatdate:function (d) {
-                return StringFormatter.format("{Date:{format:'YYYY-MM-DD'}}", new Date(d))
+                return moment(new Date(d)).format("YYYY-MM-DD")
             }
         },
         computed: {
