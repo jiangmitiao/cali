@@ -1,7 +1,8 @@
 # Cali
 
+[![GitHub release](https://img.shields.io/github/release/jiangmitiao/cali.svg)](https://github.com/jiangmitiao/cali/releases)
 [![Build Status](https://www.travis-ci.org/jiangmitiao/cali.svg?branch=master)](https://www.travis-ci.org/jiangmitiao/cali)
-[![License](https://img.shields.io/badge/Apache-License-blue.svg)](LICENSE)
+[![license](https://img.shields.io/github/license/jiangmitiao/cali.svg)](LICENSE)
 
 # Welcome to Cali
 
