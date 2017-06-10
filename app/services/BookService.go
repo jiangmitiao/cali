@@ -112,7 +112,7 @@ func QueryCoverImg(bookid int) []byte {
 			}
 		}
 	}
-	return rcali.JpegImage2Bytes(rcali.EmptyIamge(200,300))
+	return rcali.JpegImage2Bytes(rcali.EmptyIamge(200, 300))
 }
 
 //book's file

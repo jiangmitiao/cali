@@ -16,6 +16,10 @@ func GetSqliteDbPath() (string, bool) {
 	return revel.Config.String("sqlitedb.path")
 }
 
+func GetUploadPath() (string, bool) {
+	return revel.Config.String("books.uploadpath")
+}
+
 func FileExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {

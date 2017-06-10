@@ -7,7 +7,7 @@ import (
 	"github.com/revel/revel"
 	"io/ioutil"
 	"net/http"
-	"fmt"
+	"path"
 )
 
 type Book struct {
@@ -153,13 +153,22 @@ func (c Book) DoubanBook(callback string, bookid int) revel.Result {
 	return c.RenderJSONP(callback, models.NewOKApiWithInfo(string(body)))
 }
 
-func (c Book ) UploadBook()revel.Result  {
-	fmt.Printf("c.Request.Form %+v\n",c.Request.Form)
-	file, header, err := c.Request.FormFile("file1")
+func (c *Book) UploadBook() revel.Result {
+	uploadpath, _ := rcali.GetUploadPath()
+	file, header, err := c.Request.FormFile("book")
 	if err == nil {
 		defer file.Close()
-		b,_ := ioutil.ReadAll(file)
-		ioutil.WriteFile("/home/gavin/"+header.Filename,b,0755)
+		b, _ := ioutil.ReadAll(file)
+		ioutil.WriteFile(path.Join(uploadpath, header.Filename), b, 0755)
+		ok := rcali.AddBook(path.Join(uploadpath, header.Filename))
+		if !ok {
+			return c.RenderJSON(models.NewErrorApiWithInfo("add book error"))
+		} else {
+			return c.RenderJSON(models.NewOKApiWithInfo("add book success"))
+		}
+	} else {
+		rcali.DEBUG.Debug("read file error :", err.Error())
+		return c.RenderJSON(models.NewErrorApiWithInfo(err))
 	}
-	return c.RenderText("ok")
+	return c.RenderJSON(models.NewOKApi())
 }
