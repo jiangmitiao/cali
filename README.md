@@ -10,11 +10,22 @@
 
 A Web Library developed by [Revel](http://revel.github.io/).
 
+You can manage your books by [Cali](https://github.com/jiangmitial/cali).
+
+* Add book
+* List classify books
+* Get book's another infomation by douban.com
+* Download your favorite book
+* Delete books (planned)
+* Change attribute of book (planned)
+* Add user manage (planned)
+* etc...
+
 # Usages
 
 ### Get Calibre
 
-you shoud have [calibre](https://calibre-ebook.com/) to manage your books like *.epub,*.mobi ,.etc
+you shoud have [calibre](https://calibre-ebook.com/) to manage your books which like *.epub,*.mobi ,.etc
 
 then remenber your calibre library's path and the `metadata.db`.
 
@@ -39,6 +50,7 @@ you should open `conf/app.conf`
 then modify there:
 ```ini
 books.path = your library        #/home/gavin/Calibre 书库/
+books.uploadpath = /home/yourname/uploadpath/ #/home/gavin/uploadpath/
 sqlitedb.path = the calibre's db #/home/gavin/Calibre 书库/metadata.db
 ``` 
 
