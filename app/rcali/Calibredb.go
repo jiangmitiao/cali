@@ -5,6 +5,10 @@ import (
 	"strconv"
 )
 
+/**
+It is to operate cmd
+*/
+
 func hasCalibredb() bool {
 	_, err := exec.LookPath("calibredb")
 	if err == nil {
@@ -35,7 +39,7 @@ func AddBook(bookpath string) bool {
 	return false
 }
 
-func DeleteBook(bookid int)bool{
+func DeleteBook(bookid int) bool {
 	if hasCalibredb() {
 		cmd := exec.Command(calibredbPath(), "remove", strconv.Itoa(bookid))
 		err := cmd.Run()

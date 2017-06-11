@@ -8,9 +8,12 @@ import (
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
 	_ "github.com/mattn/go-sqlite3"
+	"path"
 )
 
 var engine *xorm.Engine
+
+var localEngine *xorm.Engine
 
 func checkErr(err error) {
 	if err != nil {
@@ -78,6 +81,33 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	if exist, err := engine.IsTableExist(&models.Tag{}); !exist || err != nil {
 		rcali.DEBUG.Debug("table tags not exit", err)
 		return false, err
+	}
+
+	//localengine
+	userHome, _ := rcali.Home()
+	localEngine, err = xorm.NewEngine("sqlite3", path.Join(userHome, ".calilocaldb.db"))
+	if err != nil {
+		rcali.DEBUG.Debug("open sqlitedb fail on ", path.Join(userHome, ".calilocaldb.db"), err)
+		return false, err
+	}
+	localEngine.ShowSQL(true)
+	localEngine.Logger().SetLevel(core.LOG_DEBUG)
+	err = localEngine.Ping()
+	if err != nil {
+		rcali.DEBUG.Debug("ping sqlitedb fail on ", path.Join(userHome, ".calilocaldb.db"), err)
+		return false, err
+	}
+	//add user table
+	if exist, err := localEngine.IsTableExist(&models.UserInfo{}); !exist || err != nil {
+		//localEngine.CreateTables(new(models.UserInfo))
+		err = localEngine.Sync2(models.UserInfo{})
+		panic(err)
+	}
+	tmpInfo := models.UserInfo{}
+	localEngine.ID("init").Get(&tmpInfo)
+	if tmpInfo.Id != "init" {
+		_, err = localEngine.Insert(models.DefaultUserInfo)
+		panic(err)
 	}
 
 	rcali.DEBUG.Debug("----------DbInitOk----------")

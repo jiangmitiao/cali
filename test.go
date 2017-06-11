@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/Unknwon/GoConfig"
@@ -8,7 +9,10 @@ import (
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	"github.com/jiangmitiao/cali/app/models"
+	"github.com/jiangmitiao/cali/app/rcali"
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/sha3"
+	"io"
 	"path"
 )
 
@@ -82,7 +86,17 @@ func PathTest() {
 	fmt.Println(path.Join("/home", "path1/", "path2", "/path3/", "cover.jpeg"))
 }
 
+func Sha3_256(in string) string {
+	m := sha3.New256()
+	io.WriteString(m, in)
+	return hex.EncodeToString(m.Sum(nil))
+}
+
 func main() {
 	//DbInit()
-	PathTest()
+	//PathTest()
+	fmt.Println(Sha3_256("anyoneinit"))
+
+	userhome, _ := rcali.Home()
+	fmt.Println(userhome)
 }

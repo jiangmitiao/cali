@@ -23,7 +23,9 @@ You can manage your books by [Cali](https://github.com/jiangmitial/cali).
 
 # Usages
 
-### Get Calibre
+### Requirements
+
+####Get Calibre
 
 you shoud have [calibre](https://calibre-ebook.com/) to manage your books which like *.epub,*.mobi ,.etc
 
@@ -73,6 +75,7 @@ sh run.sh
 
 
 
-# Help
+# Development Environment
 
+Gogland 1.0
 
