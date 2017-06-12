@@ -44,8 +44,8 @@ $(document).ready(function(){
         },
         created: function() {
             console.log("created");
-            store.remove('user');
-            store.remove('session')
+            //store.remove('user');
+            //store.remove('session')
         },
         beforeMount: function () {
             console.log("beforeMount");

@@ -50,7 +50,7 @@ $(document).ready(function(){
                                     <li v-if="islogin"><a href="#"><span v-text="$t(\'lang.personcenter\')" target="_blank"></span></a></li>\
                                     <li role="separator" class="divider"></li>\
                                     <li v-if="!islogin"><a href="/public/v/login.html" target="_blank"><span v-text="$t(\'lang.login\')"></span></a></li>\
-                                    <li v-if="islogin"><a href="/public/v/login.html" target="_blank"><span v-text="$t(\'lang.logout\')"></span></a></li>\
+                                    <li v-if="islogin"><a href="#" @click="logout"><span v-text="$t(\'lang.logout\')"></span></a></li>\
                                 </ul>\
                             </li>\
                         </ul>\
@@ -59,6 +59,22 @@ $(document).ready(function(){
             </nav>\
     </div>\
         ',
+        methods:{
+          logout:function () {
+              fetch('/api/user/logout?session='+store.get("session")).then(function(response) {
+                  return response.json()
+              }).then(function(json) {
+                  store.remove('user');
+                  store.remove('session');
+                  window.location.reload(true);
+              }).
+              catch(function(ex) {
+                  console.log('parsing failed', ex);
+                  alert("server error");
+              });
+              return false;
+          }
+        },
         data:function () {
             return {
                 rightdropdownseen: function () {
