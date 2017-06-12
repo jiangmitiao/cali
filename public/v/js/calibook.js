@@ -1,4 +1,4 @@
-window.onload = function() {
+$(document).ready(function(){
     console.log("start");
     function UrlSearch(){
         var name,value;
@@ -41,7 +41,7 @@ window.onload = function() {
                         <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="book.isbn"></span></p>\
                         <p><span v-text="$t(\'lang.bookmodifiedtime\')"></span>: <span v-text="formatdate(book.last_modified)"></span></p>\
                         <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="book.rating"></span></p>\
-                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/book/bookdown?bookid=\'+book.id"><span v-text="$t(\'lang.download\')"></span></a></p>\
+                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/book/bookdown?bookid=\'+book.id+withSession"><span v-text="$t(\'lang.download\')"></span></a></p>\
                         <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(book.comments)"></span></p>\
                     </div>\
                 </div>\
@@ -60,6 +60,18 @@ window.onload = function() {
                 var html      = converter.makeHtml(m);
                 return html;
             }
+        },
+        data:function () {
+            return {
+                withSession: function () {
+                    console.log(store.get("session"));
+                    if (_.isUndefined(store.get("session"))){
+                        return "&session=ok";
+                    }else {
+                        return "&session="+store.get("session");
+                    }
+                }()
+            };
         }
     });
 
@@ -131,4 +143,4 @@ window.onload = function() {
             console.log("mounted");
         }
     });
-};
+});

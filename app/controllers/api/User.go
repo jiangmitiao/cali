@@ -40,6 +40,28 @@ func (c User) Login(callback string) revel.Result {
 	}
 }
 
+//get userinfo
+func (c User) Info(callback, session string) revel.Result {
+	user, has := userService.GetLoginUser(session)
+	user.Salt=""
+	user.LoginPassword=""
+	if has {
+		return c.RenderJSONP(callback, models.NewOKApiWithInfo(user))
+	} else {
+		return c.RenderJSONP(callback, models.NewErrorApi())
+	}
+
+}
+
+func (c User) IsLogin(callback, session string) revel.Result {
+	id, _ := rcali.GetUserIdByLoginSession(session)
+	if id == "" {
+		return c.RenderJSONP(callback, models.NewErrorApi())
+	} else {
+		return c.RenderJSONP(callback, models.NewOKApi())
+	}
+}
+
 func (c User) Logout(callback, session string) revel.Result {
 	rcali.DeleteLoginSession(session)
 	return c.RenderJSONP(callback, models.NewOKApi())

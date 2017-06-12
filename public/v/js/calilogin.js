@@ -1,4 +1,4 @@
-window.onload = function() {
+$(document).ready(function(){
     var app = new Vue({
         i18n,
         el: "#root",
@@ -15,8 +15,21 @@ window.onload = function() {
                 }).then(function(json) {
                     if (json.statusCode ==200){
                         console.log(json.info);
-                        store.set("session", json.info);
-                        //lwindow.location.href = "/public/v/public.html"
+                        fetch('/api/user/info?session='+json.info).then(function(response) {
+                            return response.json()
+                        }).then(function(user) {
+                            if (user.statusCode ==200){
+                                console.log(user.info);
+                                store.set("user", user.info);
+                                store.set("session", json.info);
+                                window.location = "/"
+                            }else {
+                                alert("密码错误:"+user.message);
+                            }
+                        }).
+                        catch(function(ex) {
+                            console.log('parsing failed', ex)
+                        });
                     }else {
                         alert("密码错误:"+json.message);
                     }
@@ -31,6 +44,8 @@ window.onload = function() {
         },
         created: function() {
             console.log("created");
+            store.remove('user');
+            store.remove('session')
         },
         beforeMount: function () {
             console.log("beforeMount");
@@ -40,4 +55,4 @@ window.onload = function() {
             console.log("mounted");
         }
     });
-};
+});

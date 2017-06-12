@@ -89,6 +89,9 @@ var commonUrl = map[string]map[string]bool{
 		"Logout": true, //logout need loged
 		"Regist": false,
 	},
+	"App": map[string]bool{
+		"Index": false,
+	},
 }
 
 func needValidate(controller, method string) bool {
@@ -120,6 +123,9 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 		c.Params.Bind(&session, "session")
 		id, _ := rcali.GetUserIdByLoginSession(session)
 		rcali.DEBUG.Debug("session: " + session + " id: " + id)
+		if id != "" {
+			return nil
+		}
 		return c.Redirect("/public/v/login.html")
 	}
 	return nil

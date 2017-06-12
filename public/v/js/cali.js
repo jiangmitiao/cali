@@ -1,4 +1,4 @@
-window.onload = function() {
+$(document).ready(function(){
     console.log("start");
     // 定义名为 bookdiv 的新组件
     Vue.component('bookdiv', {
@@ -554,4 +554,4 @@ window.onload = function() {
 
         }
     });
-};
+});

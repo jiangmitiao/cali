@@ -47,9 +47,14 @@ const messages = {
             loginName:"login name",
             loginPassword:"login password",
             login:"Login",
+            logout:"Logout",
             signin:"SIGN IN",
             dhaay:"Don't have an account yet?",
-            signup:"Sign Up"
+            signup:"Sign Up",
+            help:"Help",
+            searchholder:"Search...",
+            index:"Index",
+            personcenter:"PersonCenter"
         }
     },
     cn: {
@@ -83,9 +88,14 @@ const messages = {
             loginName:"登录名",
             loginPassword:"登录密码",
             login:"登录",
+            logout:"退出",
             signin:"登录",
             dhaay:"没有帐号?",
-            signup:"注册"
+            signup:"注册",
+            help:"帮助",
+            searchholder:"查找...",
+            index:"首页",
+            personcenter:"个人中心"
         }
     }
 };
