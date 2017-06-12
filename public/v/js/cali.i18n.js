@@ -43,7 +43,13 @@ const messages = {
             booksummary:"Book's Summary",
             bookcatalog:"Book's Catalog",
             bookdownloadlink:"Book's DownloadAddress",
-            download:"download"
+            download:"download",
+            loginName:"login name",
+            loginPassword:"login password",
+            login:"Login",
+            signin:"SIGN IN",
+            dhaay:"Don't have an account yet?",
+            signup:"Sign Up"
         }
     },
     cn: {
@@ -73,7 +79,13 @@ const messages = {
             booksummary:"本书概要",
             bookcatalog:"目录",
             bookdownloadlink:"下载链接",
-            download:"点击下载"
+            download:"点击下载",
+            loginName:"登录名",
+            loginPassword:"登录密码",
+            login:"登录",
+            signin:"登录",
+            dhaay:"没有帐号?",
+            signup:"注册"
         }
     }
 };

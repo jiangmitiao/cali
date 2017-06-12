@@ -92,6 +92,9 @@ var commonUrl = map[string]map[string]bool{
 }
 
 func needValidate(controller, method string) bool {
+	if controller == "Static" { //不拦截静态地址
+		return false
+	}
 	// 在里面
 	if v, ok := commonUrl[controller]; ok {
 		// 在commonUrl里
@@ -117,8 +120,7 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 		c.Params.Bind(&session, "session")
 		id, _ := rcali.GetUserIdByLoginSession(session)
 		rcali.DEBUG.Debug("session: " + session + " id: " + id)
-		//todo
-		return nil
+		return c.Redirect("/public/v/login.html")
 	}
 	return nil
 }
