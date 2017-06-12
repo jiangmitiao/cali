@@ -73,6 +73,13 @@ sh run.sh
  your library 
 ```
 
+# Changelog
+
+* **v0.0.1**
+    * look six'style books
+    * display book's info and download link
+    * display book's another info from [douban](douban.com)
+
 
 
 # Development Environment
