@@ -70,7 +70,7 @@ func (c User) Logout(callback, session string) revel.Result {
 
 func (c User) Regist(callback, loginName, loginPassword string) revel.Result {
 	if loginName == "" || loginPassword == "" {
-		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("not null",nil))
+		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("not null", nil))
 	} else {
 		salt := uuid.New().String()
 		safePassword := rcali.Sha3_256(loginPassword + salt)

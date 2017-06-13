@@ -34,10 +34,11 @@ func dbInterceptor(c *revel.Controller) revel.Result {
 		//加载db
 		if sqlitedbpath, ok := rcali.GetSqliteDbPath(); ok {
 			rcali.DEBUG.Debug("database init " + sqlitedbpath)
-			if ok, _ := services.DbInit(sqlitedbpath); ok {
+			if ok, err := services.DbInit(sqlitedbpath); ok {
 				dbok = true
 				return nil
 			} else {
+				rcali.DEBUG.Debug("database error ",err)
 				return c.Redirect("install/")
 			}
 		} else {
@@ -49,9 +50,6 @@ func dbInterceptor(c *revel.Controller) revel.Result {
 }
 
 func validateOK(controller, method, role string) bool {
-	if controller == "Static" { //不拦截静态地址
-		return true
-	}
 	roleAction := roleActionService.GetRoleActionByControllerMethodRole(controller, method, role)
 	if roleAction.Id == "" {
 		rcali.DEBUG.Debug("this action need to login :", controller, method, role)
@@ -65,6 +63,12 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 	// 全部变成首字大写
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
+	if controller == "Static" { //不拦截静态地址
+		return nil
+	}
+	if controller == "Install" {
+		return nil
+	}
 	var session string
 	rcali.DEBUG.Debug("controller", controller)
 	rcali.DEBUG.Debug("method", method)
@@ -80,7 +84,7 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 
 	if validateOK(controller, method, roleId) {
 		return nil
-	}else {
+	} else {
 		return c.Redirect("/public/v/login.html")
 	}
 }

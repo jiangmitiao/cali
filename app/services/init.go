@@ -124,19 +124,19 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	localEngine.ID("admin").Get(&roleInfo)
 	if roleInfo.Id != "admin" {
 		_, err = localEngine.Insert(models.DefaultAdminRole)
-		panic(err)
+		return false, err
 	}
 	roleInfo = models.Role{}
 	localEngine.ID("user").Get(&roleInfo)
 	if roleInfo.Id != "user" {
 		_, err = localEngine.Insert(models.DefaultUserRole)
-		panic(err)
+		return false, err
 	}
 	roleInfo = models.Role{}
 	localEngine.ID("watcher").Get(&roleInfo)
 	if roleInfo.Id != "watcher" {
 		_, err = localEngine.Insert(models.DefaultWatcherRole)
-		panic(err)
+		return false, err
 	}
 
 	//add default user and role
@@ -148,25 +148,25 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	localEngine.ID("user").Get(&userRoleLinkInfo)
 	if userRoleLinkInfo.Id != "user" {
 		_, err = localEngine.Insert(models.DefaultUserInfoRole)
-		panic(err)
+		return false, err
 	}
 	userRoleLinkInfo = models.UserInfoRoleLink{}
 	localEngine.ID("admin").Get(&userRoleLinkInfo)
 	if userRoleLinkInfo.Id != "admin" {
 		_, err = localEngine.Insert(models.DefaultAdminUserInfoRole)
-		panic(err)
+		return false, err
 	}
 
 	//add role action
 	roleAction := models.RoleAction{}
-	localEngine.DropTables(roleAction)
+	err = localEngine.DropTables(roleAction)
 	err = localEngine.Sync2(models.RoleAction{})
 	if err != nil {
 		return false, err
 	}
-
-	_, err = localEngine.Insert(models.RoleActions)
-	panic(err)
+	if _, err = localEngine.Insert(models.RoleActions);err!=nil{
+		return false, err
+	}
 
 	rcali.DEBUG.Debug("----------DbInitOk----------")
 	return true, nil

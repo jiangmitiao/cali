@@ -11,13 +11,13 @@ type UserService struct {
 //获取user信息
 func (userService UserService) GetUserById(Id string) models.UserInfo {
 	var userInfo = models.UserInfo{}
-	localEngine.ID(Id).Where("valid = ?",0).Get(&userInfo)
+	localEngine.ID(Id).Where("valid = ?", 0).Get(&userInfo)
 	return userInfo
 }
 
 func (userService UserService) GetUserByLoginName(loginName string) (models.UserInfo, bool) {
 	var userInfo = models.UserInfo{}
-	if has, err := localEngine.Where("login_name = ?", loginName).Where("valid = ?",0).Get(&userInfo); has && err == nil {
+	if has, err := localEngine.Where("login_name = ?", loginName).Where("valid = ?", 0).Get(&userInfo); has && err == nil {
 		return userInfo, true
 	} else {
 		return userInfo, false

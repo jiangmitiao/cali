@@ -107,14 +107,17 @@ $(document).ready(function(){
             console.log("created");
             console.log(Request.bookid);
             fetch('/book/book?bookid='+Request.bookid).then(function(response) {
-                return response.json()
+                if (response.redirected){
+                    window.location.href = response.url;
+                }
+                return response.json();
             }).then(function(json) {
                 console.log('parsed json', json);
                 if (json.statusCode ==200){
                     app.book = json.info;
                     app.bookseen = true;
                     fetch('/book/doubanbook?bookid='+json.info.id).then(function(response) {
-                        return response.json()
+                        return response.json();
                     }).then(function(json) {
                         if (json.statusCode ==200){
                             console.log(JSON.parse(json.info));

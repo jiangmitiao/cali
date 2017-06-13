@@ -10,15 +10,14 @@ func (UserInfoRoleLink) TableName() string {
 	return "user_info_role_link"
 }
 
-
 var DefaultUserInfoRole = UserInfoRoleLink{
-	Id:"user",
-	UserInfo:"init",
-	Role:"user",
+	Id:       "user",
+	UserInfo: "init",
+	Role:     "user",
 }
 
 var DefaultAdminUserInfoRole = UserInfoRoleLink{
-	Id:"admin",
-	UserInfo:"admin",
-	Role:"admin",
+	Id:       "admin",
+	UserInfo: "admin",
+	Role:     "admin",
 }
