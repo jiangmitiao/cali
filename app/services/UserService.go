@@ -38,11 +38,10 @@ func (userService UserService) GetLoginUser(loginSession string) (models.UserInf
 	}
 }
 
-func (userService UserService) Regist(loginName, loginPassword string) bool {
-	_, has := userService.GetUserByLoginName(loginName)
+func (userService UserService) Regist(user models.UserInfo) bool {
+	_, has := userService.GetUserByLoginName(user.UserName)
 	if !has {
-		var userInfo = models.UserInfo{LoginName: loginName, LoginPassword: loginPassword}
-		if _, err := engine.Insert(userInfo); err == nil {
+		if _, err := localEngine.Insert(user); err == nil {
 			return true
 		}
 	}

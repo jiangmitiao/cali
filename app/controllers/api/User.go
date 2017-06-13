@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/google/uuid"
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
 	"github.com/revel/revel"
@@ -43,8 +44,8 @@ func (c User) Login(callback string) revel.Result {
 //get userinfo
 func (c User) Info(callback, session string) revel.Result {
 	user, has := userService.GetLoginUser(session)
-	user.Salt=""
-	user.LoginPassword=""
+	user.Salt = ""
+	user.LoginPassword = ""
 	if has {
 		return c.RenderJSONP(callback, models.NewOKApiWithInfo(user))
 	} else {
@@ -68,5 +69,23 @@ func (c User) Logout(callback, session string) revel.Result {
 }
 
 func (c User) Regist(callback, loginName, loginPassword string) revel.Result {
-	return c.RenderJSONP(callback, models.NewOKApi())
+	if loginName == "" || loginPassword == "" {
+		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("not null",nil))
+	} else {
+		salt := uuid.New().String()
+		safePassword := rcali.Sha3_256(loginPassword + salt)
+		newUser := models.UserInfo{
+			Id:            uuid.New().String(),
+			LoginName:     loginName,
+			LoginPassword: safePassword,
+			Salt:          salt,
+			UserName:      loginName,
+			Email:         "",
+		}
+		if userService.Regist(newUser) {
+			return c.RenderJSONP(callback, models.NewOKApi())
+		} else {
+			return c.RenderJSONP(callback, models.NewErrorApi())
+		}
+	}
 }

@@ -50,11 +50,19 @@ const messages = {
             logout:"Logout",
             signin:"SIGN IN",
             dhaay:"Don't have an account yet?",
+            haaa:"Have an account already?",
             signup:"Sign Up",
             help:"Help",
             searchholder:"Search...",
             index:"Index",
-            personcenter:"PersonCenter"
+            personcenter:"PersonCenter",
+            confirmloginPassword:"confirm password",
+            peln:"please enter login name",
+            pelp:"please enter login password",
+            pcp:"please confirm password",
+            calisignup:"Cali SignUp",
+            submit:"submit",
+            upload:"Upload"
         }
     },
     cn: {
@@ -91,11 +99,19 @@ const messages = {
             logout:"退出",
             signin:"登录",
             dhaay:"没有帐号?",
+            haaa:"已经拥有帐号?",
             signup:"注册",
             help:"帮助",
             searchholder:"查找...",
             index:"首页",
-            personcenter:"个人中心"
+            personcenter:"个人中心",
+            confirmloginPassword:"再次确认登录密码",
+            peln:"请输入登录名",
+            pelp:"请输入密码",
+            pcp:"两次密码输入不一致",
+            calisignup:"Cali 注册",
+            submit:"提交",
+            upload:"上传"
         }
     }
 };

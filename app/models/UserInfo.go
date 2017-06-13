@@ -8,7 +8,7 @@ type UserInfo struct {
 	Id            string `json:"id" xorm:"pk 'id'"`
 	LoginName     string `json:"loginName" xorm:"varchar(64) notnull 'login_name'"`
 	LoginPassword string `json:"loginPassword" xorm:"varchar(128) notnull 'login_password'"`
-	Salt          string `json:"salt" xorm:"varchar(123) notnull 'salt'"`
+	Salt          string `json:"salt" xorm:"varchar(128) notnull 'salt'"`
 
 	UserName string `json:"userName" xorm:"varchar(64) notnull 'user_name'"`
 
