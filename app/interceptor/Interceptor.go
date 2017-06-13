@@ -9,6 +9,10 @@ import (
 
 var (
 	dbok = false
+
+	userService       = services.DefaultUserService
+	userRoleService   = services.DefaultUserRoleService
+	roleActionService = services.DefaultRoleActionService
 )
 
 //init db on first view
@@ -44,69 +48,15 @@ func dbInterceptor(c *revel.Controller) revel.Result {
 	return nil
 }
 
-// 拦截器
-// true is need login
-// false is not need login
-var commonUrl = map[string]map[string]bool{
-	"Book": map[string]bool{
-		"Index":              false,
-		"BooksCount":         false,
-		"Books":              false,
-		"RatingBooks":        false,
-		"NewBooks":           false,
-		"DiscoverBooks":      false,
-		"TagBooksCount":      false,
-		"TagBooks":           false,
-		"AuthorBooksCount":   false,
-		"AuthorBooks":        false,
-		"LanguageBooksCount": false,
-		"LanguageBooks":      false,
-		"BookRating":         false,
-		"BookImage":          false,
-		"BookDown":           true, // download need login
-		"Book":               false,
-		"DoubanBook":         false,
-		"UploadBook":         true, // upload need login
-	},
-	"Author": map[string]bool{
-		"Index":        false,
-		"AuthorsCount": false,
-		"Authors":      false,
-	},
-	"Language": map[string]bool{
-		"Index":          false,
-		"LanguagesCount": false,
-		"Languages":      false,
-	},
-	"Tag": map[string]bool{
-		"Index":     false,
-		"TagsCount": false,
-		"Tags":      false,
-	},
-	"User": map[string]bool{
-		"Index":  false,
-		"Login":  false,
-		"Logout": true, //logout need loged
-		"Regist": false,
-	},
-	"App": map[string]bool{
-		"Index": false,
-	},
-}
-
-func needValidate(controller, method string) bool {
+func validateOK(controller, method, role string) bool {
 	if controller == "Static" { //不拦截静态地址
-		return false
-	}
-	// 在里面
-	if v, ok := commonUrl[controller]; ok {
-		// 在commonUrl里
-		if need, ok2 := v[method]; ok2 {
-			return need
-		}
 		return true
+	}
+	roleAction := roleActionService.GetRoleActionByControllerMethodRole(controller, method, role)
+	if roleAction.Id == "" {
+		rcali.DEBUG.Debug("this action need to login :", controller, method, role)
+		return false
 	} else {
-		// controller不在这里的, 肯定要验证
 		return true
 	}
 }
@@ -115,20 +65,24 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 	// 全部变成首字大写
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
+	var session string
 	rcali.DEBUG.Debug("controller", controller)
 	rcali.DEBUG.Debug("method", method)
 
-	if needValidate(controller, method) {
-		var session string
-		c.Params.Bind(&session, "session")
-		id, _ := rcali.GetUserIdByLoginSession(session)
-		rcali.DEBUG.Debug("session: " + session + " id: " + id)
-		if id != "" {
-			return nil
-		}
+	c.Params.Bind(&session, "session")
+	id, _ := rcali.GetUserIdByLoginSession(session)
+	role := userRoleService.GetRoleByUser(id)
+	roleId := role.Id
+	if roleId == "" {
+		roleId = "watcher"
+	}
+	rcali.DEBUG.Debug("watcher", roleId)
+
+	if validateOK(controller, method, roleId) {
+		return nil
+	}else {
 		return c.Redirect("/public/v/login.html")
 	}
-	return nil
 }
 
 //init the debug on first view page

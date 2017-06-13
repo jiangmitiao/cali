@@ -11,15 +11,14 @@ import (
 	"path"
 )
 
-var engine *xorm.Engine
+var (
+	engine      *xorm.Engine
+	localEngine *xorm.Engine
 
-var localEngine *xorm.Engine
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	DefaultUserService       = UserService{}
+	DefaultUserRoleService   = UserRoleService{}
+	DefaultRoleActionService = RoleActionService{}
+)
 
 //init the db,should take a db filepath
 func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, database string
@@ -157,6 +156,17 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 		_, err = localEngine.Insert(models.DefaultAdminUserInfoRole)
 		panic(err)
 	}
+
+	//add role action
+	roleAction := models.RoleAction{}
+	localEngine.DropTables(roleAction)
+	err = localEngine.Sync2(models.RoleAction{})
+	if err != nil {
+		return false, err
+	}
+
+	_, err = localEngine.Insert(models.RoleActions)
+	panic(err)
 
 	rcali.DEBUG.Debug("----------DbInitOk----------")
 	return true, nil
