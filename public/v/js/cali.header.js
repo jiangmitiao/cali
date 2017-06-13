@@ -60,20 +60,23 @@ $(document).ready(function(){
     </div>\
         ',
         methods:{
-          logout:function () {
-              fetch('/api/user/logout?session='+store.get("session")).then(function(response) {
-                  return response.json()
-              }).then(function(json) {
-                  store.remove('user');
-                  store.remove('session');
-                  window.location.reload(true);
-              }).
-              catch(function(ex) {
-                  console.log('parsing failed', ex);
-                  alert("server error");
-              });
-              return false;
-          }
+            logout:function () {
+                fetch('/api/user/logout?session='+store.get("session")).then(function(response) {
+                    if (response.redirected){
+                        window.location.href = response.url;
+                    }
+                    return response.json()
+                }).then(function(json) {
+                    store.remove('user');
+                    store.remove('session');
+                    window.location.reload(true);
+                }).
+                catch(function(ex) {
+                    console.log('parsing failed', ex);
+                    alert("server error");
+                });
+                return false;
+            }
         },
         data:function () {
             return {
@@ -84,11 +87,11 @@ $(document).ready(function(){
                     return false
                 }(),
                 isindex:function () {
-                   if (window.location.pathname.indexOf("public.html") >=0){
-                       return true;
-                   } else {
-                       return false;
-                   }
+                    if (window.location.pathname.indexOf("public.html") >=0){
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }(),
                 islogin:function () {
                     if (_.isUndefined(store.get("session")) || _.isUndefined(store.get("user"))){
@@ -98,11 +101,11 @@ $(document).ready(function(){
                     }
                 }(),
                 user:function () {
-                   if (_.isUndefined(store.get("user"))){
-                       return {};
-                   }else {
-                       return store.get("user");
-                   }
+                    if (_.isUndefined(store.get("user"))){
+                        return {};
+                    }else {
+                        return store.get("user");
+                    }
                 }()
 
             };

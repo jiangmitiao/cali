@@ -117,6 +117,9 @@ $(document).ready(function(){
                     app.book = json.info;
                     app.bookseen = true;
                     fetch('/book/doubanbook?bookid='+json.info.id).then(function(response) {
+                        if (response.redirected){
+                            window.location.href = response.url;
+                        }
                         return response.json();
                     }).then(function(json) {
                         if (json.statusCode ==200){

@@ -147,6 +147,9 @@ $(document).ready(function(){
             // the categories first display,when click tag's item ,then hide first div,fetch 8 books items which has the click's item'tag to display
             tagclick:function (tagid) {
                 fetch('/book/tagbookscount?tagid='+tagid).then(function(response) {
+                    if (response.redirected){
+                        window.location.href = response.url;
+                    }
                     return response.json();
                 }).then(function(json) {
                     // when result code is 200, then rending div

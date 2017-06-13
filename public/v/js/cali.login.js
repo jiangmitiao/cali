@@ -11,7 +11,10 @@ $(document).ready(function(){
                 console.log(this.loginName);
                 console.log(this.loginPassword);
                 fetch('/api/user/login?loginName='+this.loginName+'&loginPassword='+this.loginPassword).then(function(response) {
-                    return response.json()
+                    if (response.redirected){
+                        window.location.href = response.url;
+                    }
+                    return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
                         console.log(json.info);

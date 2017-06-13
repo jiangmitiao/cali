@@ -16,7 +16,10 @@ $(document).ready(function(){
                     return;
                 }
                 fetch('/api/user/regist?loginName='+this.loginName+'&loginPassword='+this.loginPassword).then(function(response) {
-                    return response.json()
+                    if (response.redirected){
+                        window.location.href = response.url;
+                    }
+                    return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
                         console.log(json.info);

@@ -8,6 +8,8 @@
 
 # Welcome to Cali
 
+[中文](https://github.com/jiangmitiao/cali/blob/master/README_CN.md)
+
 A Web Library based on [Revel](http://revel.github.io/).
 
 You can manage your books by [Cali](https://github.com/jiangmitial/cali).
