@@ -11,8 +11,10 @@ type UserInfo struct {
 	Salt          string `json:"salt" xorm:"varchar(128) notnull 'salt'"`
 
 	UserName string `json:"userName" xorm:"varchar(64) notnull 'user_name'"`
+	Email    string `json:"email" xorm:"varchar(128) 'email'"`
+	Img      string `json:"img" xorm:"varchar(256) 'img'"`
+	Valid    int    `json:"valid" xorm:"int default 0 'valid'"` //0 有效 1 无效
 
-	Email string `json:"email" xorm:"varchar(128) 'email'"`
 }
 
 func (UserInfo) TableName() string {
@@ -26,4 +28,13 @@ var DefaultUserInfo = UserInfo{
 	Salt:          "init",
 	UserName:      "anyone",
 	Email:         "anyone@cali.io",
+}
+
+var DefaultAdminUserInfo = UserInfo{
+	Id:            "admin",
+	LoginName:     "admin",
+	LoginPassword: "3ef7b7e37a0fe84e4c5cdcd1934db0852f608c5c925751b9ef6cf872eb6eeaca",
+	Salt:          "init",
+	UserName:      "admin",
+	Email:         "admin@cali.io",
 }

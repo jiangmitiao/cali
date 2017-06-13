@@ -95,7 +95,7 @@ func Sha3_256(in string) string {
 func main() {
 	//DbInit()
 	//PathTest()
-	fmt.Println(Sha3_256("anyoneinit"))
+	fmt.Println(Sha3_256("admininit"))
 
 	userhome, _ := rcali.Home()
 	fmt.Println(userhome)
