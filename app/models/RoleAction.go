@@ -50,6 +50,8 @@ func init() {
 
 		RoleAction{Id: "adminUserIndex", Role: "admin", Controller: "User", Method: "Index"},
 		RoleAction{Id: "adminUserLogin", Role: "admin", Controller: "User", Method: "Login"},
+		RoleAction{Id: "adminUserInfo", Role: "admin", Controller: "User", Method: "Info"},
+		RoleAction{Id: "adminUserIsLogin", Role: "admin", Controller: "User", Method: "IsLogin"},
 		RoleAction{Id: "adminUserLogout", Role: "admin", Controller: "User", Method: "Logout"},
 		RoleAction{Id: "adminUserRegist", Role: "admin", Controller: "User", Method: "Regist"},
 
@@ -91,6 +93,8 @@ func init() {
 
 		RoleAction{Id: "userUserIndex", Role: "user", Controller: "User", Method: "Index"},
 		RoleAction{Id: "userUserLogin", Role: "user", Controller: "User", Method: "Login"},
+		RoleAction{Id: "userUserInfo", Role: "user", Controller: "User", Method: "Info"},
+		RoleAction{Id: "userUserIsLogin", Role: "user", Controller: "User", Method: "IsLogin"},
 		RoleAction{Id: "userUserLogout", Role: "user", Controller: "User", Method: "Logout"},
 		RoleAction{Id: "userUserRegist", Role: "user", Controller: "User", Method: "Regist"},
 
@@ -132,6 +136,8 @@ func init() {
 
 		RoleAction{Id: "watcherUserIndex", Role: "watcher", Controller: "User", Method: "Index"},
 		RoleAction{Id: "watcherUserLogin", Role: "watcher", Controller: "User", Method: "Login"},
+		RoleAction{Id: "watcherUserInfo", Role: "watcher", Controller: "User", Method: "Info"},
+		RoleAction{Id: "watcherUserIsLogin", Role: "watcher", Controller: "User", Method: "IsLogin"},
 		RoleAction{Id: "watcherUserLogout", Role: "watcher", Controller: "User", Method: "Logout"},
 		RoleAction{Id: "watcherUserRegist", Role: "watcher", Controller: "User", Method: "Regist"},
 

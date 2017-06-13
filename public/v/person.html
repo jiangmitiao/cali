@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:v-show="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Cali Upload</title>
+    <title>Cali Person</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -29,12 +29,10 @@
                                 <i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.personcenter')"></span>
                                 <span class="caret pull-right"></span>
                                 <ul>
-                                    <li ><a href="#hotbooks"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></a></li>
-                                    <li ><a href="#newbooks"><i class="glyphicon glyphicon-open"></i> <span v-text="$t('lang.newbooks')"></span></a></li>
-                                    <li ><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> <span v-text="$t('lang.discover')"></span></a></li>
-                                    <li ><a href="#categories"><i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.categories')"></span></a></li>
-                                    <li ><a href="#authors"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.authors')"></span></a></li>
-                                    <li ><a href="#language"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.language')"></span></a></li>
+                                    <li @click="changeseen('discover')" :class="listseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> <span v-text="$t('lang.discover')"></span></a></li>
+                                    <li @click="changeseen('upload')" :class="listseen.upload?'current':''"><a href="#upload"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></a></li>
+                                    <li @click="changeseen('changeuserinfo')" :class="listseen.changeuserinfo?'current':''"><a href="#changeuserinfo"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></a></li>
+                                    <li @click="changeseen('changepassword')" :class="listseen.changepassword?'current':''"><a style="color: red;" href="#changepassword"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.changepassword')"></span></a></li>
                                 </ul>
                             </a>
                         </li>
@@ -42,13 +40,20 @@
                 </div>
             </div>
             <div class="col-md-9">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Upload</div>
+                <div v-if="listseen.discover" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.discover')"></span></div>
+                    <div class="panel-body">
+                        <div v-html="computed_discover"></div>
+                    </div>
+                </div>
+
+                <div v-if="listseen.upload" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.upload')"></span></div>
                     <div class="panel-body">
                         <form method="post" action="/api/book/uploadbook" enctype="multipart/form-data" class="form-horizontal">
                             <input type="hidden" name="session" :value="session">
                             <div class="form-group">
-                                <label for="book" class="col-sm-2 control-label">File:</label>
+                                <label for="book" class="col-sm-2 control-label"><span v-text="$t('lang.file')"></span>:</label>
                                 <div class="col-sm-10">
                                     <input type="file" class="form-control" id="book" name="book">
                                 </div>
@@ -63,8 +68,69 @@
                     </div>
                 </div>
 
+                <div v-if="listseen.changeuserinfo" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.changeuserinfo')"></span></div>
+                    <div class="panel-body">
+                        <form method="post" action="#" class="form-horizontal">
+                            <input type="hidden" name="session" :value="session">
+                            <div class="form-group">
+                                <label for="userName" class="col-sm-2 control-label"><span v-text="$t('lang.userName')"></span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="userName" name="userName" v-model="user.userName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="col-sm-2 control-label"><span v-text="$t('lang.email')"></span></label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="email" name="email" v-model="user.email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <input type="button" :value="$t('lang.submit')" class="btn btn-default">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div v-if="listseen.changepassword" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.changepassword')"></span></div>
+                    <div class="panel-body">
+                        <form method="post" action="#" class="form-horizontal">
+                            <input type="hidden" name="session" :value="session">
+                            <div class="form-group">
+                                <label for="oldPassword" class="col-sm-2 control-label"><span v-text="$t('lang.oldLoginPassword')"></span></label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="oldPassword" name="userName" :placeholder="$t('lang.oldLoginPassword')">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword" class="col-sm-2 control-label"><span v-text="$t('lang.loginPassword')"></span></label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="loginPassword" name="loginPassword" :placeholder="$t('lang.loginPassword')">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="repeateLoginPassword" class="col-sm-2 control-label"><span v-text="$t('lang.loginPassword')"></span></label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="repeateLoginPassword" name="repeateLoginPassword" :placeholder="$t('lang.confirmloginPassword')">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <input type="submit" :value="$t('lang.submit')" class="btn btn-default">
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
+        <div class="row footer-up"></div>
     </div>
 
     <footerdiv></footerdiv>

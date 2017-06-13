@@ -169,7 +169,10 @@ $(document).ready(function(){
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 fetch('/book/tagbooks?start='+_.min(data)+'&limit='+data.length+'&tagid='+tagid).then(function(response) {
-                                    return response.json()
+                                    if (response.redirected){
+                                        window.location.href = response.url;
+                                    }
+                                    return response.json();
                                 }).then(function(json) {
                                     //console.log('parsed json', json);
                                     if (json.statusCode ==200){
@@ -192,7 +195,10 @@ $(document).ready(function(){
             authorclick:function (authorid) {
                 //console.log("authorid"+authorid);
                 fetch('/book/authorbookscount?authorid='+authorid).then(function(response) {
-                    return response.json()
+                    if (response.redirected){
+                        window.location.href = response.url;
+                    }
+                    return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
                         $('#authorspage').pagination({
@@ -210,7 +216,10 @@ $(document).ready(function(){
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 fetch('/book/authorbooks?start='+_.min(data)+'&limit='+data.length+'&authorid='+authorid).then(function(response) {
-                                    return response.json()
+                                    if (response.redirected){
+                                        window.location.href = response.url;
+                                    }
+                                    return response.json();
                                 }).then(function(json) {
                                     //console.log('parsed json', json);
                                     if (json.statusCode ==200){
@@ -233,7 +242,10 @@ $(document).ready(function(){
             languageclick:function (lang_code) {
                 //console.log("lang_code"+lang_code);
                 fetch('/book/languagebookscount?lang_code='+lang_code).then(function(response) {
-                    return response.json()
+                    if (response.redirected){
+                        window.location.href = response.url;
+                    }
+                    return response.json();
                 }).then(function(json) {
                     //console.log('parsed json', json);
                     if (json.statusCode ==200){
@@ -253,7 +265,10 @@ $(document).ready(function(){
                             callback: function(data, pagination) {
                                 // template method of yourself
                                 fetch('/book/languagebooks?start='+_.min(data)+'&limit='+data.length+'&lang_code='+lang_code).then(function(response) {
-                                    return response.json()
+                                    if (response.redirected){
+                                        window.location.href = response.url;
+                                    }
+                                    return response.json();
                                 }).then(function(json) {
                                     //console.log('parsed json', json);
                                     if (json.statusCode ==200){
@@ -299,7 +314,10 @@ $(document).ready(function(){
             console.log("created");
             //hotbooks展示分页
             fetch('/book/bookscount').then(function(response) {
-                return response.json()
+                if (response.redirected){
+                    window.location.href = response.url;
+                }
+                return response.json();
             }).then(function(json) {
                 //console.log('parsed json', json);
                 if (json.statusCode ==200){
@@ -320,7 +338,10 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             fetch('/book/ratingbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
-                                return response.json()
+                                if (response.redirected){
+                                    window.location.href = response.url;
+                                }
+                                return response.json();
                             }).then(function(json) {
                                 //console.log('parsed json', json);
                                 if (json.statusCode ==200){
@@ -340,7 +361,10 @@ $(document).ready(function(){
 
             //newbooks展示分页
             fetch('/book/bookscount').then(function(response) {
-                return response.json()
+                if (response.redirected){
+                    window.location.href = response.url;
+                }
+                return response.json();
             }).then(function(json) {
                 //console.log('parsed json', json);
                 if (json.statusCode ==200){
@@ -361,7 +385,10 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             fetch('/book/newbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
-                                return response.json()
+                                if (response.redirected){
+                                    window.location.href = response.url;
+                                }
+                                return response.json();
                             }).then(function(json) {
                                 //console.log('parsed json', json);
                                 if (json.statusCode ==200){
@@ -381,7 +408,10 @@ $(document).ready(function(){
 
             //discover展示分页
             fetch('/book/bookscount').then(function(response) {
-                return response.json()
+                if (response.redirected){
+                    window.location.href = response.url;
+                }
+                return response.json();
             }).then(function(json) {
                 //console.log('parsed json', json);
                 if (json.statusCode ==200){
@@ -402,7 +432,10 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             fetch('/book/discoverbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
-                                return response.json()
+                                if (response.redirected){
+                                    window.location.href = response.url;
+                                }
+                                return response.json();
                             }).then(function(json) {
                                 //console.log('parsed json', json);
                                 if (json.statusCode ==200){
@@ -422,7 +455,10 @@ $(document).ready(function(){
 
             //tags展示分页
             fetch('/tag/tagscount').then(function(response) {
-                return response.json()
+                if (response.redirected){
+                    window.location.href = response.url;
+                }
+                return response.json();
             }).then(function(json) {
                 //console.log('parsed json', json);
                 if (json.statusCode ==200){
@@ -441,7 +477,10 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             fetch('/tag/tags?start='+_.min(data)+'&limit='+data.length).then(function(response) {
-                                return response.json()
+                                if (response.redirected){
+                                    window.location.href = response.url;
+                                }
+                                return response.json();
                             }).then(function(json) {
                                 //console.log('parsed json', json);
                                 if (json.statusCode ==200){
@@ -461,7 +500,10 @@ $(document).ready(function(){
 
             //authornames展示分页
             fetch('/author/authorscount').then(function(response) {
-                return response.json()
+                if (response.redirected){
+                    window.location.href = response.url;
+                }
+                return response.json();
             }).then(function(json) {
                 //console.log('parsed json', json);
                 if (json.statusCode ==200){
@@ -480,7 +522,10 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             fetch('/author/authors?start='+_.min(data)+'&limit='+data.length).then(function(response) {
-                                return response.json()
+                                if (response.redirected){
+                                    window.location.href = response.url;
+                                }
+                                return response.json();
                             }).then(function(json) {
                                 //console.log('parsed json', json);
                                 if (json.statusCode ==200){
@@ -500,7 +545,10 @@ $(document).ready(function(){
 
             //languagenames展示分页
             fetch('/language/languagescount').then(function(response) {
-                return response.json()
+                if (response.redirected){
+                    window.location.href = response.url;
+                }
+                return response.json();
             }).then(function(json) {
                 //console.log('parsed json', json);
                 if (json.statusCode ==200){
@@ -519,7 +567,10 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             fetch('/language/languages?start='+_.min(data)+'&limit='+data.length).then(function(response) {
-                                return response.json()
+                                if (response.redirected){
+                                    window.location.href = response.url;
+                                }
+                                return response.json();
                             }).then(function(json) {
                                 //console.log('parsed json', json);
                                 if (json.statusCode ==200){

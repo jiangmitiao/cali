@@ -45,7 +45,7 @@ go get -u -v github.com/revel/revel
 go get -u -v github.com/revel/cmd/revel
 go get -u -v github.com/jiangmitiao/cali
 ```
-#### 构建完成版（linux X64）
+#### 发行版（linux X64）
 
 [Releases](https://github.com/jiangmitiao/cali/releases)
 
@@ -66,7 +66,7 @@ sqlitedb.path = metadata.db的全路径 #/home/gavin/Calibre 书库/metadata.db
 ```
 revel run github.com/jiangmitiao/cali
 ```
-or 构建完成版（linux X64）:
+or 发行版（linux X64）:
 ```
 sh run.sh
 ```

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/google/uuid"
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
 )
@@ -41,9 +42,38 @@ func (userService UserService) GetLoginUser(loginSession string) (models.UserInf
 func (userService UserService) Regist(user models.UserInfo) bool {
 	_, has := userService.GetUserByLoginName(user.UserName)
 	if !has {
-		if _, err := localEngine.Insert(user); err == nil {
-			return true
+		session := localEngine.NewSession()
+		defer session.Close()
+		// add Begin() before any action
+		err := session.Begin()
+
+		user.Id = uuid.New().String()
+		if _, err := session.Insert(user); err == nil {
+
+		} else {
+			session.Rollback()
+			return false
 		}
+
+		userRole := models.UserInfoRoleLink{
+			Id:       uuid.New().String(),
+			UserInfo: user.Id,
+			Role:     "user",
+		}
+
+		if _, err := session.Insert(userRole); err == nil {
+
+		} else {
+			session.Rollback()
+			return false
+		}
+
+		// add Commit() after all actions
+		err = session.Commit()
+		if err != nil {
+			panic(err)
+		}
+		return true
 	}
 	return false
 }

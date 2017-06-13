@@ -44,8 +44,11 @@ const messages = {
             bookcatalog:"Book's Catalog",
             bookdownloadlink:"Book's DownloadAddress",
             download:"download",
+            userName:"nick name",
+            email:"email",
             loginName:"login name",
             loginPassword:"login password",
+            oldLoginPassword:"old password",
             login:"Login",
             logout:"Logout",
             signin:"SIGN IN",
@@ -62,7 +65,10 @@ const messages = {
             pcp:"please confirm password",
             calisignup:"Cali SignUp",
             submit:"submit",
-            upload:"Upload"
+            upload:"Upload",
+            changepassword:"Change Password",
+            changeuserinfo:"Change UserInfo",
+            file:"file"
         }
     },
     cn: {
@@ -93,8 +99,11 @@ const messages = {
             bookcatalog:"目录",
             bookdownloadlink:"下载链接",
             download:"点击下载",
+            userName:"昵称",
             loginName:"登录名",
+            email:"email",
             loginPassword:"登录密码",
+            oldLoginPassword:"旧密码",
             login:"登录",
             logout:"退出",
             signin:"登录",
@@ -111,7 +120,10 @@ const messages = {
             pcp:"两次密码输入不一致",
             calisignup:"Cali 注册",
             submit:"提交",
-            upload:"上传"
+            upload:"上传",
+            changepassword:"修改密码",
+            changeuserinfo:"修改个人信息",
+            file:"文件"
         }
     }
 };
