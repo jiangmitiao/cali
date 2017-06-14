@@ -1,38 +1,4 @@
 $(document).ready(function(){
-    /**
-     <table class="table">
-     <thead>
-     <tr>
-     <th>#</th>
-     <th>First Name</th>
-     <th>Last Name</th>
-     <th>Username</th>
-     </tr>
-     </thead>
-     <tbody>
-     <tr>
-     <td>1</td>
-     <td>Mark</td>
-     <td>Otto</td>
-     <td>@mdo</td>
-     </tr>
-     <tr>
-     <td>2</td>
-     <td>Jacob</td>
-     <td>Thornton</td>
-     <td>@fat</td>
-     </tr>
-     <tr>
-     <td>3</td>
-     <td>Larry</td>
-     <td>the Bird</td>
-     <td>@twitter</td>
-     </tr>
-     </tbody>
-     </table>
-     * @type {Vue}
-     */
-
     // 定义名为 userdiv 的新组件
     Vue.component('usersdiv', {
         // bookinfodiv 组件现在接受一个
@@ -80,18 +46,6 @@ $(document).ready(function(){
                     console.log('parsing failed', ex)
                 });
             }
-        },
-        data:function () {
-            return {
-                withSession: function () {
-                    //console.log(store.get("session"));
-                    if (_.isUndefined(store.get("session"))){
-                        return "&session=ok";
-                    }else {
-                        return "&session="+store.get("session");
-                    }
-                }()
-            };
         }
     });
 
@@ -323,8 +277,6 @@ $(document).ready(function(){
             catch(function(ex) {
                 console.log('parsing failed', ex)
             });
-
-
         },
         beforeMount: function () {
             console.log("beforeMount");
