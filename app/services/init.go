@@ -106,37 +106,49 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	localEngine.ID("init").Get(&tmpInfo)
 	if tmpInfo.Id != "init" {
 		_, err = localEngine.Insert(models.DefaultUserInfo)
-		panic(err)
+		if err != nil {
+			return false, err
+		}
 	}
 	tmpInfo = models.UserInfo{}
 	localEngine.ID("admin").Get(&tmpInfo)
 	if tmpInfo.Id != "admin" {
 		_, err = localEngine.Insert(models.DefaultAdminUserInfo)
-		panic(err)
+		if err != nil {
+			return false, err
+		}
 	}
 
 	//add role table
 	err = localEngine.Sync2(models.Role{})
 	if err != nil {
-		return false, err
+		if err != nil {
+			return false, err
+		}
 	}
 	roleInfo := models.Role{}
 	localEngine.ID("admin").Get(&roleInfo)
 	if roleInfo.Id != "admin" {
 		_, err = localEngine.Insert(models.DefaultAdminRole)
-		return false, err
+		if err != nil {
+			return false, err
+		}
 	}
 	roleInfo = models.Role{}
 	localEngine.ID("user").Get(&roleInfo)
 	if roleInfo.Id != "user" {
 		_, err = localEngine.Insert(models.DefaultUserRole)
-		return false, err
+		if err != nil {
+			return false, err
+		}
 	}
 	roleInfo = models.Role{}
 	localEngine.ID("watcher").Get(&roleInfo)
 	if roleInfo.Id != "watcher" {
 		_, err = localEngine.Insert(models.DefaultWatcherRole)
-		return false, err
+		if err != nil {
+			return false, err
+		}
 	}
 
 	//add default user and role
@@ -148,13 +160,17 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	localEngine.ID("user").Get(&userRoleLinkInfo)
 	if userRoleLinkInfo.Id != "user" {
 		_, err = localEngine.Insert(models.DefaultUserInfoRole)
-		return false, err
+		if err != nil {
+			return false, err
+		}
 	}
 	userRoleLinkInfo = models.UserInfoRoleLink{}
 	localEngine.ID("admin").Get(&userRoleLinkInfo)
 	if userRoleLinkInfo.Id != "admin" {
 		_, err = localEngine.Insert(models.DefaultAdminUserInfoRole)
-		return false, err
+		if err != nil {
+			return false, err
+		}
 	}
 
 	//add role action

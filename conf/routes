@@ -14,8 +14,11 @@ GET     /                                       App.Index
 GET       /install                          Install.Index
 GET       /install/*                          Install.Index
 
+*       /book/bookdown.epub                    Book.BookDown
+
 *       /api/:controller/:action                :controller.:action
 GET     /:controller                            :controller.Index
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

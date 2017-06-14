@@ -153,7 +153,7 @@ func (c User) QueryUser(callback, session string, limit, start int) revel.Result
 func (c User) Delete(callback, session, userId string) revel.Result {
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		role := userRoleService.GetRoleByUser(user.Id)
-		if role.Name == "admin" {
+		if role.Name != "admin" {
 			//delete login user
 			go rcali.DeleteLoginUserId(userId)
 			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.DeleteUser(userId)))

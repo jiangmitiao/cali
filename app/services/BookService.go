@@ -154,5 +154,8 @@ func QueryBookFile(bookid int) (*os.File, error) {
 func QueryBook(bookid int) models.BookVo {
 	book := models.BookVo{}
 	engine.SQL("select books.* ,ratings.rating,authors.name,comments.comments from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book left join (select book,text as comments from comments) as comments on comments.book=books.id where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id=" + strconv.Itoa(bookid)).Get(&book)
+	data := models.Data{}
+	engine.Where("book=?", bookid).Get(&data)
+	book.Format = data.Format
 	return book
 }

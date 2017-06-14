@@ -9,8 +9,8 @@ $(document).ready(function(){
         },
         methods: {
             regist:function () {
-                console.log(this.loginName);
-                console.log(this.loginPassword);
+                //console.log(this.loginName);
+                //console.log(this.loginPassword);
                 if (this.tipinfo != ""){
                     alert("please enter correct info");
                     return;
@@ -49,6 +49,9 @@ $(document).ready(function(){
         },
         created: function() {
             console.log("created");
+            if (!_.isUndefined(store.get("session")) && !_.isUndefined(store.get("user"))){
+                window.location = "/"
+            }
             //store.remove('user');
             //store.remove('session')
         },

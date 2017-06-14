@@ -47,6 +47,9 @@ $(document).ready(function(){
         },
         created: function() {
             console.log("created");
+            if (!_.isUndefined(store.get("session")) && !_.isUndefined(store.get("user"))){
+                window.location = "/"
+            }
             //store.remove('user');
             //store.remove('session')
         },

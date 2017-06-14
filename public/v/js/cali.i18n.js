@@ -70,7 +70,12 @@ const messages = {
             changepassword:"Change Password",
             changeuserinfo:"Change UserInfo",
             file:"file",
-            userlist:"User List"
+            userlist:"User List",
+            blog:"Blog",
+            desc:"A Web Library",
+            start:"Start",
+            read:"Read",
+            library:"Library"
         }
     },
     cn: {
@@ -127,7 +132,12 @@ const messages = {
             changepassword:"修改密码",
             changeuserinfo:"修改个人信息",
             file:"文件",
-            userlist:"用户列表"
+            userlist:"用户列表",
+            blog:"Blog",
+            desc:"在线图书馆",
+            start:"开始",
+            read:"阅读",
+            library:"图书馆"
         }
     }
 };

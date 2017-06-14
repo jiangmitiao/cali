@@ -22,7 +22,9 @@ $(document).ready(function(){
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">\
                         <ul class="nav navbar-nav">\
                             <li v-bind:class="{ active: isindex }"><a href="/" target="_blank"><span v-text="$t(\'lang.index\')"></span> <span class="sr-only">(current)</span></a></li>\
+                            <li v-bind:class="{ active: islibrary }"><a href="/public/v/public.html" target="_blank"><span v-text="$t(\'lang.library\')"></span> <span class="sr-only">(current)</span></a></li>\
                             <li><a href="https://github.com/jiangmitiao/cali/blob/master/README.md" target="_blank"><span v-text="$t(\'lang.help\')"></span></a></li>\
+                            <li><a href="http://blog.gavinzh.com" target="_blank"><span v-text="$t(\'lang.blog\')"></span></a></li>\
                             <li v-if="leftdropdownseen" class="dropdown">\
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>\
                                     <ul class="dropdown-menu">\
@@ -87,6 +89,13 @@ $(document).ready(function(){
                     return false
                 }(),
                 isindex:function () {
+                    if (window.location.pathname == "/"){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }(),
+                islibrary:function () {
                     if (window.location.pathname.indexOf("public.html") >=0){
                         return true;
                     } else {

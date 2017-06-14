@@ -29,7 +29,7 @@
 							<input class="form-control" type="text" :placeholder="$t('lang.loginName')" v-model="loginName">
 							<input class="form-control" type="password" :placeholder="$t('lang.loginPassword')" v-model="loginPassword">
 							<div class="action">
-								<a class="btn btn-primary signup" @click="login"><span v-text="$t('lang.login')"></span></a>
+								<a class="btn btn-primary signup" @keyup.enter="login" @click="login"><span v-text="$t('lang.login')"></span></a>
 							</div>
 						</div>
 					</div>

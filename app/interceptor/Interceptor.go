@@ -69,6 +69,7 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 	if controller == "Install" {
 		return nil
 	}
+
 	var session string
 	rcali.DEBUG.Debug("controller: ", controller)
 	rcali.DEBUG.Debug("method: ", method)
