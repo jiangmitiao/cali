@@ -69,7 +69,8 @@ const messages = {
             upload:"Upload",
             changepassword:"Change Password",
             changeuserinfo:"Change UserInfo",
-            file:"file"
+            file:"file",
+            userlist:"User List"
         }
     },
     cn: {
@@ -125,7 +126,8 @@ const messages = {
             upload:"上传",
             changepassword:"修改密码",
             changeuserinfo:"修改个人信息",
-            file:"文件"
+            file:"文件",
+            userlist:"用户列表"
         }
     }
 };

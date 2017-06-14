@@ -41,7 +41,7 @@ func (c User) Login(callback string) revel.Result {
 	}
 }
 
-//get userinfo
+//get userinfo by session
 func (c User) Info(callback, session string) revel.Result {
 	user, has := userService.GetLoginUser(session)
 	user.Salt = ""
@@ -54,6 +54,7 @@ func (c User) Info(callback, session string) revel.Result {
 
 }
 
+//find a session is or not login
 func (c User) IsLogin(callback, session string) revel.Result {
 	id, _ := rcali.GetUserIdByLoginSession(session)
 	if id == "" {
@@ -63,11 +64,13 @@ func (c User) IsLogin(callback, session string) revel.Result {
 	}
 }
 
+//delete the server's login cache
 func (c User) Logout(callback, session string) revel.Result {
 	rcali.DeleteLoginSession(session)
 	return c.RenderJSONP(callback, models.NewOKApi())
 }
 
+//regist a user ,if delete watcherUserRegist in role action ,then not allow to regist
 func (c User) Regist(callback, loginName, loginPassword string) revel.Result {
 	if loginName == "" || loginPassword == "" {
 		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("not null", nil))
@@ -90,6 +93,7 @@ func (c User) Regist(callback, loginName, loginPassword string) revel.Result {
 	}
 }
 
+// update userName and email by this method
 func (c User) Update(callback, session, userName, email string) revel.Result {
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		user.UserName = userName
@@ -106,6 +110,7 @@ func (c User) Update(callback, session, userName, email string) revel.Result {
 	}
 }
 
+// change the password ,need oldpassword and newpassword
 func (c User) ChangePassword(callback, session, oldLoginPassword, loginPassword string) revel.Result {
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		if user.LoginPassword == rcali.Sha3_256(oldLoginPassword+user.Salt) {
@@ -117,10 +122,42 @@ func (c User) ChangePassword(callback, session, oldLoginPassword, loginPassword 
 			} else {
 				return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("uncatched error", nil))
 			}
-		}else {
+		} else {
 			return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("old password error", nil))
 		}
 	} else {
 		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("no login", nil))
 	}
+}
+
+func (c User) QueryUserCount(callback, session string) revel.Result {
+	if user, isLogin := userService.GetLoginUser(session); isLogin {
+		role := userRoleService.GetRoleByUser(user.Id)
+		if role.Name == "admin" {
+			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.QueryUserCount("")))
+		}
+	}
+	return c.RenderJSONP(callback, models.NewErrorApi())
+}
+
+func (c User) QueryUser(callback, session string, limit, start int) revel.Result {
+	if user, isLogin := userService.GetLoginUser(session); isLogin {
+		role := userRoleService.GetRoleByUser(user.Id)
+		if role.Name == "admin" {
+			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.QueryUser("", limit, start)))
+		}
+	}
+	return c.RenderJSONP(callback, models.NewErrorApi())
+}
+
+func (c User) Delete(callback, session, userId string) revel.Result {
+	if user, isLogin := userService.GetLoginUser(session); isLogin {
+		role := userRoleService.GetRoleByUser(user.Id)
+		if role.Name == "admin" {
+			//delete login user
+			go rcali.DeleteLoginUserId(userId)
+			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.DeleteUser(userId)))
+		}
+	}
+	return c.RenderJSONP(callback, models.NewErrorApi())
 }

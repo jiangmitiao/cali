@@ -78,6 +78,43 @@ func (userService UserService) Regist(user models.UserInfo) bool {
 	return false
 }
 
+func (userService UserService) QueryUserCount(name string) int64 {
+	var count int64= 0
+	if name != "" {
+		count ,_ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like '%?%'", name).Or("user_name like '%?%'", name).Where("valid = ?", 0).Count(&models.UserInfo{})
+	} else {
+		count ,_ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Count(&models.UserInfo{})
+	}
+	return count
+}
+
+//find user by username or login name
+func (userService UserService) QueryUser(name string, limit, start int) []models.UserInfo {
+	users := make([]models.UserInfo, 0)
+	if name != "" {
+		localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like '%?%'", name).Or("user_name like '%?%'", name).Where("valid = ?", 0).Limit(limit, start).Find(&users)
+	} else {
+		localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Limit(limit, start).Find(&users)
+	}
+	return users
+}
+
+//set valid = 1 ,not allow delete admin
+func (userService UserService) DeleteUser(userId string) bool {
+	user := userService.GetUserById(userId)
+	if user.Id != "" && user.LoginName!="admin" {
+		user.Valid = 1
+		_, err := localEngine.Id(userId).Cols("valid").Update(user)
+		if err != nil {
+			return false
+		} else {
+			return true
+		}
+	} else {
+		return false
+	}
+}
+
 //update info .not in password or other.
 func (userService UserService) UpdateInfo(user models.UserInfo) bool {
 	_, err := localEngine.ID(user.Id).Cols("user_name", "email", "img").Where("valid = ?", 0).Update(user)

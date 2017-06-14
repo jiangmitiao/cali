@@ -1,4 +1,101 @@
 $(document).ready(function(){
+    /**
+     <table class="table">
+     <thead>
+     <tr>
+     <th>#</th>
+     <th>First Name</th>
+     <th>Last Name</th>
+     <th>Username</th>
+     </tr>
+     </thead>
+     <tbody>
+     <tr>
+     <td>1</td>
+     <td>Mark</td>
+     <td>Otto</td>
+     <td>@mdo</td>
+     </tr>
+     <tr>
+     <td>2</td>
+     <td>Jacob</td>
+     <td>Thornton</td>
+     <td>@fat</td>
+     </tr>
+     <tr>
+     <td>3</td>
+     <td>Larry</td>
+     <td>the Bird</td>
+     <td>@twitter</td>
+     </tr>
+     </tbody>
+     </table>
+     * @type {Vue}
+     */
+
+    // 定义名为 userdiv 的新组件
+    Vue.component('usersdiv', {
+        // bookinfodiv 组件现在接受一个
+        // 这个属性名为 book。
+        props: ['userlist'],
+        template: '\
+        <table class="table">\
+            <thead>\
+                <tr>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                </tr>\
+            </thead>\
+            <tbody>\
+                <tr v-for="item in userlist">\
+                    <td v-text="item.userName"></td>\
+                    <td v-text="item.loginName"></td>\
+                    <td v-text="item.email"></td>\
+                    <td><a class="btn btn-danger" @click="deleteuser" :id="item.id">delete</a></td>\
+                </tr>\
+            </tbody>\
+        </table>\
+        ',
+        methods:{
+            deleteuser:function (t) {
+                //alert(t.target.id);
+                fetch('/api/user/delete?session='+store.get("session")+"&userId="+t.target.id).then(function(response) {
+                    if (response.redirected){
+                        var tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        //refresh this page
+                        $('#userlistpage').pagination($('#userlistpage').pagination('getSelectedPageNum'))
+                        //window.location.reload(true);
+                    }else {
+                    }
+                }).
+                catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
+            }
+        },
+        data:function () {
+            return {
+                withSession: function () {
+                    //console.log(store.get("session"));
+                    if (_.isUndefined(store.get("session"))){
+                        return "&session=ok";
+                    }else {
+                        return "&session="+store.get("session");
+                    }
+                }()
+            };
+        }
+    });
+
+
     var app = new Vue({
         i18n,
         el: "#root",
@@ -13,12 +110,17 @@ $(document).ready(function(){
             oldLoginPassword:"",
             loginPassword:"",
             repeatLoginPassword:"",
-            changepasswordtipinfo:""
+            changepasswordtipinfo:"",
+
+            //userlist
+            userlistseen:false,
+            userlist:[]
         },
         methods: {
             changeseen:function (e) {
                 this.listseen = {};
                 this.listseen["discover"] = false;
+                this.listseen["userlist"] = false;
                 this.listseen["upload"] = false;
                 this.listseen["changeuserinfo"] = false;
                 this.listseen["changepassword"] = false;
@@ -141,6 +243,9 @@ $(document).ready(function(){
                 var converter = new showdown.Converter();
                 var html      = converter.makeHtml(this.discover);
                 return html;
+            },
+            userlist_computed : function () {
+                return this.userlist;
             }
         },
         created: function() {
@@ -164,15 +269,68 @@ $(document).ready(function(){
                 return response.text();
             }).then(function(text) {
                 app.discover = text;
+            }).catch(function(ex) {
+                console.log('parsing failed', ex)
+            });
+
+
+            fetch('/api/user/queryusercount?session='+store.get("session")).then(function(response) {
+                if (response.redirected){
+                    app.userlistseen = false;
+                    var tmpJson = {};
+                    tmpJson.statusCode = 500;
+                    return tmpJson;
+                }
+                return response.json();
+            }).then(function(json) {
+                if (json.statusCode ==200){
+                    $('#userlistpage').pagination({
+                        dataSource:function (done) {
+                            var tmp = [];
+                            for(var i=0; i<json.info;i++){
+                                tmp.push(i)
+                            }
+                            return done(tmp);
+                        },
+                        pageRange:1,
+                        totalNumber:json.info,
+                        pageSize: 8,
+                        showGoInput: true,
+                        showGoButton: true,
+                        callback: function(data, pagination) {
+                            fetch('/api/user/queryuser?session='+store.get("session")+'&start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                                if (response.redirected){
+                                    app.userlistseen = false;
+                                    var tmpJson = {};
+                                    tmpJson.statusCode = 500;
+                                    return tmpJson;
+                                }
+                                return response.json();
+                            }).then(function(json) {
+                                //console.log('parsed json', json);
+                                if (json.statusCode ==200){
+                                    app.userlistseen = true;
+                                    app.userlist = json.info
+                                }
+                            }).
+                            catch(function(ex) {
+                                console.log('parsing failed', ex)
+                            });
+                        }
+                    });
+                }
             }).
             catch(function(ex) {
                 console.log('parsing failed', ex)
             });
+
+
         },
         beforeMount: function () {
             console.log("beforeMount");
             this.listseen = {};
             this.listseen["discover"] = true;
+            this.listseen["userlist"] = false;
             this.listseen["upload"] = false;
             this.listseen["changeuserinfo"] = false;
             this.listseen["changepassword"] = false;

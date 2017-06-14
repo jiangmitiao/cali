@@ -5,6 +5,7 @@ type RoleAction struct {
 	Role       string `json:"role" xorm:"varchar(32) 'role'"`
 	Controller string `json:"controller" xorm:"'controller'"`
 	Method     string `json:"method" xorm:"'method'"`
+	Comments   string `json:"comments" xorm:"'comments'"` //zhu shi
 }
 
 func (RoleAction) TableName() string {
@@ -56,6 +57,9 @@ func init() {
 		RoleAction{Id: "adminUserRegist", Role: "admin", Controller: "User", Method: "Regist"},
 		RoleAction{Id: "adminUserUpdate", Role: "admin", Controller: "User", Method: "Update"},
 		RoleAction{Id: "adminUserChangePassword", Role: "admin", Controller: "User", Method: "ChangePassword"},
+		RoleAction{Id: "adminUserQueryUserCount", Role: "admin", Controller: "User", Method: "QueryUserCount"},
+		RoleAction{Id: "adminUserQueryUser", Role: "admin", Controller: "User", Method: "QueryUser"},
+		RoleAction{Id: "adminUserChangeDelete", Role: "admin", Controller: "User", Method: "Delete"},
 
 		RoleAction{Id: "adminAppIndex", Role: "admin", Controller: "App", Method: "Index"},
 	)

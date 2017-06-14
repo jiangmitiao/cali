@@ -42,6 +42,18 @@ func DeleteLoginSession(loginSession string) {
 	mux.Unlock()
 }
 
+func DeleteLoginUserId(userId string)  {
+	mux.Lock()
+	for loginSession, v := range loginSessionMap {
+		if v==userId {
+			delete(loginSessionMap, loginSession)
+			delete(loginSessionTime, loginSession)
+			break
+		}
+	}
+	mux.Unlock()
+}
+
 func freshMap() {
 	var timeNow = time.Now()
 	mux.Lock()
