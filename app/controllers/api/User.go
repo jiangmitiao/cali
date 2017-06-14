@@ -89,3 +89,38 @@ func (c User) Regist(callback, loginName, loginPassword string) revel.Result {
 		}
 	}
 }
+
+func (c User) Update(callback, session, userName, email string) revel.Result {
+	if user, isLogin := userService.GetLoginUser(session); isLogin {
+		user.UserName = userName
+		user.Email = email
+		user.Img = ""
+		if updateOK := userService.UpdateInfo(user); updateOK {
+			return c.RenderJSONP(callback, models.NewOKApi())
+		} else {
+			return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("uncatched error", nil))
+		}
+
+	} else {
+		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("no login", nil))
+	}
+}
+
+func (c User) ChangePassword(callback, session, oldLoginPassword, loginPassword string) revel.Result {
+	if user, isLogin := userService.GetLoginUser(session); isLogin {
+		if user.LoginPassword == rcali.Sha3_256(oldLoginPassword+user.Salt) {
+			//oldpassword is ok
+			user.Salt = uuid.New().String()
+			user.LoginPassword = rcali.Sha3_256(loginPassword + user.Salt)
+			if changed := userService.UpdatePassword(user); changed {
+				return c.RenderJSONP(callback, models.NewOKApi())
+			} else {
+				return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("uncatched error", nil))
+			}
+		}else {
+			return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("old password error", nil))
+		}
+	} else {
+		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("no login", nil))
+	}
+}

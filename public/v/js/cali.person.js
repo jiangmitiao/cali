@@ -6,7 +6,14 @@ $(document).ready(function(){
             session:"",
             user:{},
             discover:"",
-            listseen:{}
+            listseen:{},
+            changeuserinfotipinfo:"",
+
+            //change password
+            oldLoginPassword:"",
+            loginPassword:"",
+            repeatLoginPassword:"",
+            changepasswordtipinfo:""
         },
         methods: {
             changeseen:function (e) {
@@ -23,6 +30,108 @@ $(document).ready(function(){
                 var converter = new showdown.Converter();
                 var html      = converter.makeHtml(m);
                 return html;
+            },
+            uploadfile:function () {
+                var file = document.getElementById("book").value;
+                if (file == null || (file.match(/.epub$/g)==null && file.match(/.mobi$/g)==null)){
+                    alert("please open file or choose .epub/.mobi");
+                    return;
+                }
+                alert("please wait...");
+                var form = new FormData(document.getElementById("uploadfile"));
+                fetch("/api/book/uploadbook", {
+                    method: "POST",
+                    body: form
+                }).then(function(response) {
+                    if (response.redirected){
+                        alert("role action setting error !");
+                        return;
+                        //window.location.href = response.url;
+                    }
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        alert(json.info);
+                    }else {
+                        alert("upload error "+json.info);
+                    }
+                }).
+                catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
+            },
+            changeuserinfo:function () {
+                if (app.user.userName == null || app.user.userName=="" || app.user.email == null || app.user.email==""){
+                    app.changeuserinfotipinfo = "lang.notnull";
+                    return;
+                }else {
+                    app.changeuserinfotipinfo = "";
+                    fetch("/api/user/update?session="+app.session+"&userName="+app.user.userName+"&email="+app.user.email).then(function(response) {
+                        if (response.redirected){
+                            alert("role action setting error !");
+                            return;
+                            //window.location.href = response.url;
+                        }
+                        return response.json();
+                    }).then(function(json) {
+                        if (json.statusCode ==200){
+                            fetch('/api/user/info?session='+app.session).then(function(response) {
+                                return response.json();
+                            }).then(function(user) {
+                                if (user.statusCode ==200){
+                                    console.log(user.info);
+                                    store.set("user", user.info);
+                                    alert("update success");
+                                    window.location = "/public/v/person.html"
+                                }else {
+                                    alert("密码错误:"+user.message);
+                                }
+                            }).
+                            catch(function(ex) {
+                                console.log('parsing failed', ex)
+                            });
+                        }else {
+                            alert("update error "+json.info);
+                        }
+                    }).
+                    catch(function(ex) {
+                        console.log('parsing failed', ex)
+                    });
+                }
+            },
+            checkchangepassword:function () {
+                if (app.oldPassword=="" || app.loginPassword==""){
+                    app.changepasswordtipinfo = "lang.notnull";
+                    return ;
+                }
+                if(app.loginPassword!=app.repeatLoginPassword){
+                    app.changepasswordtipinfo = "lang.pcp";
+                    return ;
+                }
+                app.changepasswordtipinfo = "";
+                return;
+            },
+            changepassword:function () {
+                if (app.changepasswordtipinfo != ""){
+                    return;
+                }
+                fetch('/api/user/changepassword?session='+app.session+"&oldLoginPassword="+app.oldLoginPassword+"&loginPassword="+app.loginPassword).then(function(response) {
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        console.log(json.info);
+                        store.remove("user");
+                        store.remove("session");
+                        alert("update success");
+                        window.location = "/public/v/login.html"
+                    }else {
+                        alert("密码错误:"+json.message);
+                    }
+                }).
+                catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
+
             }
         },
         computed: {

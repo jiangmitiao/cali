@@ -50,7 +50,7 @@
                 <div v-if="listseen.upload" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.upload')"></span></div>
                     <div class="panel-body">
-                        <form method="post" action="/api/book/uploadbook" enctype="multipart/form-data" class="form-horizontal">
+                        <form id="uploadfile" method="post" action="/api/book/uploadbook" enctype="multipart/form-data" class="form-horizontal">
                             <input type="hidden" name="session" :value="session">
                             <div class="form-group">
                                 <label for="book" class="col-sm-2 control-label"><span v-text="$t('lang.file')"></span>:</label>
@@ -60,7 +60,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <input type="submit" :value="$t('lang.submit')" class="btn btn-default">
+                                    <input type="button" :value="$t('lang.submit')" class="btn btn-default" @click="uploadfile">
                                 </div>
                             </div>
 
@@ -85,9 +85,10 @@
                                     <input type="text" class="form-control" id="email" name="email" v-model="user.email">
                                 </div>
                             </div>
+                            <p class="col-sm-offset-2" style="color: red;"><span v-text="changeuserinfotipinfo==''?'':$t(changeuserinfotipinfo)"></span></p>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <input type="button" :value="$t('lang.submit')" class="btn btn-default">
+                                    <input type="button" :value="$t('lang.submit')" class="btn btn-default" @click="changeuserinfo">
                                 </div>
                             </div>
 
@@ -103,24 +104,25 @@
                             <div class="form-group">
                                 <label for="oldPassword" class="col-sm-2 control-label"><span v-text="$t('lang.oldLoginPassword')"></span></label>
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="oldPassword" name="userName" :placeholder="$t('lang.oldLoginPassword')">
+                                    <input v-model="oldLoginPassword" @change="checkchangepassword" type="password" class="form-control" id="oldPassword" name="userName" :placeholder="$t('lang.oldLoginPassword')">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="loginPassword" class="col-sm-2 control-label"><span v-text="$t('lang.loginPassword')"></span></label>
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="loginPassword" name="loginPassword" :placeholder="$t('lang.loginPassword')">
+                                    <input v-model="loginPassword" @change="checkchangepassword" type="password" class="form-control" id="loginPassword" name="loginPassword" :placeholder="$t('lang.loginPassword')">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="repeateLoginPassword" class="col-sm-2 control-label"><span v-text="$t('lang.loginPassword')"></span></label>
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="repeateLoginPassword" name="repeateLoginPassword" :placeholder="$t('lang.confirmloginPassword')">
+                                    <input v-model="repeatLoginPassword" @change="checkchangepassword" type="password" class="form-control" id="repeateLoginPassword" name="repeateLoginPassword" :placeholder="$t('lang.confirmloginPassword')">
                                 </div>
                             </div>
+                            <p class="col-sm-offset-2" style="color: red;"><span v-text="changepasswordtipinfo==''?'':$t(changepasswordtipinfo)"></span></p>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <input type="submit" :value="$t('lang.submit')" class="btn btn-default">
+                                    <input @click="changepassword" type="button" :value="$t('lang.submit')" class="btn btn-default">
                                 </div>
                             </div>
 

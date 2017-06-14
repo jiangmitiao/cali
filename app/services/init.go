@@ -164,7 +164,7 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	if err != nil {
 		return false, err
 	}
-	if _, err = localEngine.Insert(models.RoleActions);err!=nil{
+	if _, err = localEngine.Insert(models.RoleActions); err != nil {
 		return false, err
 	}
 

@@ -54,6 +54,8 @@ func init() {
 		RoleAction{Id: "adminUserIsLogin", Role: "admin", Controller: "User", Method: "IsLogin"},
 		RoleAction{Id: "adminUserLogout", Role: "admin", Controller: "User", Method: "Logout"},
 		RoleAction{Id: "adminUserRegist", Role: "admin", Controller: "User", Method: "Regist"},
+		RoleAction{Id: "adminUserUpdate", Role: "admin", Controller: "User", Method: "Update"},
+		RoleAction{Id: "adminUserChangePassword", Role: "admin", Controller: "User", Method: "ChangePassword"},
 
 		RoleAction{Id: "adminAppIndex", Role: "admin", Controller: "App", Method: "Index"},
 	)
@@ -97,6 +99,8 @@ func init() {
 		RoleAction{Id: "userUserIsLogin", Role: "user", Controller: "User", Method: "IsLogin"},
 		RoleAction{Id: "userUserLogout", Role: "user", Controller: "User", Method: "Logout"},
 		RoleAction{Id: "userUserRegist", Role: "user", Controller: "User", Method: "Regist"},
+		RoleAction{Id: "userUserUpdate", Role: "user", Controller: "User", Method: "Update"},
+		RoleAction{Id: "userUserChangePassword", Role: "user", Controller: "User", Method: "ChangePassword"},
 
 		RoleAction{Id: "userAppIndex", Role: "user", Controller: "App", Method: "Index"},
 	)
@@ -140,6 +144,8 @@ func init() {
 		RoleAction{Id: "watcherUserIsLogin", Role: "watcher", Controller: "User", Method: "IsLogin"},
 		RoleAction{Id: "watcherUserLogout", Role: "watcher", Controller: "User", Method: "Logout"},
 		RoleAction{Id: "watcherUserRegist", Role: "watcher", Controller: "User", Method: "Regist"},
+		//RoleAction{Id: "watcherUserUpdate", Role: "watcher", Controller: "User", Method: "Update"}, watcher can not change info
+		//RoleAction{Id: "watcherUserChangePassword", Role: "watcher", Controller: "User", Method: "ChangePassword"}, watcher can not change password
 
 		RoleAction{Id: "watcherAppIndex", Role: "watcher", Controller: "App", Method: "Index"},
 	)

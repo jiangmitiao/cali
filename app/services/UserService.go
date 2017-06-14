@@ -77,3 +77,23 @@ func (userService UserService) Regist(user models.UserInfo) bool {
 	}
 	return false
 }
+
+//update info .not in password or other.
+func (userService UserService) UpdateInfo(user models.UserInfo) bool {
+	_, err := localEngine.ID(user.Id).Cols("user_name", "email", "img").Where("valid = ?", 0).Update(user)
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+
+//change password and salt
+func (userService UserService) UpdatePassword(user models.UserInfo) bool {
+	_, err := localEngine.ID(user.Id).Cols("login_password", "salt").Where("valid = ?", 0).Update(user)
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}

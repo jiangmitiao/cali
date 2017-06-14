@@ -38,7 +38,7 @@ func dbInterceptor(c *revel.Controller) revel.Result {
 				dbok = true
 				return nil
 			} else {
-				rcali.DEBUG.Debug("database error ",err)
+				rcali.DEBUG.Debug("database error ", err)
 				return c.Redirect("install/")
 			}
 		} else {
@@ -70,17 +70,21 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 		return nil
 	}
 	var session string
-	rcali.DEBUG.Debug("controller", controller)
-	rcali.DEBUG.Debug("method", method)
+	rcali.DEBUG.Debug("controller: ", controller)
+	rcali.DEBUG.Debug("method: ", method)
 
 	c.Params.Bind(&session, "session")
+	if session == "" {
+		session = c.Request.Form.Get("session")
+	}
 	id, _ := rcali.GetUserIdByLoginSession(session)
 	role := userRoleService.GetRoleByUser(id)
 	roleId := role.Id
 	if roleId == "" {
 		roleId = "watcher"
 	}
-	rcali.DEBUG.Debug("watcher", roleId)
+
+	rcali.DEBUG.Debug("role: ", roleId)
 
 	if validateOK(controller, method, roleId) {
 		return nil

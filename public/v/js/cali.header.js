@@ -97,6 +97,22 @@ $(document).ready(function(){
                     if (_.isUndefined(store.get("session")) || _.isUndefined(store.get("user"))){
                         return false;
                     }else {
+                        fetch('/api/user/islogin?session='+store.get("session")).then(function(response) {
+                            if (response.redirected){
+                                window.location.href = response.url;
+                            }
+                            return response.json()
+                        }).then(function(json) {
+                            if (json.statusCode != 200){
+                                store.remove('user');
+                                store.remove('session');
+                                window.location.reload(true);
+                            }
+                        }).
+                        catch(function(ex) {
+                            console.log('parsing failed', ex);
+                            alert("server error");
+                        });
                         return true;
                     }
                 }(),
