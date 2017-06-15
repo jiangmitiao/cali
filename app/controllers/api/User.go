@@ -7,6 +7,7 @@ import (
 	"github.com/revel/revel"
 	"strconv"
 	"time"
+	"fmt"
 )
 
 type User struct {
@@ -131,6 +132,7 @@ func (c User) ChangePassword(callback, session, oldLoginPassword, loginPassword 
 }
 
 func (c User) QueryUserCount(callback, session string) revel.Result {
+	fmt.Printf("Form : %+v \n",c.Request.Form)
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		role := userRoleService.GetRoleByUser(user.Id)
 		if role.Name == "admin" {
