@@ -85,6 +85,11 @@ sh run.sh
 
 # Changelog
 
+* **v0.0.2**
+    * add book function
+    * read book online (support epub)
+    * user register and manage function
+
 * **v0.0.1**
     * look six'style books
     * display book's info and download link
