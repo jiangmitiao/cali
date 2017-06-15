@@ -33,14 +33,14 @@ $(document).ready(function(){
 
         },
         created: function() {
-            console.log("created");
+            //console.log("created");
 
         },
         beforeMount: function () {
-            console.log("beforeMount");
+            //console.log("beforeMount");
         },
         mounted: function () {
-            console.log("mounted");
+            //console.log("mounted");
             //document.body.clientHeight
 
             $("#area").css("height",""+(document.body.clientHeight-200)+"px");
@@ -48,7 +48,7 @@ $(document).ready(function(){
             $("#area").css("width",""+(500)+"px");
             var bookid=Request.bookid;
             var url = "/book/bookdown.epub?bookid="+bookid+"&session="+store.get("session");
-            console.log(url);
+            //console.log(url);
             Book.open(url);
             Book.getMetadata().then(function(meta){
                 document.title = meta.bookTitle+" – "+meta.creator;

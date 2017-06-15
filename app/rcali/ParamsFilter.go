@@ -17,10 +17,10 @@ func copyValues(dst, src url.Values) {
 func QueryParamsFilter(c *revel.Controller, fc []revel.Filter) {
 	newValues, e := url.ParseQuery(c.Request.URL.RawQuery)
 	if e == nil {
-		if c.Request.Form==nil {
+		if c.Request.Form == nil {
 			c.Request.Form = make(url.Values)
 		}
-		copyValues(c.Request.Form,newValues)
+		copyValues(c.Request.Form, newValues)
 	}
 	fc[0](c, fc[1:])
 }

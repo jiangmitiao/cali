@@ -49,6 +49,14 @@ func FileExists(path string) (bool, error) {
 	return false, err
 }
 
+// Return value if nonempty, def otherwise.
+func ValueOrDefault(value, def string) string {
+	if value != "" {
+		return value
+	}
+	return def
+}
+
 //for debug
 type Debug string
 

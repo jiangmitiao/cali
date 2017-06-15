@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    console.log("start");
+    //console.log("start");
     // 定义名为 bookdiv 的新组件
     Vue.component('bookdiv', {
         // bookdiv 组件现在接受一个
@@ -66,7 +66,6 @@ $(document).ready(function(){
         methods:{
             //the authordiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods authorclick
             authorclick:function (tagid) {
-                //console.log(tagid);
                 app.authorclick(tagid);
             }
         }
@@ -146,7 +145,9 @@ $(document).ready(function(){
             },
             // the categories first display,when click tag's item ,then hide first div,fetch 8 books items which has the click's item'tag to display
             tagclick:function (tagid) {
-                fetch('/book/tagbookscount?tagid='+tagid).then(function(response) {
+                var form = commonData();
+                form.set("tagid",tagid);
+                fetch('/book/tagbookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
@@ -168,13 +169,16 @@ $(document).ready(function(){
                             showGoInput: true,
                             showGoButton: true,
                             callback: function(data, pagination) {
-                                fetch('/book/tagbooks?start='+_.min(data)+'&limit='+data.length+'&tagid='+tagid).then(function(response) {
+                                var form = commonData();
+                                form.set("start",_.min(data));
+                                form.set("limit",data.length);
+                                form.set("tagid",tagid);
+                                fetch('/book/tagbooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
                                     }
                                     return response.json();
                                 }).then(function(json) {
-                                    //console.log('parsed json', json);
                                     if (json.statusCode ==200){
                                         app.categories = json.info
                                     }
@@ -193,8 +197,9 @@ $(document).ready(function(){
             },
             // like tags click
             authorclick:function (authorid) {
-                //console.log("authorid"+authorid);
-                fetch('/book/authorbookscount?authorid='+authorid).then(function(response) {
+                var form = commonData();
+                form.set("authorid",authorid);
+                fetch('/book/authorbookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
@@ -215,13 +220,16 @@ $(document).ready(function(){
                             showGoInput: true,
                             showGoButton: true,
                             callback: function(data, pagination) {
-                                fetch('/book/authorbooks?start='+_.min(data)+'&limit='+data.length+'&authorid='+authorid).then(function(response) {
+                                var form = commonData();
+                                form.set("start",_.min(data));
+                                form.set("limit",data.length);
+                                form.set("authorid",authorid);
+                                fetch('/book/authorbooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
                                     }
                                     return response.json();
                                 }).then(function(json) {
-                                    //console.log('parsed json', json);
                                     if (json.statusCode ==200){
                                         app.authors = json.info
                                     }
@@ -240,14 +248,14 @@ $(document).ready(function(){
             },
             // like tags click
             languageclick:function (lang_code) {
-                //console.log("lang_code"+lang_code);
-                fetch('/book/languagebookscount?lang_code='+lang_code).then(function(response) {
+                var form = commonData();
+                form.set("lang_code",lang_code);
+                fetch('/book/languagebookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
                     return response.json();
                 }).then(function(json) {
-                    //console.log('parsed json', json);
                     if (json.statusCode ==200){
                         $('#languagespage').pagination({
                             dataSource:function (done) {
@@ -263,14 +271,16 @@ $(document).ready(function(){
                             showGoInput: true,
                             showGoButton: true,
                             callback: function(data, pagination) {
-                                // template method of yourself
-                                fetch('/book/languagebooks?start='+_.min(data)+'&limit='+data.length+'&lang_code='+lang_code).then(function(response) {
+                                var form = commonData();
+                                form.set("start",_.min(data));
+                                form.set("limit",data.length);
+                                form.set("lang_code",lang_code);
+                                fetch('/book/languagebooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
                                     }
                                     return response.json();
                                 }).then(function(json) {
-                                    //console.log('parsed json', json);
                                     if (json.statusCode ==200){
                                         app.language = json.info
                                     }
@@ -311,18 +321,15 @@ $(document).ready(function(){
         },
         created: function() {
             //when page's instance created,we should get the data to render the page
-            console.log("created");
+            //console.log("created");
             //hotbooks展示分页
-            fetch('/book/bookscount').then(function(response) {
+            fetch('/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
-                //console.log('parsed json', json);
                 if (json.statusCode ==200){
-                    //app.hotbooks = json.info
-                    //return done(tmp);
                     $('#hotbookspage').pagination({
                         dataSource:function (done) {
                             var tmp = [];
@@ -337,13 +344,15 @@ $(document).ready(function(){
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            fetch('/book/ratingbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                            var form = commonData();
+                            form.set("start",_.min(data));
+                            form.set("limit",data.length);
+                            fetch('/book/ratingbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
                                 return response.json();
                             }).then(function(json) {
-                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.hotbooks = json.info
                                 }
@@ -360,16 +369,13 @@ $(document).ready(function(){
             });
 
             //newbooks展示分页
-            fetch('/book/bookscount').then(function(response) {
+            fetch('/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
-                //console.log('parsed json', json);
                 if (json.statusCode ==200){
-                    //app.hotbooks = json.info
-                    //return done(tmp);
                     $('#newbookspage').pagination({
                         dataSource:function (done) {
                             var tmp = [];
@@ -384,13 +390,15 @@ $(document).ready(function(){
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            fetch('/book/newbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                            var form = commonData();
+                            form.set("start",_.min(data));
+                            form.set("limit",data.length);
+                            fetch('/book/newbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
                                 return response.json();
                             }).then(function(json) {
-                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.newbooks = json.info
                                 }
@@ -407,16 +415,13 @@ $(document).ready(function(){
             });
 
             //discover展示分页
-            fetch('/book/bookscount').then(function(response) {
+            fetch('/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
-                //console.log('parsed json', json);
                 if (json.statusCode ==200){
-                    //app.hotbooks = json.info
-                    //return done(tmp);
                     $('#discoverpage').pagination({
                         dataSource:function (done) {
                             var tmp = [];
@@ -431,13 +436,15 @@ $(document).ready(function(){
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            fetch('/book/discoverbooks?start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                            var form = commonData();
+                            form.set("start",_.min(data));
+                            form.set("limit",data.length);
+                            fetch('/book/discoverbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
                                 return response.json();
                             }).then(function(json) {
-                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.discover = json.info
                                 }
@@ -454,13 +461,12 @@ $(document).ready(function(){
             });
 
             //tags展示分页
-            fetch('/tag/tagscount').then(function(response) {
+            fetch('/tag/tagscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
-                //console.log('parsed json', json);
                 if (json.statusCode ==200){
                     $('#tagspage').pagination({
                         dataSource:function (done) {
@@ -476,13 +482,15 @@ $(document).ready(function(){
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            fetch('/tag/tags?start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                            var form = commonData();
+                            form.set("start",_.min(data));
+                            form.set("limit",data.length);
+                            fetch('/tag/tags',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
                                 return response.json();
                             }).then(function(json) {
-                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.tags = json.info
                                 }
@@ -499,13 +507,12 @@ $(document).ready(function(){
             });
 
             //authornames展示分页
-            fetch('/author/authorscount').then(function(response) {
+            fetch('/author/authorscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
-                //console.log('parsed json', json);
                 if (json.statusCode ==200){
                     $('#authornamespage').pagination({
                         dataSource:function (done) {
@@ -521,13 +528,15 @@ $(document).ready(function(){
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            fetch('/author/authors?start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                            var form = commonData();
+                            form.set("start",_.min(data));
+                            form.set("limit",data.length);
+                            fetch('/author/authors',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
                                 return response.json();
                             }).then(function(json) {
-                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.authornames = json.info
                                 }
@@ -544,13 +553,12 @@ $(document).ready(function(){
             });
 
             //languagenames展示分页
-            fetch('/language/languagescount').then(function(response) {
+            fetch('/language/languagescount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
-                //console.log('parsed json', json);
                 if (json.statusCode ==200){
                     $('#languagenamespage').pagination({
                         dataSource:function (done) {
@@ -566,13 +574,15 @@ $(document).ready(function(){
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            fetch('/language/languages?start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                            var form = commonData();
+                            form.set("start",_.min(data));
+                            form.set("limit",data.length);
+                            fetch('/language/languages',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
                                 return response.json();
                             }).then(function(json) {
-                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.languagenames = json.info
                                 }
@@ -592,7 +602,7 @@ $(document).ready(function(){
         },
         beforeMount: function () {
             // when instance created and prepare to render page ,we should confirm we display one div
-            console.log("beforeMount");
+            //console.log("beforeMount");
             this.booksseen["hotbooks"] = true;
             this.booksseen["newbooks"] = false;
             this.booksseen["discover"] = false;
@@ -601,10 +611,10 @@ $(document).ready(function(){
             this.booksseen["language"] = false;
         },
         mounted: function () {
-            console.log("mounted");
+            //console.log("mounted");
         },
         activated:function () {
-            console.log("activated");
+            //console.log("activated");
 
         }
     });

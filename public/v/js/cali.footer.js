@@ -13,8 +13,6 @@ $(document).ready(function(){
             </div>\
         </footer>\
         ',
-        methods:{
-
-        }
+        methods:{}
     });
 });

@@ -2,29 +2,33 @@ package api
 
 import (
 	"github.com/jiangmitiao/cali/app/models"
+	"github.com/jiangmitiao/cali/app/rcali"
 	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
+	"strconv"
 )
 
 type Language struct {
 	*revel.Controller
 }
 
-func (c Language) Index(callback string) revel.Result {
-	return c.RenderJSONP(callback, models.NewOKApi())
+func (c Language) Index() revel.Result {
+	return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApi())
 }
 
 //all languages count
-func (c Language) LanguagesCount(callback string) revel.Result {
+func (c Language) LanguagesCount() revel.Result {
 	return c.RenderJSONP(
-		callback,
+		c.Request.FormValue("callback"),
 		models.NewOKApiWithInfo(services.QueryLanguagesCount()))
 }
 
 //all languages info
-func (c Language) Languages(callback string, limit, start int) revel.Result {
+func (c Language) Languages() revel.Result {
+	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.ClassNumsStr))
+	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
-		callback,
+		c.Request.FormValue("callback"),
 		models.NewOKApiWithInfo(services.QueryLanguages(limit, start)),
 	)
 }

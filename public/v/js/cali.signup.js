@@ -9,20 +9,20 @@ $(document).ready(function(){
         },
         methods: {
             regist:function () {
-                //console.log(this.loginName);
-                //console.log(this.loginPassword);
                 if (this.tipinfo != ""){
                     alert("please enter correct info");
                     return;
                 }
-                fetch('/api/user/regist?loginName='+this.loginName+'&loginPassword='+this.loginPassword).then(function(response) {
+                var form = commonData();
+                form.set("loginName",_.min(data));
+                form.set("loginPassword",data.length);
+                fetch('/api/user/regist',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
-                        console.log(json.info);
                         window.location = "/public/v/login.html"
                     }else {
                         alert("注册失败:"+json.message);
@@ -48,19 +48,16 @@ $(document).ready(function(){
             }
         },
         created: function() {
-            console.log("created");
+            //console.log("created");
             if (!_.isUndefined(store.get("session")) && !_.isUndefined(store.get("user"))){
                 window.location = "/"
             }
-            //store.remove('user');
-            //store.remove('session')
         },
         beforeMount: function () {
-            console.log("beforeMount");
-            //this.book.title="oookkk"
+            //console.log("beforeMount");
         },
         mounted: function () {
-            console.log("mounted");
+            //console.log("mounted");
         }
     });
 });

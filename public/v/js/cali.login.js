@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    commonData();
     var app = new Vue({
         i18n,
         el: "#root",
@@ -8,21 +9,22 @@ $(document).ready(function(){
         },
         methods: {
             login:function () {
-                console.log(this.loginName);
-                console.log(this.loginPassword);
-                fetch('/api/user/login?loginName='+this.loginName+'&loginPassword='+this.loginPassword).then(function(response) {
+                var form = commonData();
+                form.set("loginName",this.loginName);
+                form.set("loginPassword",this.loginPassword);
+                fetch('/api/user/login',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
-                        console.log(json.info);
-                        fetch('/api/user/info?session='+json.info).then(function(response) {
+                        var form = commonData();
+                        form.set("session",json.info);
+                        fetch('/api/user/info',{method:'post',body:form}).then(function(response) {
                             return response.json()
                         }).then(function(user) {
                             if (user.statusCode ==200){
-                                console.log(user.info);
                                 store.set("user", user.info);
                                 store.set("session", json.info);
                                 window.location = "/"
@@ -46,19 +48,16 @@ $(document).ready(function(){
 
         },
         created: function() {
-            console.log("created");
+            //console.log("created");
             if (!_.isUndefined(store.get("session")) && !_.isUndefined(store.get("user"))){
                 window.location = "/"
             }
-            //store.remove('user');
-            //store.remove('session')
         },
         beforeMount: function () {
-            console.log("beforeMount");
-            //this.book.title="oookkk"
+            //console.log("beforeMount");
         },
         mounted: function () {
-            console.log("mounted");
+            //console.log("mounted");
         }
     });
 });

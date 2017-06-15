@@ -45,5 +45,5 @@ type BookVo struct {
 
 	Comments string `json:"comments" xorm:"'comments'"` //comments's text only use in single book
 
-	Format   string `json:"format" xorm:"'format'"`
+	Format string `json:"format" xorm:"'format'"`
 }

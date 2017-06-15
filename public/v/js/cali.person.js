@@ -26,8 +26,9 @@ $(document).ready(function(){
         ',
         methods:{
             deleteuser:function (t) {
-                //alert(t.target.id);
-                fetch('/api/user/delete?session='+store.get("session")+"&userId="+t.target.id).then(function(response) {
+                var form = commonData();
+                form.set("userId",t.target.id);
+                fetch('/api/user/delete',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         var tmpJson = {};
                         tmpJson.statusCode = 500;
@@ -38,7 +39,6 @@ $(document).ready(function(){
                     if (json.statusCode ==200){
                         //refresh this page
                         $('#userlistpage').pagination($('#userlistpage').pagination('getSelectedPageNum'))
-                        //window.location.reload(true);
                     }else {
                     }
                 }).
@@ -95,14 +95,14 @@ $(document).ready(function(){
                 }
                 alert("please wait...");
                 var form = new FormData(document.getElementById("uploadfile"));
+                form.set('session',commonData().get('session'));
                 fetch("/api/book/uploadbook", {
-                    method: "POST",
+                    method: "post",
                     body: form
                 }).then(function(response) {
                     if (response.redirected){
                         alert("role action setting error !");
                         return;
-                        //window.location.href = response.url;
                     }
                     return response.json();
                 }).then(function(json) {
@@ -122,20 +122,21 @@ $(document).ready(function(){
                     return;
                 }else {
                     app.changeuserinfotipinfo = "";
-                    fetch("/api/user/update?session="+app.session+"&userName="+app.user.userName+"&email="+app.user.email).then(function(response) {
+                    var form = commonData();
+                    form.set("userName",app.user.userName);
+                    form.set("email",app.user.email);
+                    fetch('/api/user/update',{method:'post',body:form}).then(function(response) {
                         if (response.redirected){
                             alert("role action setting error !");
                             return;
-                            //window.location.href = response.url;
                         }
                         return response.json();
                     }).then(function(json) {
                         if (json.statusCode ==200){
-                            fetch('/api/user/info?session='+app.session).then(function(response) {
+                            fetch('/api/user/info',{method:'post',body:commonData()}).then(function(response) {
                                 return response.json();
                             }).then(function(user) {
                                 if (user.statusCode ==200){
-                                    console.log(user.info);
                                     store.set("user", user.info);
                                     alert("update success");
                                     window.location = "/public/v/person.html"
@@ -171,11 +172,13 @@ $(document).ready(function(){
                 if (app.changepasswordtipinfo != ""){
                     return;
                 }
-                fetch('/api/user/changepassword?session='+app.session+"&oldLoginPassword="+app.oldLoginPassword+"&loginPassword="+app.loginPassword).then(function(response) {
+                var form = commonData();
+                form.set("oldLoginPassword",app.oldLoginPassword);
+                form.set("loginPassword",app.loginPassword);
+                fetch('/api/user/changepassword',{method:'post',body:form}).then(function(response) {
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
-                        console.log(json.info);
                         store.remove("user");
                         store.remove("session");
                         alert("update success");
@@ -203,14 +206,12 @@ $(document).ready(function(){
             }
         },
         created: function() {
-            console.log("created");
+            //console.log("created");
             if (_.isUndefined(store.get("session")) || _.isUndefined(store.get("user"))){
-                window.location = "/public/v/login.html"
-                ///public/v/login.html
+                window.location = "/public/v/login.html";
             }
             this.session = store.get('session');
             this.user = store.get('user');
-            //store.remove('session')
 
             //https://raw.githubusercontent.com/jiangmitiao/cali/master/README.md
             var url = "";
@@ -227,8 +228,7 @@ $(document).ready(function(){
                 console.log('parsing failed', ex)
             });
 
-
-            fetch('/api/user/queryusercount?session='+store.get("session")).then(function(response) {
+            fetch('/api/user/queryusercount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     app.userlistseen = false;
                     var tmpJson = {};
@@ -252,7 +252,10 @@ $(document).ready(function(){
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            fetch('/api/user/queryuser?session='+store.get("session")+'&start='+_.min(data)+'&limit='+data.length).then(function(response) {
+                            var form = commonData();
+                            form.set("start",_.min(data));
+                            form.set("limit",data.length);
+                            fetch('/api/user/queryuser',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     app.userlistseen = false;
                                     var tmpJson = {};
@@ -261,7 +264,6 @@ $(document).ready(function(){
                                 }
                                 return response.json();
                             }).then(function(json) {
-                                //console.log('parsed json', json);
                                 if (json.statusCode ==200){
                                     app.userlistseen = true;
                                     app.userlist = json.info
@@ -279,7 +281,7 @@ $(document).ready(function(){
             });
         },
         beforeMount: function () {
-            console.log("beforeMount");
+            //console.log("beforeMount");
             this.listseen = {};
             this.listseen["discover"] = true;
             this.listseen["userlist"] = false;
@@ -288,7 +290,7 @@ $(document).ready(function(){
             this.listseen["changepassword"] = false;
         },
         mounted: function () {
-            console.log("mounted");
+            //console.log("mounted");
         }
     });
 });

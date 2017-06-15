@@ -2,24 +2,17 @@ $(document).ready(function(){
     var app = new Vue({
         i18n,
         el: "#root",
-        data: {
-
-        },
-        methods: {
-
-        },
-        computed: {
-
-        },
+        data: {},
+        methods: {},
+        computed: {},
         created: function() {
-            console.log("created");
-
+            //console.log("created");
         },
         beforeMount: function () {
-            console.log("beforeMount");
+            //console.log("beforeMount");
         },
         mounted: function () {
-            console.log("mounted");
+            //console.log("mounted");
         }
     });
 });

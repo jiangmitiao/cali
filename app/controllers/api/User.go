@@ -7,7 +7,6 @@ import (
 	"github.com/revel/revel"
 	"strconv"
 	"time"
-	"fmt"
 )
 
 type User struct {
@@ -15,11 +14,12 @@ type User struct {
 }
 
 // /user
-func (c User) Index(callback string) revel.Result {
-	return c.RenderJSONP(callback, models.NewOKApi())
+func (c User) Index() revel.Result {
+	return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApi())
 }
 
-func (c User) Login(callback string) revel.Result {
+func (c User) Login() revel.Result {
+	callback := c.Request.FormValue("callback")
 	var loginName string
 	var loginPassword string
 	c.Params.Bind(&loginName, "loginName")
@@ -43,11 +43,13 @@ func (c User) Login(callback string) revel.Result {
 }
 
 //get userinfo by session
-func (c User) Info(callback, session string) revel.Result {
+func (c User) Info() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
 	user, has := userService.GetLoginUser(session)
-	user.Salt = ""
-	user.LoginPassword = ""
 	if has {
+		user.Salt = ""
+		user.LoginPassword = ""
 		return c.RenderJSONP(callback, models.NewOKApiWithInfo(user))
 	} else {
 		return c.RenderJSONP(callback, models.NewErrorApi())
@@ -56,7 +58,9 @@ func (c User) Info(callback, session string) revel.Result {
 }
 
 //find a session is or not login
-func (c User) IsLogin(callback, session string) revel.Result {
+func (c User) IsLogin() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
 	id, _ := rcali.GetUserIdByLoginSession(session)
 	if id == "" {
 		return c.RenderJSONP(callback, models.NewErrorApi())
@@ -66,13 +70,18 @@ func (c User) IsLogin(callback, session string) revel.Result {
 }
 
 //delete the server's login cache
-func (c User) Logout(callback, session string) revel.Result {
+func (c User) Logout() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
 	rcali.DeleteLoginSession(session)
 	return c.RenderJSONP(callback, models.NewOKApi())
 }
 
 //regist a user ,if delete watcherUserRegist in role action ,then not allow to regist
-func (c User) Regist(callback, loginName, loginPassword string) revel.Result {
+func (c User) Regist() revel.Result {
+	callback := c.Request.FormValue("callback")
+	loginName := c.Request.FormValue("loginName")
+	loginPassword := c.Request.FormValue("loginPassword")
 	if loginName == "" || loginPassword == "" {
 		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo("not null", nil))
 	} else {
@@ -95,7 +104,11 @@ func (c User) Regist(callback, loginName, loginPassword string) revel.Result {
 }
 
 // update userName and email by this method
-func (c User) Update(callback, session, userName, email string) revel.Result {
+func (c User) Update() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
+	userName := c.Request.FormValue("userName")
+	email := c.Request.FormValue("email")
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		user.UserName = userName
 		user.Email = email
@@ -112,7 +125,11 @@ func (c User) Update(callback, session, userName, email string) revel.Result {
 }
 
 // change the password ,need oldpassword and newpassword
-func (c User) ChangePassword(callback, session, oldLoginPassword, loginPassword string) revel.Result {
+func (c User) ChangePassword() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
+	oldLoginPassword := c.Request.FormValue("oldLoginPassword")
+	loginPassword := c.Request.FormValue("loginPassword")
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		if user.LoginPassword == rcali.Sha3_256(oldLoginPassword+user.Salt) {
 			//oldpassword is ok
@@ -131,8 +148,9 @@ func (c User) ChangePassword(callback, session, oldLoginPassword, loginPassword 
 	}
 }
 
-func (c User) QueryUserCount(callback, session string) revel.Result {
-	fmt.Printf("Form : %+v \n",c.Request.Form)
+func (c User) QueryUserCount() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		role := userRoleService.GetRoleByUser(user.Id)
 		if role.Name == "admin" {
@@ -142,7 +160,12 @@ func (c User) QueryUserCount(callback, session string) revel.Result {
 	return c.RenderJSONP(callback, models.NewErrorApi())
 }
 
-func (c User) QueryUser(callback, session string, limit, start int) revel.Result {
+func (c User) QueryUser() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
+	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.UserListNumsStr))
+	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
+
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		role := userRoleService.GetRoleByUser(user.Id)
 		if role.Name == "admin" {
@@ -152,7 +175,11 @@ func (c User) QueryUser(callback, session string, limit, start int) revel.Result
 	return c.RenderJSONP(callback, models.NewErrorApi())
 }
 
-func (c User) Delete(callback, session, userId string) revel.Result {
+func (c User) Delete() revel.Result {
+	callback := c.Request.FormValue("callback")
+	session := c.Request.FormValue("session")
+	userId := c.Request.FormValue("userId")
+
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		role := userRoleService.GetRoleByUser(user.Id)
 		if role.Name != "admin" {

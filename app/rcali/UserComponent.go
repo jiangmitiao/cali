@@ -42,10 +42,10 @@ func DeleteLoginSession(loginSession string) {
 	mux.Unlock()
 }
 
-func DeleteLoginUserId(userId string)  {
+func DeleteLoginUserId(userId string) {
 	mux.Lock()
 	for loginSession, v := range loginSessionMap {
-		if v==userId {
+		if v == userId {
 			delete(loginSessionMap, loginSession)
 			delete(loginSessionTime, loginSession)
 			break

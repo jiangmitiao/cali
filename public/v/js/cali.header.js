@@ -1,3 +1,10 @@
+
+function commonData() {
+    data = new FormData();
+    data.set("session",store.get("session"));
+    return data;
+}
+
 $(document).ready(function(){
     // 定义名为 headerdiv 的新组件
     Vue.component('headerdiv', {
@@ -63,7 +70,7 @@ $(document).ready(function(){
         ',
         methods:{
             logout:function () {
-                fetch('/api/user/logout?session='+store.get("session")).then(function(response) {
+                fetch('/api/user/logout',{method:'post',body:commonData()}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
@@ -106,7 +113,7 @@ $(document).ready(function(){
                     if (_.isUndefined(store.get("session")) || _.isUndefined(store.get("user"))){
                         return false;
                     }else {
-                        fetch('/api/user/islogin?session='+store.get("session")).then(function(response) {
+                        fetch('/api/user/islogin',{method:'post',body:commonData()}).then(function(response) {
                             if (response.redirected){
                                 window.location.href = response.url;
                             }

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    console.log("start");
+    //console.log("start");
     function UrlSearch(){
         var name,value;
         var str=location.href; //取得整个地址栏
@@ -65,7 +65,6 @@ $(document).ready(function(){
         data:function () {
             return {
                 withSession: function () {
-                    console.log(store.get("session"));
                     if (_.isUndefined(store.get("session"))){
                         return "&session=ok";
                     }else {
@@ -105,29 +104,30 @@ $(document).ready(function(){
 
         },
         created: function() {
-            console.log("created");
-            console.log(Request.bookid);
-            fetch('/book/book?bookid='+Request.bookid).then(function(response) {
+            //console.log("created");
+            var data = commonData();
+            data.set("bookid",Request.bookid);
+            fetch('/book/book',{method:'post',body:data}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
-                console.log('parsed json', json);
                 if (json.statusCode ==200){
                     app.book = json.info;
                     app.bookseen = true;
-                    fetch('/book/doubanbook?bookid='+json.info.id).then(function(response) {
+                    var data = commonData();
+                    data.set("bookid",json.info.id);
+                    fetch('/book/doubanbook',{method:'post',body:data}).then(function(response) {
                         if (response.redirected){
                             window.location.href = response.url;
                         }
                         return response.json();
                     }).then(function(json) {
                         if (json.statusCode ==200){
-                            console.log(JSON.parse(json.info));
                             var info = JSON.parse(json.info);
                             if (info.count != undefined & info.count!=0){
-                                console.log(info.books[0]);
+                                //console.log(info.books[0]);
                                 app.doubanbook = info.books[0];
                                 app.doubanbookseen = true;
                             }
@@ -143,11 +143,10 @@ $(document).ready(function(){
             });
         },
         beforeMount: function () {
-            console.log("beforeMount");
-            //this.book.title="oookkk"
+            //console.log("beforeMount");
         },
         mounted: function () {
-            console.log("mounted");
+            //console.log("mounted");
         }
     });
 });

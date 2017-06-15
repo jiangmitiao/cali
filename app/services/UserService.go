@@ -79,11 +79,11 @@ func (userService UserService) Regist(user models.UserInfo) bool {
 }
 
 func (userService UserService) QueryUserCount(name string) int64 {
-	var count int64= 0
+	var count int64 = 0
 	if name != "" {
-		count ,_ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like '%?%'", name).Or("user_name like '%?%'", name).Where("valid = ?", 0).Count(&models.UserInfo{})
+		count, _ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like '%?%'", name).Or("user_name like '%?%'", name).Where("valid = ?", 0).Count(&models.UserInfo{})
 	} else {
-		count ,_ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Count(&models.UserInfo{})
+		count, _ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Count(&models.UserInfo{})
 	}
 	return count
 }
@@ -102,7 +102,7 @@ func (userService UserService) QueryUser(name string, limit, start int) []models
 //set valid = 1 ,not allow delete admin
 func (userService UserService) DeleteUser(userId string) bool {
 	user := userService.GetUserById(userId)
-	if user.Id != "" && user.LoginName!="admin" {
+	if user.Id != "" && user.LoginName != "admin" {
 		user.Valid = 1
 		_, err := localEngine.Id(userId).Cols("valid").Update(user)
 		if err != nil {
