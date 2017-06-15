@@ -18,9 +18,10 @@ You can manage your books by [Cali](https://github.com/jiangmitial/cali).
 * List classify books
 * Get book's another infomation by douban.com
 * Download your favorite book
+* Read book online (support epub)
+* Limited user register and manage 
 * Delete books (planned)
 * Change attribute of book (planned)
-* Add user manage (planned)
 * etc...
 
 # Usages
@@ -32,6 +33,13 @@ You can manage your books by [Cali](https://github.com/jiangmitial/cali).
 you shoud have [calibre](https://calibre-ebook.com/) to manage your books which like *.epub,*.mobi ,.etc
 
 then remenber your calibre library's path and the `metadata.db`.
+
+**or**
+
+```shell
+apt-get install calibre
+calibre --with-library=WITH_LIBRARY
+```
 
 
 ### Download SourceCode or Releases
