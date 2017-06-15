@@ -22,6 +22,7 @@ You can manage your books by [Cali](https://github.com/jiangmitial/cali).
 * Limited user register and manage 
 * Delete books (planned)
 * Change attribute of book (planned)
+* Search (planned)
 * etc...
 
 # Usages
@@ -79,9 +80,8 @@ sh run.sh
 
 
 ### Go to http://localhost:9000/ and you'll see:
-```
- your library 
-```
+
+![index.png](index.png "")
 
 # Changelog
 

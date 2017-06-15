@@ -45,7 +45,7 @@ $(document).ready(function(){
                                     </ul>\
                             </li>\
                         </ul>\
-                        <form class="navbar-form navbar-left">\
+                        <form class="navbar-form navbar-left" style="display:none;">\
                             <div class="form-group">\
                                 <input type="text" class="form-control" :placeholder="$t(\'lang.searchholder\')">\
                             </div>\

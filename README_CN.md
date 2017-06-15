@@ -81,9 +81,8 @@ sh run.sh
 
 
 ### 在浏览器中打开 http://localhost:9000/ 你会看到:
-```
- 你的在线图书馆
-```
+
+![index_cn.png](index_cn.png "")
 
 # 修改日志
 
