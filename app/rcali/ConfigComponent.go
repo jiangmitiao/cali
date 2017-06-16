@@ -57,16 +57,24 @@ func ValueOrDefault(value, def string) string {
 	return def
 }
 
-//for debug
-type Debug string
+//for debug or
+type Log string
 
-func (d Debug) Debug(a ...interface{}) {
+func (d Log) Debug(a ...interface{}) {
 	if d == "dev" {
 		fmt.Println("Debug:", a)
 	}
 }
 
-var DEBUG = Debug("")
+func (d Log) Info(a ...interface{}) {
+	fmt.Println("Info:", a)
+}
+
+func (d Log) Error(a ...interface{}) {
+	fmt.Println("Error:", a)
+}
+
+var Logger = Log("")
 
 // Home returns the home directory for the executing user.
 //

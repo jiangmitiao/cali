@@ -5,54 +5,43 @@ import (
 	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
 	"strings"
+	"github.com/jiangmitiao/cali/app/models"
 )
 
 var (
-	dbok = false
-
 	userService       = services.DefaultUserService
 	userRoleService   = services.DefaultUserRoleService
 	roleActionService = services.DefaultRoleActionService
+
+	//roleActionCache controller action role
+	roleActionCache = make(map[string]map[string]map[string]string)
 )
 
-//init db on first view
-func dbInterceptor(c *revel.Controller) revel.Result {
-	var controller = strings.Title(c.Name)
-	var method = strings.Title(c.MethodName)
-	if controller == "Static" { //不拦截静态地址
-		return nil
-	}
-
-	if dbok && controller == "Install" {
-		return c.Redirect("/")
-	}
-	if controller == "Install" && method == "Index" {
-		return nil
-	}
-
-	if !dbok {
-		//加载db
-		if sqlitedbpath, ok := rcali.GetSqliteDbPath(); ok {
-			rcali.DEBUG.Debug("database init " + sqlitedbpath)
-			if ok, err := services.DbInit(sqlitedbpath); ok {
-				dbok = true
-				return nil
-			} else {
-				rcali.DEBUG.Debug("database error ", err)
-				return c.Redirect("install/")
-			}
-		} else {
-			return c.Redirect("install/")
-		}
-
-	}
-	return nil
-}
-
 func validateOK(controller, method, role string) bool {
+
+	if methods, ok := roleActionCache[controller]; ok {
+		if roles, ok := methods[method]; ok {
+			if allow, ok := roles[role]; ok {
+				if allow != "" {
+					return true
+				} else {
+					rcali.Logger.Debug("this action need to login :", controller, method, role)
+					return false
+				}
+			}
+		}
+	}
+
 	roleAction := roleActionService.GetRoleActionByControllerMethodRole(controller, method, role)
+	if roleActionCache[controller] == nil {
+		roleActionCache[controller] = make(map[string]map[string]string)
+	}
+	if roleActionCache[controller][method] == nil {
+		roleActionCache[controller][method] = make(map[string]string)
+	}
+	roleActionCache[controller][method][role] = roleAction.Id
 	if roleAction.Id == "" {
-		rcali.DEBUG.Debug("this action need to login :", controller, method, role)
+		rcali.Logger.Debug("this action need to login :", controller, method, role)
 		return false
 	} else {
 		return true
@@ -69,23 +58,22 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 	if controller == "Install" {
 		return nil
 	}
+	rcali.Logger.Debug("controller: ", controller)
+	rcali.Logger.Debug("method: ", method)
 
-	var session string
-	rcali.DEBUG.Debug("controller: ", controller)
-	rcali.DEBUG.Debug("method: ", method)
+	session := c.Request.Form.Get("session")
 
-	c.Params.Bind(&session, "session")
-	if session == "" {
-		session = c.Request.Form.Get("session")
-	}
 	id, _ := rcali.GetUserIdByLoginSession(session)
-	role := userRoleService.GetRoleByUser(id)
+	var role  models.Role
+	if id != "" {
+		role = userRoleService.GetRoleByUser(id)
+	}
 	roleId := role.Id
 	if roleId == "" {
 		roleId = "watcher"
 	}
 
-	rcali.DEBUG.Debug("role: ", roleId)
+	rcali.Logger.Debug("role: ", roleId)
 
 	if validateOK(controller, method, roleId) {
 		return nil
@@ -94,18 +82,6 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 	}
 }
 
-//init the debug on first view page
-func DebugInterceptor(c *revel.Controller) revel.Result {
-	if rcali.DEBUG == "" {
-		rcali.DEBUG = rcali.Debug(revel.RunMode)
-		return nil
-	} else {
-		return nil
-	}
-}
-
 func init() {
-	revel.InterceptFunc(DebugInterceptor, revel.BEFORE, revel.AllControllers)
-	revel.InterceptFunc(dbInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(authInterceeptor, revel.BEFORE, revel.AllControllers)
 }

@@ -1,16 +1,19 @@
 package app
 
 import (
+	"errors"
 	"github.com/jiangmitiao/cali/app/rcali"
+	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
+	"time"
 )
 
 var (
 	// AppVersion revel app version (ldflags)
-	AppVersion string
+	AppVersion string = "v0.0.2"
 
 	// BuildTime revel app build-time (ldflags)
-	BuildTime string
+	BuildTime string = time.Now().Format("2006-01-02")
 )
 
 func init() {
@@ -37,6 +40,9 @@ func init() {
 	// revel.OnAppStart(ExampleStartupScript)
 	// revel.OnAppStart(InitDB)
 	// revel.OnAppStart(FillCache)
+
+	revel.OnAppStart(InitDebug)
+	revel.OnAppStart(InitDB)
 }
 
 // HeaderFilter adds common security headers
@@ -58,3 +64,21 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
 //		// Dev mode
 //	}
 //}
+
+//init db on first view
+func InitDB() {
+	if dbPath, found := rcali.GetSqliteDbPath(); found {
+		if ok, err := services.DbInit(dbPath); ok {
+			rcali.Logger.Info("---------------------dbok---------------------")
+		} else {
+			panic(err)
+		}
+	} else {
+		panic(errors.New("sqlite path not found"))
+	}
+}
+
+func InitDebug() {
+	//init the debug on first view page
+	rcali.Logger = rcali.Log(revel.RunMode)
+}

@@ -59,7 +59,7 @@ func freshMap() {
 	mux.Lock()
 	for k, v := range loginSessionTime {
 		if timeNow.Unix()-v.Unix() > timeOut {
-			DEBUG.Debug("delete session ", k)
+			Logger.Debug("delete session ", k)
 			delete(loginSessionMap, k)
 			delete(loginSessionTime, k)
 		}

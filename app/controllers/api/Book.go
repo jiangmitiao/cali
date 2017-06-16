@@ -167,7 +167,7 @@ func (c Book) DoubanBook() revel.Result {
 	callback := c.Request.FormValue("callback")
 
 	bookVo := services.QueryBook(bookid)
-	rcali.DEBUG.Debug("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
+	rcali.Logger.Debug("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
 	resp, err := http.Get("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
 	if err != nil {
 		// handle error
@@ -197,7 +197,7 @@ func (c *Book) UploadBook() revel.Result {
 			return c.RenderJSON(models.NewOKApiWithInfo("add book success"))
 		}
 	} else {
-		rcali.DEBUG.Debug("read file error :", err.Error())
+		rcali.Logger.Debug("read file error :", err.Error())
 		return c.RenderJSON(models.NewErrorApiWithInfo(err))
 	}
 	return c.RenderJSON(models.NewOKApi())

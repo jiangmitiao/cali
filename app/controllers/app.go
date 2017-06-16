@@ -10,5 +10,6 @@ type App struct {
 
 func (c App) Index() revel.Result {
 	//return c.Render()
+
 	return c.RenderTemplate("App/Cali.html")
 }

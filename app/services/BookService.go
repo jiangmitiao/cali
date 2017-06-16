@@ -128,7 +128,7 @@ func QueryBookFileByte(bookid int) []byte {
 			return bytes
 		}
 	}
-	rcali.DEBUG.Debug(data, book)
+	rcali.Logger.Debug(data, book)
 	return make([]byte, 0)
 }
 
@@ -146,7 +146,7 @@ func QueryBookFile(bookid int) (*os.File, error) {
 			return f, nil
 		}
 	}
-	rcali.DEBUG.Debug(data, book)
+	rcali.Logger.Debug(data, book)
 	return nil, errors.New("no exit")
 }
 
