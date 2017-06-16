@@ -23,7 +23,7 @@ $(document).ready(function(){
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
-                        window.location = "/public/v/login.html"
+                        window.location = "/login"
                     }else {
                         alert("注册失败:"+json.message);
                     }

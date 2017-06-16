@@ -29,7 +29,7 @@ $(document).ready(function(){
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">\
                         <ul class="nav navbar-nav">\
                             <li v-bind:class="{ active: isindex }"><a href="/" target="_blank"><span v-text="$t(\'lang.index\')"></span> <span class="sr-only">(current)</span></a></li>\
-                            <li v-bind:class="{ active: islibrary }"><a href="/public/v/public.html" target="_blank"><span v-text="$t(\'lang.library\')"></span> <span class="sr-only">(current)</span></a></li>\
+                            <li v-bind:class="{ active: islibrary }"><a href="/public" target="_blank"><span v-text="$t(\'lang.library\')"></span> <span class="sr-only">(current)</span></a></li>\
                             <li><a href="https://github.com/jiangmitiao/cali/blob/master/README.md" target="_blank"><span v-text="$t(\'lang.help\')"></span></a></li>\
                             <li><a href="http://blog.gavinzh.com" target="_blank"><span v-text="$t(\'lang.blog\')"></span></a></li>\
                             <li v-if="leftdropdownseen" class="dropdown">\
@@ -56,9 +56,9 @@ $(document).ready(function(){
                             <li v-if="rightdropdownseen" class="dropdown">\
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-if="islogin" v-text="user.userName"></span><span v-if="!islogin" v-text="$t(\'lang.personcenter\')"></span><span class="caret"></span></a>\
                                 <ul class="dropdown-menu">\
-                                    <li v-if="islogin"><a href="/public/v/person.html" target="_blank"><span v-text="$t(\'lang.personcenter\')" target="_blank"></span></a></li>\
+                                    <li v-if="islogin"><a href="/person" target="_blank"><span v-text="$t(\'lang.personcenter\')" target="_blank"></span></a></li>\
                                     <li role="separator" class="divider"></li>\
-                                    <li v-if="!islogin"><a href="/public/v/login.html" target="_blank"><span v-text="$t(\'lang.login\')"></span></a></li>\
+                                    <li v-if="!islogin"><a href="/login" target="_blank"><span v-text="$t(\'lang.login\')"></span></a></li>\
                                     <li v-if="islogin"><a href="#" @click="logout"><span v-text="$t(\'lang.logout\')"></span></a></li>\
                                 </ul>\
                             </li>\
@@ -103,7 +103,7 @@ $(document).ready(function(){
                     }
                 }(),
                 islibrary:function () {
-                    if (window.location.pathname.indexOf("public.html") >=0){
+                    if (window.location.pathname.indexOf("public") >=0){
                         return true;
                     } else {
                         return false;

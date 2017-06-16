@@ -139,7 +139,7 @@ $(document).ready(function(){
                                 if (user.statusCode ==200){
                                     store.set("user", user.info);
                                     alert("update success");
-                                    window.location = "/public/v/person.html"
+                                    window.location = "/person"
                                 }else {
                                     alert("密码错误:"+user.message);
                                 }
@@ -182,7 +182,7 @@ $(document).ready(function(){
                         store.remove("user");
                         store.remove("session");
                         alert("update success");
-                        window.location = "/public/v/login.html"
+                        window.location = "/login"
                     }else {
                         alert("密码错误:"+json.message);
                     }
@@ -208,7 +208,7 @@ $(document).ready(function(){
         created: function() {
             //console.log("created");
             if (_.isUndefined(store.get("session")) || _.isUndefined(store.get("user"))){
-                window.location = "/public/v/login.html";
+                window.location = "/login";
             }
             this.session = store.get('session');
             this.user = store.get('user');

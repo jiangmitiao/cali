@@ -8,7 +8,7 @@ $(document).ready(function(){
         <footer class="navbar-fixed-bottom">\
             <div class="container">\
                 <div class="copy text-center">\
-                    Copyright 2017 <a href="#">Cali</a>\
+                    Copyright 2017 <a href="/">Cali</a>\
                 </div>\
             </div>\
         </footer>\

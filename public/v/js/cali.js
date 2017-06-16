@@ -9,8 +9,8 @@ $(document).ready(function(){
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">\
             <div class="content-box">\
                 <div class="panel-body">\
-                    <a :href="\'/public/v/book.html?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="\'/book/bookimage?bookid=\'+book.id" width="100%" height="100%"/>\
+                    <a :href="\'/book?bookid=\'+book.id" target="_blank">\
+                        <img class="cover" :src="\'/api/book/bookimage?bookid=\'+book.id" width="100%" height="100%"/>\
                     </a>\
                     <p class="text-center">\
                         <span v-text="maxstring(book.title,10)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
@@ -147,7 +147,7 @@ $(document).ready(function(){
             tagclick:function (tagid) {
                 var form = commonData();
                 form.set("tagid",tagid);
-                fetch('/book/tagbookscount',{method:'post',body:form}).then(function(response) {
+                fetch('/api/book/tagbookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
@@ -173,7 +173,7 @@ $(document).ready(function(){
                                 form.set("start",_.min(data));
                                 form.set("limit",data.length);
                                 form.set("tagid",tagid);
-                                fetch('/book/tagbooks',{method:'post',body:form}).then(function(response) {
+                                fetch('/api/book/tagbooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
                                     }
@@ -199,7 +199,7 @@ $(document).ready(function(){
             authorclick:function (authorid) {
                 var form = commonData();
                 form.set("authorid",authorid);
-                fetch('/book/authorbookscount',{method:'post',body:form}).then(function(response) {
+                fetch('/api/book/authorbookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
@@ -224,7 +224,7 @@ $(document).ready(function(){
                                 form.set("start",_.min(data));
                                 form.set("limit",data.length);
                                 form.set("authorid",authorid);
-                                fetch('/book/authorbooks',{method:'post',body:form}).then(function(response) {
+                                fetch('/api/book/authorbooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
                                     }
@@ -250,7 +250,7 @@ $(document).ready(function(){
             languageclick:function (lang_code) {
                 var form = commonData();
                 form.set("lang_code",lang_code);
-                fetch('/book/languagebookscount',{method:'post',body:form}).then(function(response) {
+                fetch('/api/book/languagebookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
                     }
@@ -275,7 +275,7 @@ $(document).ready(function(){
                                 form.set("start",_.min(data));
                                 form.set("limit",data.length);
                                 form.set("lang_code",lang_code);
-                                fetch('/book/languagebooks',{method:'post',body:form}).then(function(response) {
+                                fetch('/api/book/languagebooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
                                     }
@@ -323,7 +323,7 @@ $(document).ready(function(){
             //when page's instance created,we should get the data to render the page
             //console.log("created");
             //hotbooks展示分页
-            fetch('/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
+            fetch('/api/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -347,7 +347,7 @@ $(document).ready(function(){
                             var form = commonData();
                             form.set("start",_.min(data));
                             form.set("limit",data.length);
-                            fetch('/book/ratingbooks',{method:'post',body:form}).then(function(response) {
+                            fetch('/api/book/ratingbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
@@ -369,7 +369,7 @@ $(document).ready(function(){
             });
 
             //newbooks展示分页
-            fetch('/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
+            fetch('/api/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -393,7 +393,7 @@ $(document).ready(function(){
                             var form = commonData();
                             form.set("start",_.min(data));
                             form.set("limit",data.length);
-                            fetch('/book/newbooks',{method:'post',body:form}).then(function(response) {
+                            fetch('/api/book/newbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
@@ -415,7 +415,7 @@ $(document).ready(function(){
             });
 
             //discover展示分页
-            fetch('/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
+            fetch('/api/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -439,7 +439,7 @@ $(document).ready(function(){
                             var form = commonData();
                             form.set("start",_.min(data));
                             form.set("limit",data.length);
-                            fetch('/book/discoverbooks',{method:'post',body:form}).then(function(response) {
+                            fetch('/api/book/discoverbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
@@ -461,7 +461,7 @@ $(document).ready(function(){
             });
 
             //tags展示分页
-            fetch('/tag/tagscount',{method:'post',body:commonData()}).then(function(response) {
+            fetch('/api/tag/tagscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -485,7 +485,7 @@ $(document).ready(function(){
                             var form = commonData();
                             form.set("start",_.min(data));
                             form.set("limit",data.length);
-                            fetch('/tag/tags',{method:'post',body:form}).then(function(response) {
+                            fetch('/api/tag/tags',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
@@ -507,7 +507,7 @@ $(document).ready(function(){
             });
 
             //authornames展示分页
-            fetch('/author/authorscount',{method:'post',body:commonData()}).then(function(response) {
+            fetch('/api/author/authorscount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -531,7 +531,7 @@ $(document).ready(function(){
                             var form = commonData();
                             form.set("start",_.min(data));
                             form.set("limit",data.length);
-                            fetch('/author/authors',{method:'post',body:form}).then(function(response) {
+                            fetch('/api/author/authors',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }
@@ -553,7 +553,7 @@ $(document).ready(function(){
             });
 
             //languagenames展示分页
-            fetch('/language/languagescount',{method:'post',body:commonData()}).then(function(response) {
+            fetch('/api/language/languagescount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -577,7 +577,7 @@ $(document).ready(function(){
                             var form = commonData();
                             form.set("start",_.min(data));
                             form.set("limit",data.length);
-                            fetch('/language/languages',{method:'post',body:form}).then(function(response) {
+                            fetch('/api/language/languages',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
                                 }

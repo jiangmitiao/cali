@@ -24,10 +24,11 @@ func init() {
 		revel.FilterConfiguringFilter, // A hook for adding or removing per-Action filters.
 		revel.ParamsFilter,            // Parse parameters into Controller.Params.
 		rcali.QueryParamsFilter,
-		revel.SessionFilter,     // Restore and write the session cookie.
-		revel.FlashFilter,       // Restore and write the flash cookie.
-		revel.ValidationFilter,  // Restore kept validation errors and save new ones from cookie.
-		revel.I18nFilter,        // Resolve the requested language
+		revel.SessionFilter,    // Restore and write the session cookie.
+		revel.FlashFilter,      // Restore and write the flash cookie.
+		revel.ValidationFilter, // Restore kept validation errors and save new ones from cookie.
+		//revel.I18nFilter,        // Resolve the requested language
+		rcali.I18nFilter,
 		HeaderFilter,            // Add some security based headers
 		revel.InterceptorFilter, // Run interceptors around the action.
 		revel.CompressFilter,    // Compress the result.

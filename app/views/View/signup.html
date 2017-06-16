@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Cali Login</title>
+	<title>Cali {{msg . "signup"}}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!-- Bootstrap -->
 	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 	<!-- styles -->
-	<link href="css/styles.css" rel="stylesheet">
+	<link href="/public/v/css/styles.css" rel="stylesheet">
 
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -14,6 +14,9 @@
 	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 	<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 	<![endif]-->
+	{{if ne .cnzzid ""}}
+	<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display:none' id='cnzz_stat_icon_{{.cnzzid}}'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D{{.cnzzid}}' type='text/javascript'%3E%3C/script%3E"));</script>
+	{{end}}
 </head>
 <body class="login-bg">
 <div id="root">
@@ -25,18 +28,20 @@
 				<div class="login-wrapper">
 					<div class="box">
 						<div class="content-wrap">
-							<h6><span v-text="$t('lang.signin')"></span></h6>
+							<h6><span v-text="$t('lang.signup')"></span></h6>
 							<input class="form-control" type="text" :placeholder="$t('lang.loginName')" v-model="loginName">
 							<input class="form-control" type="password" :placeholder="$t('lang.loginPassword')" v-model="loginPassword">
+							<input class="form-control" type="password" :placeholder="$t('lang.confirmloginPassword')" v-model="repeatLoginPassword">
+							<p style="color: red;"><span v-text="tipinfo==''?'':$t(tipinfo)"></span></p>
 							<div class="action">
-								<a class="btn btn-primary signup" @keyup.enter="login" @click="login"><span v-text="$t('lang.login')"></span></a>
+								<a class="btn btn-primary signup" @click="regist"><span v-text="$t('lang.signup')"></span></a>
 							</div>
 						</div>
 					</div>
 
 					<div class="already">
-						<p><span v-text="$t('lang.dhaay')"></span></p>
-						<a href="signup.html"><span v-text="$t('lang.signup')"></span></a>
+						<p><span v-text="$t('lang.haaa')"></span></p>
+						<a href="/login"><span v-text="$t('lang.login')"></span></a>
 					</div>
 				</div>
 			</div>
@@ -44,23 +49,22 @@
 	</div>
 
 	<footerdiv></footerdiv>
-
 </div>
+
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="js/custom.js"></script>
 <script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore.js"></script>
 <script src="https://cdn.bootcss.com/fetch/2.0.3/fetch.js"></script>
 <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
 <!--https://github.com/kazupon/vue-i18n-->
 <script src="https://cdn.bootcss.com/vue-i18n/7.0.0/vue-i18n.js"></script>
 <script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
-<script src="js/cali.header.js"></script>
-<script src="js/cali.footer.js"></script>
-<script src="js/cali.i18n.js"></script>
-<script src="js/cali.login.js"></script>
+<script src="/public/v/js/cali.header.js"></script>
+<script src="/public/v/js/cali.footer.js"></script>
+<script src="/public/v/js/cali.i18n.js"></script>
+<script src="/public/v/js/cali.signup.js"></script>
 </body>
 </html>

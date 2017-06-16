@@ -6,18 +6,19 @@
 module:testrunner
 # module:jobs
 
+# static view
+GET     /                                       View.Index
+GET     /public                                 View.Public
+GET     /book                                   View.Book
+GET     /login                                  View.Login
+GET     /signup                                 View.SignUp
+GET     /person                                 View.Person
+GET     /read                                   View.Read
 
-GET     /                                       App.Index
-
-
-
-GET       /install                          Install.Index
-GET       /install/*                          Install.Index
-
-*       /book/bookdown.epub                    Book.BookDown
-
+# api
+*       /api/book/bookdown.epub                 Book.BookDown
 *       /api/:controller/:action                :controller.:action
-GET     /:controller                            :controller.Index
+*       /api/:controller                        :controller.Index
 
 
 # Ignore favicon requests
@@ -27,4 +28,4 @@ GET     /favicon.ico                            404
 GET     /public/*filepath                       Static.Serve("public")
 
 # Catch all
-*       /:controller/:action                    :controller.:action
+#*       /:controller/:action                    :controller.:action

@@ -47,7 +47,7 @@ $(document).ready(function(){
             $("#area").css("height",""+(600)+"px");
             $("#area").css("width",""+(500)+"px");
             var bookid=Request.bookid;
-            var url = "/book/bookdown.epub?bookid="+bookid+"&session="+store.get("session");
+            var url = "/api/book/bookdown.epub?bookid="+bookid+"&session="+store.get("session");
             //console.log(url);
             Book.open(url);
             Book.getMetadata().then(function(meta){

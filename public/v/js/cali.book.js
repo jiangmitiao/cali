@@ -31,7 +31,7 @@ $(document).ready(function(){
             <div class="panel-body">\
                 <div class="row">\
                     <div class="col-md-3 col-md-offset-1">\
-                        <img width="100%" height="100%" :src="\'/book/bookimage?bookid=\'+book.id"/>\
+                        <img width="100%" height="100%" :src="\'/api/book/bookimage?bookid=\'+book.id"/>\
                     </div>\
                     <div class="col-md-5">\
                         <p <span v-text="$t(\'lang.bookname\')"></span>: <span v-text="book.title"></span></p>\
@@ -41,8 +41,8 @@ $(document).ready(function(){
                         <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="book.isbn"></span></p>\
                         <p><span v-text="$t(\'lang.bookmodifiedtime\')"></span>: <span v-text="formatdate(book.last_modified)"></span></p>\
                         <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="book.rating"></span></p>\
-                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/book/bookdown?bookid=\'+book.id+withSession"><span v-text="$t(\'lang.download\')"></span></a></p>\
-                        <p v-if="book.format==\'EPUB\'"><span v-text="$t(\'lang.read\')"></span>: <a :href="\'read.html?bookid=\'+book.id"><span v-text="$t(\'lang.read\')"></span></a></p>\
+                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/api/book/bookdown?bookid=\'+book.id+withSession"><span v-text="$t(\'lang.download\')"></span></a></p>\
+                        <p v-if="book.format==\'EPUB\'"><span v-text="$t(\'lang.read\')"></span>: <a :href="\'/read?bookid=\'+book.id"><span v-text="$t(\'lang.read\')"></span></a></p>\
                         <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(book.comments)"></span></p>\
                     </div>\
                 </div>\
@@ -107,7 +107,7 @@ $(document).ready(function(){
             //console.log("created");
             var data = commonData();
             data.set("bookid",Request.bookid);
-            fetch('/book/book',{method:'post',body:data}).then(function(response) {
+            fetch('/api/book/book',{method:'post',body:data}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -118,7 +118,7 @@ $(document).ready(function(){
                     app.bookseen = true;
                     var data = commonData();
                     data.set("bookid",json.info.id);
-                    fetch('/book/doubanbook',{method:'post',body:data}).then(function(response) {
+                    fetch('/api/book/doubanbook',{method:'post',body:data}).then(function(response) {
                         if (response.redirected){
                             window.location.href = response.url;
                         }

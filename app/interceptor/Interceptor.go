@@ -1,17 +1,18 @@
 package interceptor
 
 import (
+	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
 	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
 	"strings"
-	"github.com/jiangmitiao/cali/app/models"
 )
 
 var (
 	userService       = services.DefaultUserService
 	userRoleService   = services.DefaultUserRoleService
 	roleActionService = services.DefaultRoleActionService
+	sysConfigService  = services.DefaultSysConfigService
 
 	//roleActionCache controller action role
 	roleActionCache = make(map[string]map[string]map[string]string)
@@ -48,14 +49,14 @@ func validateOK(controller, method, role string) bool {
 	}
 }
 
-func authInterceeptor(c *revel.Controller) revel.Result {
+func authInterceptor(c *revel.Controller) revel.Result {
 	// 全部变成首字大写
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	if controller == "Static" { //不拦截静态地址
 		return nil
 	}
-	if controller == "Install" {
+	if controller == "View" {
 		return nil
 	}
 	rcali.Logger.Debug("controller: ", controller)
@@ -64,7 +65,7 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 	session := c.Request.Form.Get("session")
 
 	id, _ := rcali.GetUserIdByLoginSession(session)
-	var role  models.Role
+	var role models.Role
 	if id != "" {
 		role = userRoleService.GetRoleByUser(id)
 	}
@@ -78,10 +79,20 @@ func authInterceeptor(c *revel.Controller) revel.Result {
 	if validateOK(controller, method, roleId) {
 		return nil
 	} else {
-		return c.Redirect("/public/v/login.html")
+		return c.Redirect("/login")
 	}
 }
 
+func configInterceptor(c *revel.Controller) revel.Result {
+	var controller = strings.Title(c.Name)
+	if controller == "View" {
+		c.ViewArgs["cnzzid"] = sysConfigService.Get("cnzzid")
+		return nil
+	}
+	return nil
+}
+
 func init() {
-	revel.InterceptFunc(authInterceeptor, revel.BEFORE, revel.AllControllers)
+	revel.InterceptFunc(authInterceptor, revel.BEFORE, revel.AllControllers)
+	revel.InterceptFunc(configInterceptor, revel.AFTER, revel.AllControllers)
 }

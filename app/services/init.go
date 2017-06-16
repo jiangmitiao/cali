@@ -18,25 +18,24 @@ var (
 	DefaultUserService       = UserService{}
 	DefaultUserRoleService   = UserRoleService{}
 	DefaultRoleActionService = RoleActionService{}
+	DefaultSysConfigService  = SysConfigService{}
 )
 
 //init the db,should take a db filepath
 func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, database string
-	if bool, err := rcali.FileExists(SqliteDbPath); !bool {
+	if exist, err := rcali.FileExists(SqliteDbPath); !exist {
 		rcali.Logger.Error("sqlitedbpath is error", SqliteDbPath, err)
 		return false, err
 	}
 
 	var err error
-	engine, err = xorm.NewEngine("sqlite3", SqliteDbPath)
-	if err != nil {
+	if engine, err = xorm.NewEngine("sqlite3", SqliteDbPath); err != nil {
 		rcali.Logger.Error("open sqlitedb fail on ", SqliteDbPath, err)
 		return false, err
 	}
 	engine.ShowSQL(true)
 	engine.Logger().SetLevel(core.LOG_DEBUG)
-	err = engine.Ping()
-	if err != nil {
+	if err = engine.Ping(); err != nil {
 		rcali.Logger.Error("ping sqlitedb fail on ", SqliteDbPath, err)
 		return false, err
 	}
@@ -84,15 +83,13 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 
 	//localengine
 	userHome, _ := rcali.Home()
-	localEngine, err = xorm.NewEngine("sqlite3", path.Join(userHome, ".calilocaldb.db"))
-	if err != nil {
+	if localEngine, err = xorm.NewEngine("sqlite3", path.Join(userHome, ".calilocaldb.db")); err != nil {
 		rcali.Logger.Error("open sqlitedb fail on ", path.Join(userHome, ".calilocaldb.db"), err)
 		return false, err
 	}
 	localEngine.ShowSQL(true)
 	localEngine.Logger().SetLevel(core.LOG_DEBUG)
-	err = localEngine.Ping()
-	if err != nil {
+	if err = localEngine.Ping(); err != nil {
 		rcali.Logger.Error("ping sqlitedb fail on ", path.Join(userHome, ".calilocaldb.db"), err)
 		return false, err
 	}
@@ -105,23 +102,20 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	tmpInfo := models.UserInfo{}
 	localEngine.ID("init").Get(&tmpInfo)
 	if tmpInfo.Id != "init" {
-		_, err = localEngine.Insert(models.DefaultUserInfo)
-		if err != nil {
+		if _, err = localEngine.Insert(models.DefaultUserInfo); err != nil {
 			return false, err
 		}
 	}
 	tmpInfo = models.UserInfo{}
 	localEngine.ID("admin").Get(&tmpInfo)
 	if tmpInfo.Id != "admin" {
-		_, err = localEngine.Insert(models.DefaultAdminUserInfo)
-		if err != nil {
+		if _, err = localEngine.Insert(models.DefaultAdminUserInfo); err != nil {
 			return false, err
 		}
 	}
 
 	//add role table
-	err = localEngine.Sync2(models.Role{})
-	if err != nil {
+	if err = localEngine.Sync2(models.Role{}); err != nil {
 		if err != nil {
 			return false, err
 		}
@@ -152,23 +146,20 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	}
 
 	//add default user and role
-	err = localEngine.Sync2(models.UserInfoRoleLink{})
-	if err != nil {
+	if err = localEngine.Sync2(models.UserInfoRoleLink{}); err != nil {
 		return false, err
 	}
 	userRoleLinkInfo := models.UserInfoRoleLink{}
 	localEngine.ID("user").Get(&userRoleLinkInfo)
 	if userRoleLinkInfo.Id != "user" {
-		_, err = localEngine.Insert(models.DefaultUserInfoRole)
-		if err != nil {
+		if _, err = localEngine.Insert(models.DefaultUserInfoRole); err != nil {
 			return false, err
 		}
 	}
 	userRoleLinkInfo = models.UserInfoRoleLink{}
 	localEngine.ID("admin").Get(&userRoleLinkInfo)
 	if userRoleLinkInfo.Id != "admin" {
-		_, err = localEngine.Insert(models.DefaultAdminUserInfoRole)
-		if err != nil {
+		if _, err = localEngine.Insert(models.DefaultAdminUserInfoRole); err != nil {
 			return false, err
 		}
 	}
@@ -176,12 +167,26 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	//add role action
 	roleAction := models.RoleAction{}
 	err = localEngine.DropTables(roleAction)
-	err = localEngine.Sync2(models.RoleAction{})
-	if err != nil {
+	if err = localEngine.Sync2(models.RoleAction{}); err != nil {
 		return false, err
 	}
 	if _, err = localEngine.Insert(models.RoleActions); err != nil {
 		return false, err
+	}
+
+	//sysconfig add
+	if err = localEngine.Sync2(models.SysConfig{}); err != nil {
+		return false, err
+	}
+	for _, value := range models.DefaultSysConfig {
+		sysConfig := models.SysConfig{}
+		localEngine.ID(value.Id).Get(&sysConfig)
+		if sysConfig.Id != value.Id {
+			_, err = localEngine.Insert(value)
+			if err != nil {
+				return false, err
+			}
+		}
 	}
 
 	rcali.Logger.Info("----------DbInitOk----------")
