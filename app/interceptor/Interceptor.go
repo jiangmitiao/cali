@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"fmt"
 )
 
 var (
@@ -132,7 +133,8 @@ func takeAvailable(userId string, maxDayLimit int64) int64 {
 func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
-	if controller == "Book" && method == "BookDown" {
+	fmt.Println("downloadLimitInterceptor------------------- ")
+	if controller == "Book" && method == "BookDown" && c.Response.Status == 0{
 		limitConfig,_ := strconv.Atoi(sysConfigService.Get("alldownloadlimit"))
 		if takeAvailable("common", int64(limitConfig)) <= 0 {
 			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
@@ -144,7 +146,7 @@ func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 func init() {
 	revel.InterceptFunc(authInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(openRegistInterceptor, revel.BEFORE, revel.AllControllers)
-	revel.InterceptFunc(downloadLimitInterceptor, revel.BEFORE, revel.AllControllers)
+	revel.InterceptFunc(downloadLimitInterceptor, revel.AFTER, revel.AllControllers)
 	revel.InterceptFunc(configInterceptor, revel.AFTER, revel.AllControllers)
 
 }
