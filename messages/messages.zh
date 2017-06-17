@@ -6,12 +6,22 @@ startRead=开始阅读
 
 ## login
 login=登录
+loginNameOrLoginPasswordError=登录名或密码错误
+loginSuccess=登录成功
 
 ## signup
 signup=注册
 
 ## person
 person=个人中心
+emailOrUsernameIsTooLong=email或昵称太长
 
 ## public
 library=图书馆
+
+## other
+uncatchedError=未知错误
+needLogin=需要登录
+
+
+limitdownload=限制下载

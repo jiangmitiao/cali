@@ -91,13 +91,13 @@
                             <div class="form-group">
                                 <label for="userName" class="col-sm-2 control-label"><span v-text="$t('lang.userName')"></span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="userName" name="userName" v-model="user.userName">
+                                    <input type="text" class="form-control" maxlength="64" id="userName" name="userName" v-model="user.userName">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="email" class="col-sm-2 control-label"><span v-text="$t('lang.email')"></span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="email" name="email" v-model="user.email">
+                                    <input type="email" class="form-control" maxlength="128" id="email" name="email" v-model="user.email">
                                 </div>
                             </div>
                             <p class="col-sm-offset-2" style="color: red;"><span v-text="changeuserinfotipinfo==''?'':$t(changeuserinfotipinfo)"></span></p>
@@ -119,19 +119,19 @@
                             <div class="form-group">
                                 <label for="oldPassword" class="col-sm-2 control-label"><span v-text="$t('lang.oldLoginPassword')"></span></label>
                                 <div class="col-sm-10">
-                                    <input v-model="oldLoginPassword" @change="checkchangepassword" type="password" class="form-control" id="oldPassword" name="userName" :placeholder="$t('lang.oldLoginPassword')">
+                                    <input v-model="oldLoginPassword" maxlength="64" @change="checkchangepassword" type="password" class="form-control" id="oldPassword" name="userName" :placeholder="$t('lang.oldLoginPassword')">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="loginPassword" class="col-sm-2 control-label"><span v-text="$t('lang.loginPassword')"></span></label>
                                 <div class="col-sm-10">
-                                    <input v-model="loginPassword" @change="checkchangepassword" type="password" class="form-control" id="loginPassword" name="loginPassword" :placeholder="$t('lang.loginPassword')">
+                                    <input v-model="loginPassword" maxlength="64" @change="checkchangepassword" type="password" class="form-control" id="loginPassword" name="loginPassword" :placeholder="$t('lang.loginPassword')">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="repeateLoginPassword" class="col-sm-2 control-label"><span v-text="$t('lang.loginPassword')"></span></label>
                                 <div class="col-sm-10">
-                                    <input v-model="repeatLoginPassword" @change="checkchangepassword" type="password" class="form-control" id="repeateLoginPassword" name="repeateLoginPassword" :placeholder="$t('lang.confirmloginPassword')">
+                                    <input v-model="repeatLoginPassword" maxlength="64" @change="checkchangepassword" type="password" class="form-control" id="repeateLoginPassword" name="repeateLoginPassword" :placeholder="$t('lang.confirmloginPassword')">
                                 </div>
                             </div>
                             <p class="col-sm-offset-2" style="color: red;"><span v-text="changepasswordtipinfo==''?'':$t(changepasswordtipinfo)"></span></p>

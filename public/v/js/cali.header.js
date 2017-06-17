@@ -54,11 +54,12 @@ $(document).ready(function(){
                         <ul class="nav navbar-nav navbar-right">\
                             <li><a href="https://github.com/jiangmitiao/cali"  target="_blank">Github</a></li>\
                             <li v-if="rightdropdownseen" class="dropdown">\
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-if="islogin" v-text="user.userName"></span><span v-if="!islogin" v-text="$t(\'lang.personcenter\')"></span><span class="caret"></span></a>\
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-if="islogin" v-text="user.userName"></span><span v-if="!islogin" v-text="$t(\'lang.login\') + $t(\'lang.signup\')"></span><span class="caret"></span></a>\
                                 <ul class="dropdown-menu">\
                                     <li v-if="islogin"><a href="/person" target="_blank"><span v-text="$t(\'lang.personcenter\')" target="_blank"></span></a></li>\
                                     <li role="separator" class="divider"></li>\
                                     <li v-if="!islogin"><a href="/login" target="_blank"><span v-text="$t(\'lang.login\')"></span></a></li>\
+                                    <li v-if="!islogin"><a href="/signup" target="_blank"><span v-text="$t(\'lang.signup\')"></span></a></li>\
                                     <li v-if="islogin"><a href="#" @click="logout"><span v-text="$t(\'lang.logout\')"></span></a></li>\
                                 </ul>\
                             </li>\

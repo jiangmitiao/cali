@@ -5,14 +5,24 @@ startRead=Start Read
 
 ## login
 login=Login
+loginNameOrLoginPasswordError=name or password error
+loginSuccess=login success
 
 ## signup
 signup=Sign Up
 
 ## person
 person=Person
+emailOrUsernameIsTooLong=email or username is too long
 
 ## public
 library=Library
+
+
+## other
+uncatchedError=uncatched error
+needLogin=need login
+
+limitdownload=Limit Download
 
 

@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
-	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
 	"strconv"
 )
@@ -20,7 +19,7 @@ func (c Tag) Index() revel.Result {
 func (c Tag) TagsCount() revel.Result {
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryTagsCount()))
+		models.NewOKApiWithInfo(tagService.QueryTagsCount()))
 }
 
 //all tags info
@@ -29,6 +28,6 @@ func (c Tag) Tags() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryTags(limit, start)),
+		models.NewOKApiWithInfo(tagService.QueryTags(limit, start)),
 	)
 }

@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
-	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
 	"io/ioutil"
 	"net/http"
@@ -23,7 +22,7 @@ func (c Book) Index() revel.Result {
 func (c Book) BooksCount() revel.Result {
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryBooksCount()))
+		models.NewOKApiWithInfo(bookService.QueryBooksCount()))
 }
 
 //all books info
@@ -32,7 +31,7 @@ func (c Book) Books() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryBooks(limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryBooks(limit, start)),
 	)
 }
 
@@ -42,7 +41,7 @@ func (c Book) RatingBooks() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryRatingBooks(limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryRatingBooks(limit, start)),
 	)
 }
 
@@ -52,7 +51,7 @@ func (c Book) NewBooks() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryNewBooks(limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryNewBooks(limit, start)),
 	)
 }
 
@@ -62,7 +61,7 @@ func (c Book) DiscoverBooks() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryDiscoverBooks(limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryDiscoverBooks(limit, start)),
 	)
 }
 
@@ -71,7 +70,7 @@ func (c Book) TagBooksCount() revel.Result {
 	tagid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("tagid"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryTagBooksCount(tagid)),
+		models.NewOKApiWithInfo(bookService.QueryTagBooksCount(tagid)),
 	)
 }
 
@@ -82,7 +81,7 @@ func (c Book) TagBooks() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryTagBooks(tagid, limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryTagBooks(tagid, limit, start)),
 	)
 }
 
@@ -91,7 +90,7 @@ func (c Book) AuthorBooksCount() revel.Result {
 	authorid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("authorid"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryAuthorBooksCount(authorid)),
+		models.NewOKApiWithInfo(bookService.QueryAuthorBooksCount(authorid)),
 	)
 }
 
@@ -102,7 +101,7 @@ func (c Book) AuthorBooks() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryAuthorBooks(authorid, limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryAuthorBooks(authorid, limit, start)),
 	)
 }
 
@@ -111,7 +110,7 @@ func (c Book) LanguageBooksCount() revel.Result {
 	lang_code, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("lang_code"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryLanguageBooksCount(lang_code)),
+		models.NewOKApiWithInfo(bookService.QueryLanguageBooksCount(lang_code)),
 	)
 }
 
@@ -122,7 +121,7 @@ func (c Book) LanguageBooks() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryLanguageBooks(lang_code, limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryLanguageBooks(lang_code, limit, start)),
 	)
 }
 
@@ -131,22 +130,22 @@ func (c Book) BookRating() revel.Result {
 	bookid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryBookRating(bookid)),
+		models.NewOKApiWithInfo(bookService.QueryBookRating(bookid)),
 	)
 }
 
 //book's img
 func (c Book) BookImage() revel.Result {
 	bookid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0"))
-	bytes := rcali.IMGJPG(services.QueryCoverImg(bookid))
+	bytes := rcali.IMGJPG(bookService.QueryCoverImg(bookid))
 	return bytes
 }
 
 //book's download
 func (c Book) BookDown() revel.Result {
-	//bytes := rcali.FILE(services.QueryBookFile(bookid))
+	//bytes := rcali.FILE(bookService.QueryBookFile(bookid))
 	bookid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0"))
-	if f, err := services.QueryBookFile(bookid); err == nil {
+	if f, err := bookService.QueryBookFile(bookid); err == nil {
 		return c.RenderFile(f, revel.Attachment)
 	}
 	return c.RenderText("file is not exit")
@@ -157,7 +156,7 @@ func (c Book) Book() revel.Result {
 	bookid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryBook(bookid)),
+		models.NewOKApiWithInfo(bookService.QueryBook(bookid)),
 	)
 }
 
@@ -166,7 +165,7 @@ func (c Book) DoubanBook() revel.Result {
 	bookid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0"))
 	callback := c.Request.FormValue("callback")
 
-	bookVo := services.QueryBook(bookid)
+	bookVo := bookService.QueryBook(bookid)
 	rcali.Logger.Debug("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
 	resp, err := http.Get("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
 	if err != nil {

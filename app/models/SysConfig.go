@@ -15,4 +15,8 @@ var DefaultSysConfig = make([]SysConfig, 0)
 
 func init() {
 	DefaultSysConfig = append(DefaultSysConfig, SysConfig{Id: "cnzzid", Key: "cnzzid", Value: "1262308688", Comments: "cnzz data monitor"})
+
+	DefaultSysConfig = append(DefaultSysConfig, SysConfig{Id: "openregist", Key: "openregist", Value: "true", Comments: "open rigist?"})
+
+	DefaultSysConfig = append(DefaultSysConfig, SysConfig{Id: "alldownloadlimit", Key: "alldownloadlimit", Value: "10000", Comments: "how many books can download one day?"})
 }

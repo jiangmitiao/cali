@@ -13,91 +13,94 @@ import (
 	"strings"
 )
 
+type BookService struct {
+}
+
 //all books count
-func QueryBooksCount() int64 {
+func (service BookService) QueryBooksCount() int64 {
 	count, _ := engine.Count(models.Book{})
 	return count
 }
 
 //all books info
-func QueryBooks(limit, start int) []models.BookVo {
+func (service BookService) QueryBooks(limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.* ,ratings.rating,authors.name  from books,ratings,books_ratings_link,authors,books_authors_link  where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=books_authors_link.book and authors.id=books_authors_link.author limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //rating books info
-func QueryRatingBooks(limit, start int) []models.BookVo {
+func (service BookService) QueryRatingBooks(limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.*,ratings.rating,authors.name from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author order by ratings.rating desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //new books info
-func QueryNewBooks(limit, start int) []models.BookVo {
+func (service BookService) QueryNewBooks(limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book  where books.id=books_authors_link.book and authors.id=books_authors_link.author order by books.timestamp desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //discover books info
-func QueryDiscoverBooks(limit, start int) []models.BookVo {
+func (service BookService) QueryDiscoverBooks(limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author order by books.title,books.last_modified desc limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //tag books info
-func QueryTagBooksCount(tagid int) int {
+func (service BookService) QueryTagBooksCount(tagid int) int {
 	count := 0
 	engine.SQL("select count(1) from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_tags_link where tag=" + strconv.Itoa(tagid) + ") ").Get(&count)
 	return count
 }
 
 //tag books info
-func QueryTagBooks(tagid, limit, start int) []models.BookVo {
+func (service BookService) QueryTagBooks(tagid, limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_tags_link where tag=" + strconv.Itoa(tagid) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //author books info
-func QueryAuthorBooksCount(authorid int) int {
+func (service BookService) QueryAuthorBooksCount(authorid int) int {
 	count := 0
 	engine.SQL("select count(1) from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_authors_link where author=" + strconv.Itoa(authorid) + ") ").Get(&count)
 	return count
 }
 
 //author books info
-func QueryAuthorBooks(authorid, limit, start int) []models.BookVo {
+func (service BookService) QueryAuthorBooks(authorid, limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.*,ratings.rating,authors.name from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_authors_link where author=" + strconv.Itoa(authorid) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //languages books info
-func QueryLanguageBooksCount(lang_code int) int {
+func (service BookService) QueryLanguageBooksCount(lang_code int) int {
 	count := 0
 	engine.SQL("select count(1) from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_languages_link where lang_code=" + strconv.Itoa(lang_code) + ") ").Get(&count)
 	return count
 }
 
 //languages books info
-func QueryLanguageBooks(lang_code, limit, start int) []models.BookVo {
+func (service BookService) QueryLanguageBooks(lang_code, limit, start int) []models.BookVo {
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.*,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id in (select book from books_languages_link where lang_code=" + strconv.Itoa(lang_code) + ") limit " + strconv.Itoa(start) + " , " + strconv.Itoa(limit)).Find(&bookVos)
 	return bookVos
 }
 
 //book's rating
-func QueryBookRating(bookid int) int {
+func (service BookService) QueryBookRating(bookid int) int {
 	bookrating := 0
 	engine.SQL("select ratings.rating from books,ratings,books_ratings_link where books.id=books_ratings_link.book and ratings.id=books_ratings_link.rating and books.id=" + strconv.Itoa(bookid)).Get(&bookrating)
 	return bookrating
 }
 
 //book's img
-func QueryCoverImg(bookid int) []byte {
+func (service BookService) QueryCoverImg(bookid int) []byte {
 	book := models.Book{}
 	engine.Where("id=?", bookid).Get(&book)
 	if book.HasCover == 1 {
@@ -116,7 +119,7 @@ func QueryCoverImg(bookid int) []byte {
 }
 
 //book's file
-func QueryBookFileByte(bookid int) []byte {
+func (service BookService) QueryBookFileByte(bookid int) []byte {
 	data := models.Data{}
 	engine.Where("book=?", bookid).Get(&data)
 	book := models.Book{}
@@ -133,7 +136,7 @@ func QueryBookFileByte(bookid int) []byte {
 }
 
 //book's file
-func QueryBookFile(bookid int) (*os.File, error) {
+func (service BookService) QueryBookFile(bookid int) (*os.File, error) {
 	data := models.Data{}
 	engine.Where("book=?", bookid).Get(&data)
 	book := models.Book{}
@@ -151,7 +154,7 @@ func QueryBookFile(bookid int) (*os.File, error) {
 }
 
 //find a book by bookid
-func QueryBook(bookid int) models.BookVo {
+func (service BookService) QueryBook(bookid int) models.BookVo {
 	book := models.BookVo{}
 	engine.SQL("select books.* ,ratings.rating,authors.name,comments.comments from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book left join (select book,text as comments from comments) as comments on comments.book=books.id where books.id=books_authors_link.book and authors.id=books_authors_link.author and books.id=" + strconv.Itoa(bookid)).Get(&book)
 	data := models.Data{}

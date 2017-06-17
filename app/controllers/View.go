@@ -7,7 +7,6 @@ type View struct {
 }
 
 func (c View) Index() revel.Result {
-	//return c.Render()
 	return c.RenderTemplate("View/cali.html")
 }
 

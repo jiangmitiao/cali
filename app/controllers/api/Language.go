@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
-	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
 	"strconv"
 )
@@ -20,7 +19,7 @@ func (c Language) Index() revel.Result {
 func (c Language) LanguagesCount() revel.Result {
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryLanguagesCount()))
+		models.NewOKApiWithInfo(languageService.QueryLanguagesCount()))
 }
 
 //all languages info
@@ -29,6 +28,6 @@ func (c Language) Languages() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(services.QueryLanguages(limit, start)),
+		models.NewOKApiWithInfo(languageService.QueryLanguages(limit, start)),
 	)
 }

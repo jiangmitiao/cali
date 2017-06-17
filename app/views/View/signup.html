@@ -29,9 +29,9 @@
 					<div class="box">
 						<div class="content-wrap">
 							<h6><span v-text="$t('lang.signup')"></span></h6>
-							<input class="form-control" type="text" :placeholder="$t('lang.loginName')" v-model="loginName">
-							<input class="form-control" type="password" :placeholder="$t('lang.loginPassword')" v-model="loginPassword">
-							<input class="form-control" type="password" :placeholder="$t('lang.confirmloginPassword')" v-model="repeatLoginPassword">
+							<input class="form-control" type="text" maxlength="64" :placeholder="$t('lang.loginName')" v-model="loginName">
+							<input class="form-control" type="password" maxlength="64" :placeholder="$t('lang.loginPassword')" v-model="loginPassword">
+							<input class="form-control" type="password" maxlength="64" :placeholder="$t('lang.confirmloginPassword')" v-model="repeatLoginPassword">
 							<p style="color: red;"><span v-text="tipinfo==''?'':$t(tipinfo)"></span></p>
 							<div class="action">
 								<a class="btn btn-primary signup" @click="regist"><span v-text="$t('lang.signup')"></span></a>

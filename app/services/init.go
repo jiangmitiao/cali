@@ -15,6 +15,10 @@ var (
 	engine      *xorm.Engine
 	localEngine *xorm.Engine
 
+	DefaultAuthorService     = AuthorService{}
+	DefaultBookService       = BookService{}
+	DefaultLanguageService   = LanguageService{}
+	DefaultTagService        = TagService{}
 	DefaultUserService       = UserService{}
 	DefaultUserRoleService   = UserRoleService{}
 	DefaultRoleActionService = RoleActionService{}

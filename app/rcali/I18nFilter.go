@@ -146,15 +146,15 @@ func loadMessageFile(locale string, path string, info os.FileInfo, osError error
 			// If we have already parsed a message file for this locale, merge both
 			if _, exists := messages[locale]; exists {
 				messages[locale].Merge(config)
-				revel.TRACE.Printf("Successfully merged messages for locale '%s'", locale)
+				Logger.Debug("Successfully merged messages for locale '%s'", locale)
 			} else {
 				messages[locale] = config
 			}
 
-			revel.TRACE.Println("Successfully loaded messages from file", info.Name())
+			Logger.Debug("Successfully loaded messages from file", info.Name())
 		}
 	} else {
-		revel.TRACE.Printf("Ignoring file %s because it did not have a valid extension", info.Name())
+		Logger.Debug("Ignoring file %s because it did not have a valid extension", info.Name())
 	}
 
 	return nil
@@ -179,13 +179,13 @@ func init() {
 func I18nFilter(c *revel.Controller, fc []revel.Filter) {
 	Logger.Info("---------------filter--------------------")
 	if foundCookie, cookieValue := hasLocaleCookie(c.Request); foundCookie {
-		Logger.Info("Found locale cookie value: %s", cookieValue)
+		Logger.Debug("Found locale cookie value: %s", cookieValue)
 		setCurrentLocaleControllerArguments(c, cookieValue)
 	} else if foundHeader, headerValue := hasAcceptLanguageHeader(c.Request); foundHeader {
-		Logger.Info("Found Accept-Language header value: %s", headerValue)
+		Logger.Debug("Found Accept-Language header value: %s", headerValue)
 		setCurrentLocaleControllerArguments(c, headerValue)
 	} else {
-		Logger.Info("Unable to find locale in cookie or header, using empty string")
+		Logger.Debug("Unable to find locale in cookie or header, using empty string")
 		setCurrentLocaleControllerArguments(c, "")
 	}
 	fc[0](c, fc[1:])
@@ -216,7 +216,7 @@ func hasLocaleCookie(request *revel.Request) (bool, string) {
 		if cookie, error := request.Cookie(name); error == nil {
 			return true, cookie.Value
 		} else {
-			revel.TRACE.Printf("Unable to read locale cookie with name '%s': %s", name, error.Error())
+			Logger.Debug("Unable to read locale cookie with name '%s': %s", name, error.Error())
 		}
 	}
 
