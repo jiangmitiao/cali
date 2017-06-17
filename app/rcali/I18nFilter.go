@@ -177,7 +177,6 @@ func init() {
 }
 
 func I18nFilter(c *revel.Controller, fc []revel.Filter) {
-	Logger.Info("---------------filter--------------------")
 	if foundCookie, cookieValue := hasLocaleCookie(c.Request); foundCookie {
 		Logger.Debug("Found locale cookie value: %s", cookieValue)
 		setCurrentLocaleControllerArguments(c, cookieValue)

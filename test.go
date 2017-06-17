@@ -9,14 +9,14 @@ import (
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	"github.com/jiangmitiao/cali/app/models"
-	"github.com/jiangmitiao/cali/app/rcali"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/sha3"
 	"io"
 	"path"
+	"time"
 )
 
-var engine *xorm.Engine
+var engineTest *xorm.Engine
 
 func init() {
 	fmt.Println("dbService ok")
@@ -56,28 +56,28 @@ func DbInit() (bool, error) {
 	fmt.Println(GetSqliteDbPath())
 
 	var err error
-	engine, err := xorm.NewEngine("sqlite3", GetSqliteDbPath())
+	engineTest, err = xorm.NewEngine("sqlite3", GetSqliteDbPath())
 	//dataSourceName := username + ":" + password + "@tcp(" + host + ")/" + database + "?charset=utf8"
 	//engine, err = xorm.NewEngine("mysql", dataSourceName)
 	if err != nil {
 		return false, err
 	}
-	engine.ShowSQL(true)
-	engine.Logger().SetLevel(core.LOG_DEBUG)
-	err = engine.Ping()
+	engineTest.ShowSQL(true)
+	engineTest.Logger().SetLevel(core.LOG_DEBUG)
+	err = engineTest.Ping()
 	if err != nil {
 		fmt.Println(err)
 		return false, err
 	}
-	engine.Logger().Info("----------创建表----------")
+	engineTest.Logger().Info("----------创建表----------")
 
-	engine.Logger().Info("----------创建表结束----------")
+	engineTest.Logger().Info("----------创建表结束----------")
 
-	engine.Logger().Info("----------插入默认数据----------")
+	engineTest.Logger().Info("----------插入默认数据----------")
 
-	engine.Logger().Info("----------插入默认数据结束----------")
+	engineTest.Logger().Info("----------插入默认数据结束----------")
 
-	ListTableContent(*engine)
+	//ListTableContent(*engine)
 	return true, nil
 
 }
@@ -92,11 +92,31 @@ func Sha3_256(in string) string {
 	return hex.EncodeToString(m.Sum(nil))
 }
 
+func SearchBooks() {
+	DbInit()
+	bookVos := make([]models.BookVo, 0)
+	if engineTest == nil {
+		fmt.Println("error")
+		return
+	}
+	err := engineTest.SQL("select books.* ,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and (books.title like ? ) limit ?,?", "%Quick%", 0, 10).Find(&bookVos)
+	if err != nil {
+		fmt.Println("error", err)
+		return
+	}
+	fmt.Printf("%d\n\n%+v\n\n", len(bookVos), bookVos)
+	time.Sleep(time.Second * 2)
+	engineTest.Close()
+}
+
 func main() {
 	//DbInit()
 	//PathTest()
-	fmt.Println(Sha3_256("admininit"))
+	//fmt.Println(Sha3_256("admininit"))
 
-	userhome, _ := rcali.Home()
-	fmt.Println(userhome)
+	//userhome, _ := rcali.Home()
+	//fmt.Println(userhome)
+
+	SearchBooks()
+
 }

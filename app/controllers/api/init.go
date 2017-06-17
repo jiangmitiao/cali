@@ -10,5 +10,5 @@ var (
 	bookService       = services.DefaultBookService
 	languageService   = services.DefaultLanguageService
 	roleActionService = services.DefaultRoleActionService
-	sysCongigService  = services.DefaultSysConfigService
+	sysConfigService  = services.DefaultSysConfigService
 )

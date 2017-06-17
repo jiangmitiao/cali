@@ -45,11 +45,11 @@ $(document).ready(function(){
                                     </ul>\
                             </li>\
                         </ul>\
-                        <form class="navbar-form navbar-left" style="display:none;">\
+                        <form class="navbar-form navbar-left" method="get" action="/search">\
                             <div class="form-group">\
-                                <input type="text" class="form-control" :placeholder="$t(\'lang.searchholder\')">\
+                                <input name="q" type="text" class="form-control" :placeholder="$t(\'lang.searchholder\')">\
                             </div>\
-                            <button type="button" class="btn btn-default"><span v-text="$t(\'lang.search\')"></span></button>\
+                            <button type="submit" class="btn btn-default"><span v-text="$t(\'lang.search\')"></span></button>\
                         </form>\
                         <ul class="nav navbar-nav navbar-right">\
                             <li><a href="https://github.com/jiangmitiao/cali"  target="_blank">Github</a></li>\

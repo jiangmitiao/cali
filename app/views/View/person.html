@@ -34,6 +34,7 @@
                                 <ul>
                                     <li @click="changeseen('discover')" :class="listseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> <span v-text="$t('lang.discover')"></span></a></li>
                                     <li v-if="userlistseen" @click="changeseen('userlist')" :class="listseen.userlist?'current':''"><a href="#userlist"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.userlist')"></span></a></li>
+                                    <li v-if="sysconfigseen" @click="changeseen('sysconfig')" :class="listseen.sysconfig?'current':''"><a href="#sysconfig"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysconfig')"></span></a></li>
                                     <li @click="changeseen('upload')" :class="listseen.upload?'current':''"><a href="#upload"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></a></li>
                                     <li @click="changeseen('changeuserinfo')" :class="listseen.changeuserinfo?'current':''"><a href="#changeuserinfo"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></a></li>
                                     <li @click="changeseen('changepassword')" :class="listseen.changepassword?'current':''"><a style="color: red;" href="#changepassword"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.changepassword')"></span></a></li>
@@ -54,11 +55,18 @@
                 <div v-show="listseen.userlist" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.userlist')"></span></div>
                     <div class="panel-body">
-                        <usersdiv v-bind:userlist="userlist_computed"></usersdiv>
+                        <usersdiv v-bind:userlist="userlist"></usersdiv>
 
                         <div class="col-md-6 col-md-offset-3 col-xs-12">
                             <div id="userlistpage" class="col-center-block"> </div>
                         </div>
+                    </div>
+                </div>
+
+                <div v-show="listseen.sysconfig" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.sysconfig')"></span></div>
+                    <div class="panel-body">
+                        <sysconfigdiv v-bind:sysconfiglist="sysconfiglist"></sysconfigdiv>
                     </div>
                 </div>
 

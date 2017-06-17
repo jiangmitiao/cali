@@ -201,3 +201,23 @@ func (c *Book) UploadBook() revel.Result {
 	}
 	return c.RenderJSON(models.NewOKApi())
 }
+
+func (c *Book) SearchCount() revel.Result {
+	q := c.Request.FormValue("q")
+	if q == "" {
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
+	} else {
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(bookService.SearchBooksCount(q)))
+	}
+}
+
+func (c *Book) Search() revel.Result {
+	q := c.Request.FormValue("q")
+	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.ClassNumsStr))
+	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
+	if q == "" {
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
+	} else {
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(bookService.SearchBooks(q, limit, start)))
+	}
+}

@@ -14,6 +14,7 @@ GET     /login                                  View.Login
 GET     /signup                                 View.SignUp
 GET     /person                                 View.Person
 GET     /read                                   View.Read
+GET     /search                                 View.Search
 
 # api
 *       /api/book/bookdown.epub                 Book.BookDown

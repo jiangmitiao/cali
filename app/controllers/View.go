@@ -29,3 +29,7 @@ func (c View) Person() revel.Result {
 func (c View) Read() revel.Result {
 	return c.RenderTemplate("View/read.html")
 }
+
+func (c View) Search() revel.Result {
+	return c.RenderTemplate("View/search.html")
+}

@@ -10,7 +10,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"fmt"
 )
 
 var (
@@ -116,6 +115,9 @@ func configInterceptor(c *revel.Controller) revel.Result {
 }
 
 func takeAvailable(userId string, maxDayLimit int64) int64 {
+	if maxDayLimit <= 1 {
+		maxDayLimit = 1
+	}
 	limitLock.Lock()
 	tokenBucket, ok := limitTokenBuckets[userId]
 	limitLock.Unlock()
@@ -125,6 +127,19 @@ func takeAvailable(userId string, maxDayLimit int64) int64 {
 		limitLock.Lock()
 		limitTokenBuckets[userId] = tokenBucket
 		limitLock.Unlock()
+	} else {
+		//changed then
+		if tokenBucket.Capacity() != maxDayLimit {
+			newTokenBucket := ratelimit.NewBucket(time.Hour*24, maxDayLimit)
+			limitLock.Lock()
+			limitTokenBuckets[userId] = newTokenBucket
+			limitLock.Unlock()
+			newTokenBucket.TakeAvailable(tokenBucket.Available())
+		}
+	}
+	//not allow to download
+	if maxDayLimit == 1 {
+		limitTokenBuckets[userId].TakeAvailable(1)
 	}
 	return limitTokenBuckets[userId].TakeAvailable(1)
 }
@@ -133,9 +148,8 @@ func takeAvailable(userId string, maxDayLimit int64) int64 {
 func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
-	fmt.Println("downloadLimitInterceptor------------------- ")
-	if controller == "Book" && method == "BookDown" && c.Response.Status == 0{
-		limitConfig,_ := strconv.Atoi(sysConfigService.Get("alldownloadlimit"))
+	if controller == "Book" && method == "BookDown" {
+		limitConfig, _ := strconv.Atoi(sysConfigService.Get("alldownloadlimit"))
 		if takeAvailable("common", int64(limitConfig)) <= 0 {
 			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
 		}

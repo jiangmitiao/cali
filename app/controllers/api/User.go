@@ -113,7 +113,7 @@ func (c User) Update() revel.Result {
 	session := c.Request.FormValue("session")
 	userName := c.Request.FormValue("userName")
 	email := c.Request.FormValue("email")
-	if len(userName)>64 || len(email)>128 {
+	if len(userName) > 64 || len(email) > 128 {
 		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("emailOrUsernameIsTooLong"), nil))
 	}
 	if user, isLogin := userService.GetLoginUser(session); isLogin {

@@ -75,7 +75,10 @@ const messages = {
             desc:"A Web Library",
             start:"Start",
             read:"Read",
-            library:"Library"
+            library:"Library",
+            sysconfig:"SysConfig",
+            searchresult:"Search Result",
+            searchresultwith0:"Search Result 0 Books"
         }
     },
     cn: {
@@ -137,7 +140,10 @@ const messages = {
             desc:"在线图书馆",
             start:"开始",
             read:"阅读",
-            library:"图书馆"
+            library:"图书馆",
+            sysconfig:"SysConfig",
+            searchresult:"搜索结果",
+            searchresultwith0:"搜索结果为0"
         }
     }
 };

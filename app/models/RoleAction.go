@@ -36,6 +36,8 @@ func init() {
 		RoleAction{Id: "adminBookBook", Role: "admin", Controller: "Book", Method: "Book"},
 		RoleAction{Id: "adminBookDoubanBook", Role: "admin", Controller: "Book", Method: "DoubanBook"},
 		RoleAction{Id: "adminBookUploadBook", Role: "admin", Controller: "Book", Method: "UploadBook"},
+		RoleAction{Id: "adminBookSearch", Role: "admin", Controller: "Book", Method: "Search"},
+		RoleAction{Id: "adminBookSearchCount", Role: "admin", Controller: "Book", Method: "SearchCount"},
 
 		RoleAction{Id: "adminAuthorIndex", Role: "admin", Controller: "Author", Method: "Index"},
 		RoleAction{Id: "adminAuthorAuthorsCount", Role: "admin", Controller: "Author", Method: "AuthorsCount"},
@@ -62,6 +64,10 @@ func init() {
 		RoleAction{Id: "adminUserChangeDelete", Role: "admin", Controller: "User", Method: "Delete"},
 
 		RoleAction{Id: "adminAppIndex", Role: "admin", Controller: "App", Method: "Index"},
+
+		RoleAction{Id: "adminSysConfigIndex", Role: "admin", Controller: "SysConfig", Method: "Index"},
+		RoleAction{Id: "adminSysConfigConfigs", Role: "admin", Controller: "SysConfig", Method: "Configs"},
+		RoleAction{Id: "adminSysConfigUpdate", Role: "admin", Controller: "SysConfig", Method: "Update"},
 	)
 
 	//user
@@ -84,6 +90,8 @@ func init() {
 		RoleAction{Id: "userBookBook", Role: "user", Controller: "Book", Method: "Book"},
 		RoleAction{Id: "userBookDoubanBook", Role: "user", Controller: "Book", Method: "DoubanBook"},
 		RoleAction{Id: "userBookUploadBook", Role: "user", Controller: "Book", Method: "UploadBook"},
+		RoleAction{Id: "userBookSearch", Role: "user", Controller: "Book", Method: "Search"},
+		RoleAction{Id: "userBookSearchCount", Role: "user", Controller: "Book", Method: "SearchCount"},
 
 		RoleAction{Id: "userAuthorIndex", Role: "user", Controller: "Author", Method: "Index"},
 		RoleAction{Id: "userAuthorAuthorsCount", Role: "user", Controller: "Author", Method: "AuthorsCount"},
@@ -129,6 +137,9 @@ func init() {
 		RoleAction{Id: "watcherBookBook", Role: "watcher", Controller: "Book", Method: "Book"},
 		RoleAction{Id: "watcherBookDoubanBook", Role: "watcher", Controller: "Book", Method: "DoubanBook"},
 		//RoleAction{Id: "watcherBookIndex", Role: "watcher", Controller: "Book", Method: "UploadBook"},
+		RoleAction{Id: "watcherBookSearch", Role: "watcher", Controller: "Book", Method: "Search"},
+		RoleAction{Id: "watcherBookSearchCount", Role: "watcher", Controller: "Book", Method: "SearchCount"},
+
 
 		RoleAction{Id: "watcherAuthorIndex", Role: "watcher", Controller: "Author", Method: "Index"},
 		RoleAction{Id: "watcherAuthorAuthorsCount", Role: "watcher", Controller: "Author", Method: "AuthorsCount"},

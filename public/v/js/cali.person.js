@@ -50,6 +50,39 @@ $(document).ready(function(){
     });
 
 
+    // 定义名为 sysconfigdiv 的新组件
+    Vue.component('sysconfigdiv', {
+        // sysconfigdiv 组件现在接受一个
+        // 这个属性名为 sysconfiglist。
+        props: ['sysconfiglist'],
+        template: '\
+        <table class="table">\
+            <thead>\
+                <tr>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                </tr>\
+            </thead>\
+            <tbody>\
+                <tr v-for="item in sysconfiglist">\
+                    <td v-text="item.key"></td>\
+                    <td><input type="text" maxlength="64" v-model="item.value" class="form-control"></td>\
+                    <td v-text="item.comments"></td>\
+                    <td><a class="btn btn-info" @click="update" :id="item.id">update</a></td>\
+                </tr>\
+            </tbody>\
+        </table>\
+        ',
+        methods:{
+            update:function (t) {
+                app.sysconfigupdate(t.target.id);
+            }
+        }
+    });
+
+
     var app = new Vue({
         i18n,
         el: "#root",
@@ -68,13 +101,18 @@ $(document).ready(function(){
 
             //userlist
             userlistseen:false,
-            userlist:[]
+            userlist:[],
+
+            //sysconfig
+            sysconfigseen:false,
+            sysconfiglist:[]
         },
         methods: {
             changeseen:function (e) {
                 this.listseen = {};
                 this.listseen["discover"] = false;
                 this.listseen["userlist"] = false;
+                this.listseen["sysconfig"] = false;
                 this.listseen["upload"] = false;
                 this.listseen["changeuserinfo"] = false;
                 this.listseen["changepassword"] = false;
@@ -191,6 +229,33 @@ $(document).ready(function(){
                     console.log('parsing failed', ex)
                 });
 
+            },
+            sysconfigupdate : function (id) {
+                var find = false;
+                for (var i=0;i< app.sysconfiglist.length; i++){
+                    if (app.sysconfiglist[i].id == id){
+                        find = true;
+                        var form = commonData();
+                        form.set("id",id);
+                        form.set("key",app.sysconfiglist[i].key);
+                        form.set("value",app.sysconfiglist[i].value);
+                        fetch('/api/sysconfig/update',{method:'post',body:form}).then(function(response) {
+                            return response.json();
+                        }).then(function(json) {
+                            if (json.statusCode ==200){
+                                alert("update success");
+                            }else {
+                                alert("update error");
+                            }
+                        }).
+                        catch(function(ex) {
+                            console.log('parsing failed', ex)
+                        });
+                    }
+                }
+                if (!find){
+                    alert("update error");
+                }
             }
         },
         computed: {
@@ -279,11 +344,30 @@ $(document).ready(function(){
             catch(function(ex) {
                 console.log('parsing failed', ex)
             });
+
+            fetch('/api/sysconfig/configs',{method:'post',body:commonData()}).then(function(response) {
+                if (response.redirected){
+                    app.sysconfigseen = false;
+                    var tmpJson = {};
+                    tmpJson.statusCode = 500;
+                    return tmpJson;
+                }
+                return response.json();
+            }).then(function(json) {
+                if (json.statusCode ==200){
+                    app.sysconfigseen = true;
+                    app.sysconfiglist = json.info;
+                }
+            }).
+            catch(function(ex) {
+                console.log('parsing failed', ex)
+            });
         },
         beforeMount: function () {
             //console.log("beforeMount");
             this.listseen = {};
             this.listseen["discover"] = true;
+            this.listseen["sysconfig"] = false;
             this.listseen["userlist"] = false;
             this.listseen["upload"] = false;
             this.listseen["changeuserinfo"] = false;
