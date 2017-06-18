@@ -1,7 +1,9 @@
 
 function commonData() {
     data = new FormData();
-    data.set("session",store.get("session"));
+    if (store.get("session") != undefined){
+        data.set("session",store.get("session"));
+    }
     return data;
 }
 

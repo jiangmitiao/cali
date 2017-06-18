@@ -334,7 +334,7 @@ $(document).ready(function(){
                         dataSource:function (done) {
                             var tmp = [];
                             for(var i=0; i<json.info;i++){
-                                tmp.push(i)
+                                tmp.push(i);
                             }
                             return done(tmp);
                         },

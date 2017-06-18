@@ -178,10 +178,10 @@ func init() {
 
 func I18nFilter(c *revel.Controller, fc []revel.Filter) {
 	if foundCookie, cookieValue := hasLocaleCookie(c.Request); foundCookie {
-		Logger.Debug("Found locale cookie value: %s", cookieValue)
+		//Logger.Debug("Found locale cookie value: %s", cookieValue)
 		setCurrentLocaleControllerArguments(c, cookieValue)
 	} else if foundHeader, headerValue := hasAcceptLanguageHeader(c.Request); foundHeader {
-		Logger.Debug("Found Accept-Language header value: %s", headerValue)
+		//Logger.Debug("Found Accept-Language header value: %s", headerValue)
 		setCurrentLocaleControllerArguments(c, headerValue)
 	} else {
 		Logger.Debug("Unable to find locale in cookie or header, using empty string")
