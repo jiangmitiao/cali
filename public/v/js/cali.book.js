@@ -105,9 +105,9 @@ $(document).ready(function(){
         },
         created: function() {
             //console.log("created");
-            var data = commonData();
-            data.set("bookid",Request.bookid);
-            fetch('/api/book/book',{method:'post',body:data}).then(function(response) {
+            var form = commonData();
+            form.append("bookid",Request.bookid);
+            fetch('/api/book/book',{method:'post',body:form}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
@@ -116,9 +116,9 @@ $(document).ready(function(){
                 if (json.statusCode ==200){
                     app.book = json.info;
                     app.bookseen = true;
-                    var data = commonData();
-                    data.set("bookid",json.info.id);
-                    fetch('/api/book/doubanbook',{method:'post',body:data}).then(function(response) {
+                    var form = commonData();
+                    form.append("bookid",json.info.id);
+                    fetch('/api/book/doubanbook',{method:'post',body:form}).then(function(response) {
                         if (response.redirected){
                             window.location.href = response.url;
                         }

@@ -146,7 +146,7 @@ $(document).ready(function(){
             // the categories first display,when click tag's item ,then hide first div,fetch 8 books items which has the click's item'tag to display
             tagclick:function (tagid) {
                 var form = commonData();
-                form.set("tagid",tagid);
+                form.append("tagid",tagid);
                 fetch('/api/book/tagbookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
@@ -170,9 +170,9 @@ $(document).ready(function(){
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 var form = commonData();
-                                form.set("start",_.min(data));
-                                form.set("limit",data.length);
-                                form.set("tagid",tagid);
+                                form.append("start",_.min(data));
+                                form.append("limit",data.length);
+                                form.append("tagid",tagid);
                                 fetch('/api/book/tagbooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
@@ -198,7 +198,7 @@ $(document).ready(function(){
             // like tags click
             authorclick:function (authorid) {
                 var form = commonData();
-                form.set("authorid",authorid);
+                form.append("authorid",authorid);
                 fetch('/api/book/authorbookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
@@ -221,9 +221,9 @@ $(document).ready(function(){
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 var form = commonData();
-                                form.set("start",_.min(data));
-                                form.set("limit",data.length);
-                                form.set("authorid",authorid);
+                                form.append("start",_.min(data));
+                                form.append("limit",data.length);
+                                form.append("authorid",authorid);
                                 fetch('/api/book/authorbooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
@@ -249,7 +249,7 @@ $(document).ready(function(){
             // like tags click
             languageclick:function (lang_code) {
                 var form = commonData();
-                form.set("lang_code",lang_code);
+                form.append("lang_code",lang_code);
                 fetch('/api/book/languagebookscount',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
@@ -272,9 +272,9 @@ $(document).ready(function(){
                             showGoButton: true,
                             callback: function(data, pagination) {
                                 var form = commonData();
-                                form.set("start",_.min(data));
-                                form.set("limit",data.length);
-                                form.set("lang_code",lang_code);
+                                form.append("start",_.min(data));
+                                form.append("limit",data.length);
+                                form.append("lang_code",lang_code);
                                 fetch('/api/book/languagebooks',{method:'post',body:form}).then(function(response) {
                                     if (response.redirected){
                                         window.location.href = response.url;
@@ -345,8 +345,8 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
                             fetch('/api/book/ratingbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
@@ -391,8 +391,8 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
                             fetch('/api/book/newbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
@@ -437,8 +437,8 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
                             fetch('/api/book/discoverbooks',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
@@ -483,8 +483,8 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
                             fetch('/api/tag/tags',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
@@ -529,8 +529,8 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
                             fetch('/api/author/authors',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;
@@ -575,8 +575,8 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
                             fetch('/api/language/languages',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;

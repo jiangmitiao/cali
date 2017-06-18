@@ -70,7 +70,7 @@ $(document).ready(function(){
             //console.log("created");
             //searchbooks展示分页
             var form = commonData();
-            form.set("q",Request.q);
+            form.append("q",Request.q);
             fetch('/api/book/searchcount',{method:'post',body:form}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
@@ -93,9 +93,9 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
-                            form.set("q",Request.q);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
+                            form.append("q",Request.q);
                             fetch('/api/book/search',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     window.location.href = response.url;

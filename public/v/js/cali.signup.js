@@ -14,8 +14,8 @@ $(document).ready(function(){
                     return;
                 }
                 var form = commonData();
-                form.set("loginName",_.min(data));
-                form.set("loginPassword",data.length);
+                form.append("loginName",_.min(data));
+                form.append("loginPassword",data.length);
                 fetch('/api/user/regist',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;

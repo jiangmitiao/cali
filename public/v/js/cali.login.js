@@ -10,8 +10,8 @@ $(document).ready(function(){
         methods: {
             login:function () {
                 var form = commonData();
-                form.set("loginName",this.loginName);
-                form.set("loginPassword",this.loginPassword);
+                form.append("loginName",this.loginName);
+                form.append("loginPassword",this.loginPassword);
                 fetch('/api/user/login',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
@@ -20,7 +20,7 @@ $(document).ready(function(){
                 }).then(function(json) {
                     if (json.statusCode ==200){
                         var form = commonData();
-                        form.set("session",json.info);
+                        form.append("session",json.info);
                         fetch('/api/user/info',{method:'post',body:form}).then(function(response) {
                             return response.json()
                         }).then(function(user) {

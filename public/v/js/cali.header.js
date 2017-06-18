@@ -1,9 +1,15 @@
-
 function commonData() {
-    data = new FormData();
-    if (store.get("session") != undefined){
-        data.set("session",store.get("session"));
+    var data = new FormData();
+    if (data == undefined){
+        alert("unsupport web browser html5");
     }
+
+    if (store.get("session") != undefined){
+        data.append("session",store.get("session"));
+    }else {
+        data.append("session","watcher");
+    }
+    //alert(data.get("session"));
     return data;
 }
 

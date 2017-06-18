@@ -27,7 +27,7 @@ $(document).ready(function(){
         methods:{
             deleteuser:function (t) {
                 var form = commonData();
-                form.set("userId",t.target.id);
+                form.append("userId",t.target.id);
                 fetch('/api/user/delete',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         var tmpJson = {};
@@ -133,7 +133,7 @@ $(document).ready(function(){
                 }
                 alert("please wait...");
                 var form = new FormData(document.getElementById("uploadfile"));
-                form.set('session',commonData().get('session'));
+                form.append('session',commonData().get('session'));
                 fetch("/api/book/uploadbook", {
                     method: "post",
                     body: form
@@ -161,8 +161,8 @@ $(document).ready(function(){
                 }else {
                     app.changeuserinfotipinfo = "";
                     var form = commonData();
-                    form.set("userName",app.user.userName);
-                    form.set("email",app.user.email);
+                    form.append("userName",app.user.userName);
+                    form.append("email",app.user.email);
                     fetch('/api/user/update',{method:'post',body:form}).then(function(response) {
                         if (response.redirected){
                             alert("role action setting error !");
@@ -211,8 +211,8 @@ $(document).ready(function(){
                     return;
                 }
                 var form = commonData();
-                form.set("oldLoginPassword",app.oldLoginPassword);
-                form.set("loginPassword",app.loginPassword);
+                form.append("oldLoginPassword",app.oldLoginPassword);
+                form.append("loginPassword",app.loginPassword);
                 fetch('/api/user/changepassword',{method:'post',body:form}).then(function(response) {
                     return response.json();
                 }).then(function(json) {
@@ -236,9 +236,9 @@ $(document).ready(function(){
                     if (app.sysconfiglist[i].id == id){
                         find = true;
                         var form = commonData();
-                        form.set("id",id);
-                        form.set("key",app.sysconfiglist[i].key);
-                        form.set("value",app.sysconfiglist[i].value);
+                        form.append("id",id);
+                        form.append("key",app.sysconfiglist[i].key);
+                        form.append("value",app.sysconfiglist[i].value);
                         fetch('/api/sysconfig/update',{method:'post',body:form}).then(function(response) {
                             return response.json();
                         }).then(function(json) {
@@ -318,8 +318,8 @@ $(document).ready(function(){
                         showGoButton: true,
                         callback: function(data, pagination) {
                             var form = commonData();
-                            form.set("start",_.min(data));
-                            form.set("limit",data.length);
+                            form.append("start",_.min(data));
+                            form.append("limit",data.length);
                             fetch('/api/user/queryuser',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
                                     app.userlistseen = false;
