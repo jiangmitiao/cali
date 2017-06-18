@@ -19,6 +19,7 @@ $(document).ready(function(){
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
+                        store.set("session", json.info);
                         var form = commonData();
                         form.append("session",json.info);
                         fetch('/api/user/info',{method:'post',body:form}).then(function(response) {
