@@ -19,10 +19,10 @@ You can manage your books by [Cali](https://github.com/jiangmitial/cali).
 * Get book's another infomation by douban.com
 * Download your favorite book
 * Read book online (support epub)
-* Limited user register and manage 
+* Limited user register and manage
+* Search
 * Delete books (planned)
 * Change attribute of book (planned)
-* Search (planned)
 * etc...
 
 # Usages
@@ -84,6 +84,11 @@ sh run.sh
 ![index.png](index.png "")
 
 # Changelog
+
+* **v0.0.3**
+    * search
+    * fix bugs on mobile
+    * and something
 
 * **v0.0.2**
     * add book function
