@@ -6,6 +6,7 @@ import (
 	"github.com/revel/revel"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path"
 	"strconv"
 )
@@ -203,7 +204,7 @@ func (c *Book) UploadBook() revel.Result {
 }
 
 func (c *Book) SearchCount() revel.Result {
-	q := c.Request.FormValue("q")
+	q, _ := url.QueryUnescape(c.Request.FormValue("q"))
 	if q == "" {
 		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
 	} else {
@@ -212,7 +213,7 @@ func (c *Book) SearchCount() revel.Result {
 }
 
 func (c *Book) Search() revel.Result {
-	q := c.Request.FormValue("q")
+	q, _ := url.QueryUnescape(c.Request.FormValue("q"))
 	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.ClassNumsStr))
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	if q == "" {
