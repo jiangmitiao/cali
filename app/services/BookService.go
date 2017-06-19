@@ -10,9 +10,11 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 type BookService struct {
+	lock *sync.Mutex
 }
 
 //all books count
@@ -172,4 +174,22 @@ func (service BookService) SearchBooks(searchStr string, limit, start int) []mod
 	bookVos := make([]models.BookVo, 0)
 	engine.SQL("select books.* ,ratings.rating,authors.name  from books,authors,books_authors_link left join (select books_ratings_link.book,ratings.rating from ratings,books_ratings_link where ratings.id=books_ratings_link.rating) as ratings on books.id=ratings.book where books.id=books_authors_link.book and authors.id=books_authors_link.author and (books.title like ? or authors.name like ?) limit ?,?", "%"+searchStr+"%", "%"+searchStr+"%", start, limit).Find(&bookVos)
 	return bookVos
+}
+
+func (service BookService) UploadBook(filePath string) (uploadOk bool, bookid int) {
+	service.lock.Lock()
+	defer service.lock.Unlock()
+	uploadOk = false
+	bookid = 0
+	oldBookId := 0
+	if _, err := localEngine.SQL("select seq from sqlite_sequence where name='books'").Get(&oldBookId); err == nil {
+		if uploadOk = rcali.AddBook(filePath); uploadOk {
+			if _, err := localEngine.SQL("select seq from sqlite_sequence where name='books'").Get(&bookid); err == nil && bookid == oldBookId+1 {
+				return
+			} else {
+				return false, 0
+			}
+		}
+	}
+	return
 }

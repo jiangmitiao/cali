@@ -147,7 +147,12 @@ func (c Book) BookDown() revel.Result {
 	//bytes := rcali.FILE(bookService.QueryBookFile(bookid))
 	bookid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0"))
 	if f, err := bookService.QueryBookFile(bookid); err == nil {
-		return c.RenderFile(f, revel.Attachment)
+		user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
+		if addOk := userService.AddDownload(user.Id, bookid); addOk {
+			return c.RenderFile(f, revel.Attachment)
+		} else {
+			return c.RenderText("database error")
+		}
 	}
 	return c.RenderText("file is not exit")
 }
@@ -190,10 +195,13 @@ func (c *Book) UploadBook() revel.Result {
 		defer file.Close()
 		b, _ := ioutil.ReadAll(file)
 		ioutil.WriteFile(path.Join(uploadpath, header.Filename), b, 0755)
-		ok := rcali.AddBook(path.Join(uploadpath, header.Filename))
+		//ok := rcali.AddBook(path.Join(uploadpath, header.Filename))
+		ok, bookid := bookService.UploadBook(path.Join(uploadpath, header.Filename))
 		if !ok {
 			return c.RenderJSON(models.NewErrorApiWithInfo("add book error"))
 		} else {
+			user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
+			userService.AddUpload(user.Id, bookid)
 			return c.RenderJSON(models.NewOKApiWithInfo("add book success"))
 		}
 	} else {

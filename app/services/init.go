@@ -9,6 +9,7 @@ import (
 	"github.com/jiangmitiao/cali/app/rcali"
 	_ "github.com/mattn/go-sqlite3"
 	"path"
+	"sync"
 )
 
 var (
@@ -16,7 +17,7 @@ var (
 	localEngine *xorm.Engine
 
 	DefaultAuthorService     = AuthorService{}
-	DefaultBookService       = BookService{}
+	DefaultBookService       = BookService{lock: &sync.Mutex{}}
 	DefaultLanguageService   = LanguageService{}
 	DefaultTagService        = TagService{}
 	DefaultUserService       = UserService{}
@@ -97,10 +98,10 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 		rcali.Logger.Error("ping sqlitedb fail on ", path.Join(userHome, ".calilocaldb.db"), err)
 		return false, err
 	}
+
 	//add user table
 	//localEngine.CreateTables(new(models.UserInfo))
-	err = localEngine.Sync2(models.UserInfo{})
-	if err != nil {
+	if err = localEngine.Sync2(models.UserInfo{});err!=nil{
 		return false, err
 	}
 	tmpInfo := models.UserInfo{}
@@ -120,9 +121,7 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 
 	//add role table
 	if err = localEngine.Sync2(models.Role{}); err != nil {
-		if err != nil {
 			return false, err
-		}
 	}
 	roleInfo := models.Role{}
 	localEngine.ID("admin").Get(&roleInfo)
@@ -191,6 +190,16 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 				return false, err
 			}
 		}
+	}
+
+	//sync user and book
+	if err = localEngine.Sync2(models.UserInfoBookUploadLink{},models.UserInfoBookDownloadLink{}); err != nil {
+		return false, err
+	}
+
+	//touch the metadb
+	if _, err = localEngine.Exec("ATTACH DATABASE \"" + SqliteDbPath + "\" AS \"data\""); err != nil {
+		return false, err
 	}
 
 	rcali.Logger.Info("----------DbInitOk----------")

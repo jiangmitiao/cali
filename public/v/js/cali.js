@@ -8,15 +8,21 @@ $(document).ready(function(){
         template: '\
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">\
             <div class="content-box">\
-                <div class="panel-body">\
+                <div class="panel-body text-center">\
                     <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="\'/api/book/bookimage?bookid=\'+book.id" width="100%" height="100%"/>\
+                        <img class="cover" :src="\'/api/book/bookimage?bookid=\'+book.id" width="80%" height="80%"/>\
                     </a>\
                     <p class="text-center">\
-                        <span v-text="maxstring(book.title,10)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
+                        <a :href="\'/book?bookid=\'+book.id" target="_blank">\
+                            <span v-text="maxstring(book.title,10)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
+                        </a>\
                     </p>\
-                    <p class="text-center"><span v-text="maxstring(book.name,10)"></span></p>\
-                    <p class="text-center"><span v-text="$t(\'lang.rating\')"></span>:<span v-text="book.rating"></span></p>\
+                    <p class="text-center">\
+                        <a :href="\'/search?q=\'+book.name" target="_blank">\
+                        <span v-text="maxstring(book.name,10)"></span>\
+                        </a>\
+                    </p>\
+                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="book.rating"></span></p>\
                     <br>\
                 </div>\
             </div>\

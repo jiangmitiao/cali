@@ -140,7 +140,6 @@ func init() {
 		RoleAction{Id: "watcherBookSearch", Role: "watcher", Controller: "Book", Method: "Search"},
 		RoleAction{Id: "watcherBookSearchCount", Role: "watcher", Controller: "Book", Method: "SearchCount"},
 
-
 		RoleAction{Id: "watcherAuthorIndex", Role: "watcher", Controller: "Author", Method: "Index"},
 		RoleAction{Id: "watcherAuthorAuthorsCount", Role: "watcher", Controller: "Author", Method: "AuthorsCount"},
 		RoleAction{Id: "watcherAuthorAuthors", Role: "watcher", Controller: "Author", Method: "Authors"},

@@ -77,12 +77,6 @@ footer .copy{
   padding: 20px;
 }
 
-.box-with-header {
-  border-top: none;
-  border-top-left-radius:0px;
-  border-top-right-radius:0px;
-}
-
 .content-box-header {
   min-height: 40px;
    font-size: 16px;
