@@ -127,13 +127,12 @@ $(document).ready(function(){
             },
             uploadfile:function () {
                 var file = document.getElementById("book").value;
-                if (file == null || (file.match(/.epub$/g)==null && file.match(/.mobi$/g)==null)){
-                    alert("please open file or choose .epub/.mobi");
+                if (file == null || (file.match(/.epub$/g)==null && file.match(/.mobi$/g)==null && file.match(/.pdf$/g)==null && file.match(/.txt$/g)==null)){
+                    alert("please open file or choose .epub/.mobi/.pdf/.txt");
                     return;
                 }
-                alert("please wait...");
                 var form = new FormData(document.getElementById("uploadfile"));
-                form.append('session',commonData().get('session'));
+                form.append('session',store.get("session"));
                 fetch("/api/book/uploadbook", {
                     method: "post",
                     body: form
@@ -153,6 +152,7 @@ $(document).ready(function(){
                 catch(function(ex) {
                     console.log('parsing failed', ex)
                 });
+                alert("please wait...");
             },
             changeuserinfo:function () {
                 if (app.user.userName == null || app.user.userName=="" || app.user.email == null || app.user.email==""){
