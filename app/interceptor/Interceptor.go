@@ -154,19 +154,20 @@ func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 		if takeAvailable("common", int64(limitConfig)) <= 0 {
 			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
 		}
+		// add status to sys status
+		key := time.Now().Format("20060102") + "-downnum"
+		if status := sysStatusService.Get(key); status.Key != "" {
+			value, _ := strconv.ParseInt(status.Value, 10, 0)
+			value += 1
+			status.Value = strconv.FormatInt(value, 10)
+			sysStatusService.UpdateStatus(status)
+		} else {
+			status = models.SysStatus{Key: key, Value: strconv.FormatInt(1, 10)}
+			sysStatusService.AddSysStatus(status)
+		}
 	}
 
-	// add status to sys status
-	key := time.Now().Format("20060102") + "-downnum"
-	if status := sysStatusService.Get(key); status.Key != "" {
-		value, _ := strconv.ParseInt(status.Value, 10, 0)
-		value += 1
-		status.Value = strconv.FormatInt(value, 10)
-		sysStatusService.UpdateStatus(status)
-	} else {
-		status = models.SysStatus{Key: key, Value: strconv.FormatInt(1, 10)}
-		sysStatusService.AddSysStatus(status)
-	}
+
 	return nil
 }
 
