@@ -85,10 +85,13 @@ sh run.sh
 
 # Changelog
 
+* **v0.0.4**
+    * add monitor on download and view
+    * fix register bug
+
 * **v0.0.3**
     * search
     * fix bugs on mobile
-    * and something
 
 * **v0.0.2**
     * add book function
