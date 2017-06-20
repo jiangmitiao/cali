@@ -155,6 +155,18 @@ func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
 		}
 	}
+
+	// add status to sys status
+	key := time.Now().Format("20060102") + "-downnum"
+	if status := sysStatusService.Get(key); status.Key != "" {
+		value, _ := strconv.ParseInt(status.Value, 10, 0)
+		value += 1
+		status.Value = strconv.FormatInt(value, 10)
+		sysStatusService.UpdateStatus(status)
+	} else {
+		status = models.SysStatus{Key: key, Value: strconv.FormatInt(1, 10)}
+		sysStatusService.AddSysStatus(status)
+	}
 	return nil
 }
 
@@ -162,6 +174,7 @@ func sysStatusInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	//var method = strings.Title(c.MethodName)
 	if controller == "View" {
+		// add status to sys status
 		key := time.Now().Format("20060102") + "-pv"
 		if status := sysStatusService.Get(key); status.Value != "" {
 			pvi, _ := strconv.ParseInt(status.Value, 10, 0)

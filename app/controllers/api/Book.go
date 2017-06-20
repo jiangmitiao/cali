@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strconv"
 	"time"
@@ -150,6 +151,8 @@ func (c Book) BookDown() revel.Result {
 	if f, err := bookService.QueryBookFile(bookid); err == nil {
 		user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 		if addOk := userService.AddDownload(user.Id, bookid); addOk {
+
+			// add status to sys status
 			key := time.Now().Format("20060102") + "-downsize"
 			if finfo, err := f.Stat(); err == nil {
 				if status := sysStatusService.Get(key); status.Key != "" {
@@ -210,6 +213,24 @@ func (c *Book) UploadBook() revel.Result {
 		defer file.Close()
 		b, _ := ioutil.ReadAll(file)
 		ioutil.WriteFile(path.Join(uploadpath, header.Filename), b, 0755)
+
+		// add status to sys status
+		key := time.Now().Format("20060102") + "-uploadsize"
+		f, _ := os.Open(path.Join(uploadpath, header.Filename))
+		defer f.Close()
+		if finfo, err := f.Stat(); err == nil {
+			if status := sysStatusService.Get(key); status.Key != "" {
+				value, _ := strconv.ParseInt(status.Value, 10, 0)
+				value += finfo.Size()
+				status.Value = strconv.FormatInt(value, 10)
+				sysStatusService.UpdateStatus(status)
+
+			} else {
+				status = models.SysStatus{Key: key, Value: strconv.FormatInt(finfo.Size(), 10)}
+				sysStatusService.AddSysStatus(status)
+			}
+		}
+
 		//ok := rcali.AddBook(path.Join(uploadpath, header.Filename))
 		ok, bookid := bookService.UploadBook(path.Join(uploadpath, header.Filename))
 		if !ok {
