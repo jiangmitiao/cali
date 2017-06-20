@@ -68,6 +68,9 @@ func init() {
 		RoleAction{Id: "adminSysConfigIndex", Role: "admin", Controller: "SysConfig", Method: "Index"},
 		RoleAction{Id: "adminSysConfigConfigs", Role: "admin", Controller: "SysConfig", Method: "Configs"},
 		RoleAction{Id: "adminSysConfigUpdate", Role: "admin", Controller: "SysConfig", Method: "Update"},
+
+		RoleAction{Id: "adminSysStatusIndex", Role: "admin", Controller: "SysStatus", Method: "Index"},
+		RoleAction{Id: "adminSysStatusStatus", Role: "admin", Controller: "SysStatus", Method: "Status"},
 	)
 
 	//user

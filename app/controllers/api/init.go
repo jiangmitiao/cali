@@ -11,4 +11,5 @@ var (
 	languageService   = services.DefaultLanguageService
 	roleActionService = services.DefaultRoleActionService
 	sysConfigService  = services.DefaultSysConfigService
+	sysStatusService  = services.DefaultSysStatusService
 )

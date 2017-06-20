@@ -35,6 +35,7 @@
                                     <li @click="changeseen('discover')" :class="listseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> <span v-text="$t('lang.discover')"></span></a></li>
                                     <li v-if="userlistseen" @click="changeseen('userlist')" :class="listseen.userlist?'current':''"><a href="#userlist"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.userlist')"></span></a></li>
                                     <li v-if="sysconfigseen" @click="changeseen('sysconfig')" :class="listseen.sysconfig?'current':''"><a href="#sysconfig"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysconfig')"></span></a></li>
+                                    <li v-if="sysstatusseen" @click="changeseen('sysstatus')" :class="listseen.sysstatus?'current':''"><a href="#sysstatus"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysstatus')"></span></a></li>
                                     <li @click="changeseen('upload')" :class="listseen.upload?'current':''"><a href="#upload"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></a></li>
                                     <li @click="changeseen('changeuserinfo')" :class="listseen.changeuserinfo?'current':''"><a href="#changeuserinfo"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></a></li>
                                     <li @click="changeseen('changepassword')" :class="listseen.changepassword?'current':''"><a style="color: red;" href="#changepassword"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.changepassword')"></span></a></li>
@@ -67,6 +68,13 @@
                     <div class="panel-heading"><span v-text="$t('lang.sysconfig')"></span></div>
                     <div class="panel-body">
                         <sysconfigdiv v-bind:sysconfiglist="sysconfiglist"></sysconfigdiv>
+                    </div>
+                </div>
+
+                <div v-show="listseen.sysstatus" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.sysstatus')"></span></div>
+                    <div class="panel-body">
+                        <sysstatusdiv v-bind:sysstatuslist="sysstatuslist"></sysstatusdiv>
                     </div>
                 </div>
 

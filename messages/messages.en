@@ -10,6 +10,8 @@ loginSuccess=login success
 
 ## signup
 signup=Sign Up
+signupfail=Sign Up Fail
+signupsuccess=Sign Up Success
 
 ## person
 person=Person

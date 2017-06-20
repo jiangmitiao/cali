@@ -56,7 +56,7 @@ func (c User) Info() revel.Result {
 		user.LoginPassword = ""
 		return c.RenderJSONP(callback, models.NewOKApiWithInfo(user))
 	} else {
-		return c.RenderJSONP(callback, models.NewErrorApi())
+		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("loginNameOrLoginPasswordError"), nil))
 	}
 
 }
@@ -87,7 +87,7 @@ func (c User) Regist() revel.Result {
 	loginName := c.Request.FormValue("loginName")
 	loginPassword := c.Request.FormValue("loginPassword")
 	if loginName == "" || loginPassword == "" || len(loginName) > 64 || len(loginPassword) > 64 {
-		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("loginNameOrLoginPasswordError"), nil))
+		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("signupfail")+c.Message("loginNameOrLoginPasswordError"), nil))
 	} else {
 		salt := uuid.New().String()
 		safePassword := rcali.Sha3_256(loginPassword + salt)
@@ -100,9 +100,9 @@ func (c User) Regist() revel.Result {
 			Email:         "",
 		}
 		if userService.Regist(newUser) {
-			return c.RenderJSONP(callback, models.NewOKApi())
+			return c.RenderJSONP(callback, models.NewOKApiWithMessageAndInfo(c.Message("signupsuccess"), nil))
 		} else {
-			return c.RenderJSONP(callback, models.NewErrorApi())
+			return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("signupfail")+c.Message("loginNameOrLoginPasswordError"), nil))
 		}
 	}
 }

@@ -1,19 +1,19 @@
 package services
 
 import (
-	"sync"
-	"github.com/jiangmitiao/cali/app/models"
 	"github.com/google/uuid"
+	"github.com/jiangmitiao/cali/app/models"
+	"sync"
 )
 
 type SysStatusService struct {
 	lock *sync.Mutex
 }
 
-func (service SysStatusService) Get(key string) string {
+func (service SysStatusService) Get(key string) models.SysStatus {
 	sysStatus := models.SysStatus{}
 	localEngine.Where("key = ?", key).Get(&sysStatus)
-	return sysStatus.Value
+	return sysStatus
 }
 
 func (service SysStatusService) QuerySysStatus(limit, start int) []models.SysStatus {
@@ -33,10 +33,10 @@ func (service SysStatusService) UpdateStatus(sysStatus models.SysStatus) bool {
 
 func (service SysStatusService) AddSysStatus(sysStatus models.SysStatus) bool {
 	sysStatus.Id = uuid.New().String()
-	_, err := localEngine.Insert(sysStatus)
-	if err == nil {
+	if _, err := localEngine.InsertOne(sysStatus); err == nil {
 		return true
 	} else {
 		return false
 	}
+
 }

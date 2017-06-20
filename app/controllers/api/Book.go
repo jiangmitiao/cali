@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"path"
 	"strconv"
+	"time"
 )
 
 type Book struct {
@@ -149,6 +150,20 @@ func (c Book) BookDown() revel.Result {
 	if f, err := bookService.QueryBookFile(bookid); err == nil {
 		user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 		if addOk := userService.AddDownload(user.Id, bookid); addOk {
+			key := time.Now().Format("20060102") + "-downsize"
+			if finfo, err := f.Stat(); err == nil {
+				if status := sysStatusService.Get(key); status.Key != "" {
+					value, _ := strconv.ParseInt(status.Value, 10, 0)
+					value += finfo.Size()
+					status.Value = strconv.FormatInt(value, 10)
+					sysStatusService.UpdateStatus(status)
+
+				} else {
+					status = models.SysStatus{Key: key, Value: strconv.FormatInt(finfo.Size(), 10)}
+					sysStatusService.AddSysStatus(status)
+				}
+			}
+
 			return c.RenderFile(f, revel.Attachment)
 		} else {
 			return c.RenderText("database error")

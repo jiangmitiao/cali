@@ -28,16 +28,20 @@ $(document).ready(function(){
                             if (user.statusCode ==200){
                                 store.set("user", user.info);
                                 store.set("session", json.info);
-                                window.location = "/"
+                                if(window.history.length >=2){
+                                    window.history.go(-1);
+                                }else {
+                                    window.location = "/"
+                                }
                             }else {
-                                alert("密码错误:"+user.message);
+                                alert(user.message);
                             }
                         }).
                         catch(function(ex) {
                             console.log('parsing failed', ex)
                         });
                     }else {
-                        alert("密码错误:"+json.message);
+                        alert(json.message);
                     }
                 }).
                 catch(function(ex) {

@@ -8,10 +8,10 @@ import (
 type SysConfigService struct {
 }
 
-func (service SysConfigService) Get(key string) string {
+func (service SysConfigService) Get(key string) models.SysConfig {
 	sysConfig := models.SysConfig{}
 	localEngine.Where("key = ?", key).Get(&sysConfig)
-	return sysConfig.Value
+	return sysConfig
 }
 
 func (service SysConfigService) QuerySysConfigs(limit, start int) []models.SysConfig {
@@ -30,10 +30,21 @@ func (service SysConfigService) UpdateConfig(sysConfig models.SysConfig) bool {
 }
 
 func (service SysConfigService) AddSysConfig(sysConfig models.SysConfig) bool {
-	sysConfig.Id = uuid.New().String()
-	_, err := localEngine.Insert(sysConfig)
-	if err == nil {
-		return true
+	if count, err := localEngine.Where("key = ?", sysConfig.Key).Count(models.SysConfig{}); err == nil {
+		if count == 1 {
+			if _, err := localEngine.Where("key = ?", sysConfig.Key).Cols("value").Update(sysConfig); err == nil {
+				return true
+			} else {
+				return false
+			}
+		} else {
+			sysConfig.Id = uuid.New().String()
+			if _, err := localEngine.InsertOne(sysConfig); err == nil {
+				return true
+			} else {
+				return false
+			}
+		}
 	} else {
 		return false
 	}

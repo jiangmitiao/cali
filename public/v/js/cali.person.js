@@ -82,6 +82,31 @@ $(document).ready(function(){
         }
     });
 
+    // 定义名为 sysstatusdiv 的新组件
+    Vue.component('sysstatusdiv', {
+        // sysstatusdiv 组件现在接受一个
+        // 这个属性名为 sysstatuslist。
+        props: ['sysstatuslist'],
+        template: '\
+        <table class="table">\
+            <thead>\
+                <tr>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                </tr>\
+            </thead>\
+            <tbody>\
+                <tr v-for="item in sysstatuslist">\
+                    <td v-text="item.key"></td>\
+                    <td v-text="item.value"></td>\
+                    <td v-text="item.comments"></td>\
+                </tr>\
+            </tbody>\
+        </table>\
+        '
+    });
+
 
     var app = new Vue({
         i18n,
@@ -105,7 +130,11 @@ $(document).ready(function(){
 
             //sysconfig
             sysconfigseen:false,
-            sysconfiglist:[]
+            sysconfiglist:[],
+
+            //sysstatus
+            sysstatusseen:false,
+            sysstatuslist:[],
         },
         methods: {
             changeseen:function (e) {
@@ -113,6 +142,7 @@ $(document).ready(function(){
                 this.listseen["discover"] = false;
                 this.listseen["userlist"] = false;
                 this.listseen["sysconfig"] = false;
+                this.listseen["sysstatus"] = false;
                 this.listseen["upload"] = false;
                 this.listseen["changeuserinfo"] = false;
                 this.listseen["changepassword"] = false;
@@ -362,12 +392,32 @@ $(document).ready(function(){
             catch(function(ex) {
                 console.log('parsing failed', ex)
             });
+
+
+            fetch('/api/sysstatus/status',{method:'post',body:commonData()}).then(function(response) {
+                if (response.redirected){
+                    app.sysstatusseen = false;
+                    var tmpJson = {};
+                    tmpJson.statusCode = 500;
+                    return tmpJson;
+                }
+                return response.json();
+            }).then(function(json) {
+                if (json.statusCode ==200){
+                    app.sysstatusseen = true;
+                    app.sysstatuslist = json.info;
+                }
+            }).
+            catch(function(ex) {
+                console.log('parsing failed', ex)
+            });
         },
         beforeMount: function () {
             //console.log("beforeMount");
             this.listseen = {};
             this.listseen["discover"] = true;
             this.listseen["sysconfig"] = false;
+            this.listseen["sysstatus"] = false;
             this.listseen["userlist"] = false;
             this.listseen["upload"] = false;
             this.listseen["changeuserinfo"] = false;

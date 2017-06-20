@@ -68,7 +68,7 @@ $(document).ready(function(){
                                     <li role="separator" class="divider"></li>\
                                     <li v-if="!islogin"><a href="/login" target="_blank"><span v-text="$t(\'lang.login\')"></span></a></li>\
                                     <li v-if="!islogin"><a href="/signup" target="_blank"><span v-text="$t(\'lang.signup\')"></span></a></li>\
-                                    <li v-if="islogin"><a href="#" @click="logout"><span v-text="$t(\'lang.logout\')"></span></a></li>\
+                                    <li v-if="islogin"><a @click="logout"><span v-text="$t(\'lang.logout\')"></span></a></li>\
                                 </ul>\
                             </li>\
                         </ul>\

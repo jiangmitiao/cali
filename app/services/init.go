@@ -24,6 +24,7 @@ var (
 	DefaultUserRoleService   = UserRoleService{}
 	DefaultRoleActionService = RoleActionService{}
 	DefaultSysConfigService  = SysConfigService{}
+	DefaultSysStatusService  = SysStatusService{lock: &sync.Mutex{}}
 )
 
 //init the db,should take a db filepath
@@ -101,7 +102,7 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 
 	//add user table
 	//localEngine.CreateTables(new(models.UserInfo))
-	if err = localEngine.Sync2(models.UserInfo{});err!=nil{
+	if err = localEngine.Sync2(models.UserInfo{}); err != nil {
 		return false, err
 	}
 	tmpInfo := models.UserInfo{}
@@ -121,7 +122,7 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 
 	//add role table
 	if err = localEngine.Sync2(models.Role{}); err != nil {
-			return false, err
+		return false, err
 	}
 	roleInfo := models.Role{}
 	localEngine.ID("admin").Get(&roleInfo)
@@ -192,8 +193,13 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 		}
 	}
 
+	//sysstatus add
+	if err = localEngine.Sync2(models.SysStatus{}); err != nil {
+		return false, err
+	}
+
 	//sync user and book
-	if err = localEngine.Sync2(models.UserInfoBookUploadLink{},models.UserInfoBookDownloadLink{}); err != nil {
+	if err = localEngine.Sync2(models.UserInfoBookUploadLink{}, models.UserInfoBookDownloadLink{}); err != nil {
 		return false, err
 	}
 

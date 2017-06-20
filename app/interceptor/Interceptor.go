@@ -17,6 +17,7 @@ var (
 	userRoleService   = services.DefaultUserRoleService
 	roleActionService = services.DefaultRoleActionService
 	sysConfigService  = services.DefaultSysConfigService
+	sysStatusService  = services.DefaultSysStatusService
 
 	//roleActionCache controller action role
 	roleActionCache = make(map[string]map[string]map[string]string)
@@ -96,7 +97,7 @@ func openRegistInterceptor(c *revel.Controller) revel.Result {
 	var method = strings.Title(c.MethodName)
 	if (controller == "View" && method == "SignUp") || (controller == "User" && method == "Regist") {
 		//allow register?
-		if sysConfigService.Get("openregist") == "true" {
+		if sysConfigService.Get("openregist").Value == "true" {
 			return nil
 		} else {
 			return c.Redirect("/")
@@ -108,7 +109,7 @@ func openRegistInterceptor(c *revel.Controller) revel.Result {
 func configInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	if controller == "View" {
-		c.ViewArgs["cnzzid"] = sysConfigService.Get("cnzzid")
+		c.ViewArgs["cnzzid"] = sysConfigService.Get("cnzzid").Value
 		return nil
 	}
 	return nil
@@ -149,9 +150,25 @@ func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	if controller == "Book" && method == "BookDown" {
-		limitConfig, _ := strconv.Atoi(sysConfigService.Get("alldownloadlimit"))
+		limitConfig, _ := strconv.Atoi(sysConfigService.Get("alldownloadlimit").Value)
 		if takeAvailable("common", int64(limitConfig)) <= 0 {
 			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
+		}
+	}
+	return nil
+}
+
+func sysStatusInterceptor(c *revel.Controller) revel.Result {
+	var controller = strings.Title(c.Name)
+	//var method = strings.Title(c.MethodName)
+	if controller == "View" {
+		key := time.Now().Format("20060102") + "-pv"
+		if status := sysStatusService.Get(key); status.Value != "" {
+			pvi, _ := strconv.ParseInt(status.Value, 10, 0)
+			status.Value = strconv.FormatInt(pvi+1, 10)
+			sysStatusService.UpdateStatus(status)
+		} else {
+			sysStatusService.AddSysStatus(models.SysStatus{Key: key, Value: strconv.Itoa(1)})
 		}
 	}
 	return nil
@@ -162,5 +179,6 @@ func init() {
 	revel.InterceptFunc(openRegistInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(downloadLimitInterceptor, revel.AFTER, revel.AllControllers)
 	revel.InterceptFunc(configInterceptor, revel.AFTER, revel.AllControllers)
+	revel.InterceptFunc(sysStatusInterceptor, revel.AFTER, revel.AllControllers)
 
 }

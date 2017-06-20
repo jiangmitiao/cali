@@ -14,8 +14,8 @@ $(document).ready(function(){
                     return;
                 }
                 var form = commonData();
-                form.append("loginName",_.min(data));
-                form.append("loginPassword",data.length);
+                form.append("loginName",app.loginName);
+                form.append("loginPassword",app.loginPassword);
                 fetch('/api/user/regist',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         window.location.href = response.url;
@@ -23,9 +23,10 @@ $(document).ready(function(){
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
+                        alert(json.message);
                         window.location = "/login"
                     }else {
-                        alert("注册失败:"+json.message);
+                        alert(json.message);
                     }
                 }).
                 catch(function(ex) {

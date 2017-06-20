@@ -146,21 +146,10 @@ func (userService UserService) AddUpload(userId string, bookId int) bool {
 
 func (userService UserService) AddDownload(userId string, bookId int) bool {
 	download := models.UserInfoBookDownloadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId}
-	if count, err := localEngine.Where("user_info = ?", userId).And("book = ?", bookId).Count(models.UserInfoBookDownloadLink{}); err == nil {
-		if count == 1 {
-			if _, err := localEngine.Where("user_info = ?", userId).And("book = ?", bookId).Cols("book").Update(download); err == nil {
-				return true
-			} else {
-				return false
-			}
-		} else {
-			if _, err := localEngine.InsertOne(download); err == nil {
-				return true
-			} else {
-				return false
-			}
-		}
+	if _, err := localEngine.InsertOne(download); err == nil {
+		return true
 	} else {
 		return false
 	}
+
 }

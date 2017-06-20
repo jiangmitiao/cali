@@ -11,6 +11,8 @@ loginSuccess=登录成功
 
 ## signup
 signup=注册
+signupfail=注册失败
+signupsuccess=注册成功
 
 ## person
 person=个人中心

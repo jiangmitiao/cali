@@ -77,6 +77,7 @@ const messages = {
             read:"Read",
             library:"Library",
             sysconfig:"SysConfig",
+            sysstatus:"SysStatus",
             searchresult:"Search Result",
             searchresultwith0:"Search Result 0 Books"
         }
@@ -142,6 +143,7 @@ const messages = {
             read:"阅读",
             library:"图书馆",
             sysconfig:"SysConfig",
+            sysstatus:"SysStatus",
             searchresult:"搜索结果",
             searchresultwith0:"搜索结果为0"
         }
