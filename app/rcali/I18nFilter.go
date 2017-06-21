@@ -184,7 +184,7 @@ func I18nFilter(c *revel.Controller, fc []revel.Filter) {
 		//Logger.Debug("Found Accept-Language header value: %s", headerValue)
 		setCurrentLocaleControllerArguments(c, headerValue)
 	} else {
-		Logger.Debug("Unable to find locale in cookie or header, using empty string")
+		//Logger.Debug("Unable to find locale in cookie or header, using empty string")
 		setCurrentLocaleControllerArguments(c, "")
 	}
 	fc[0](c, fc[1:])
