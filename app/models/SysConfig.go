@@ -21,4 +21,7 @@ func init() {
 	DefaultSysConfig = append(DefaultSysConfig, SysConfig{Id: "openregist", Key: "openregist", Value: "true", Comments: "open rigist?"})
 
 	DefaultSysConfig = append(DefaultSysConfig, SysConfig{Id: "alldownloadlimit", Key: "alldownloadlimit", Value: "10000", Comments: "how many books can download one day?"})
+
+	//iplimit
+	DefaultSysConfig = append(DefaultSysConfig, SysConfig{Id: "iplimit", Key: "iplimit", Value: "60", Comments: ""})
 }

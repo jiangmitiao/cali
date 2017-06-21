@@ -60,7 +60,6 @@ func validateOK(controller, method, role string) bool {
 }
 
 func authInterceptor(c *revel.Controller) revel.Result {
-	rcali.Logger.Debug("====================================authInterceptor")
 	// 全部变成首字大写
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
@@ -95,7 +94,6 @@ func authInterceptor(c *revel.Controller) revel.Result {
 }
 
 func openRegistInterceptor(c *revel.Controller) revel.Result {
-	rcali.Logger.Debug("====================================openRegistInterceptor")
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	if (controller == "View" && method == "SignUp") || (controller == "User" && method == "Regist") {
@@ -110,7 +108,6 @@ func openRegistInterceptor(c *revel.Controller) revel.Result {
 }
 
 func configInterceptor(c *revel.Controller) revel.Result {
-	rcali.Logger.Debug("====================================configInterceptor")
 	var controller = strings.Title(c.Name)
 	if controller == "View" {
 		c.ViewArgs["cnzzid"] = sysConfigService.Get("cnzzid").Value
@@ -119,44 +116,45 @@ func configInterceptor(c *revel.Controller) revel.Result {
 	return nil
 }
 
-func takeAvailable(userId string, maxDayLimit int64) int64 {
-	if maxDayLimit <= 1 {
-		maxDayLimit = 1
+func takeAvailable(key string, maxLimit int64, gap time.Duration) int64 {
+	if maxLimit <= 1 {
+		maxLimit = 1
 	}
 	limitLock.Lock()
-	tokenBucket, ok := limitTokenBuckets[userId]
+	tokenBucket, ok := limitTokenBuckets[key]
 	limitLock.Unlock()
 
+	realGap := time.Duration(int64(gap.Nanoseconds() / maxLimit))
+
 	if !ok {
-		tokenBucket = ratelimit.NewBucket(time.Hour*24, maxDayLimit)
+		tokenBucket = ratelimit.NewBucket(realGap, maxLimit)
 		limitLock.Lock()
-		limitTokenBuckets[userId] = tokenBucket
+		limitTokenBuckets[key] = tokenBucket
 		limitLock.Unlock()
 	} else {
 		//changed then
-		if tokenBucket.Capacity() != maxDayLimit {
-			newTokenBucket := ratelimit.NewBucket(time.Hour*24, maxDayLimit)
+		if tokenBucket.Capacity() != maxLimit {
+			newTokenBucket := ratelimit.NewBucket(realGap, maxLimit)
 			limitLock.Lock()
-			limitTokenBuckets[userId] = newTokenBucket
+			limitTokenBuckets[key] = newTokenBucket
 			limitLock.Unlock()
 			newTokenBucket.TakeAvailable(tokenBucket.Available())
 		}
 	}
 	//not allow to download
-	if maxDayLimit == 1 {
-		limitTokenBuckets[userId].TakeAvailable(1)
+	if maxLimit == 1 {
+		limitTokenBuckets[key].TakeAvailable(1)
 	}
-	return limitTokenBuckets[userId].TakeAvailable(1)
+	return limitTokenBuckets[key].TakeAvailable(1)
 }
 
 //download action need to limit ,to defense attack http://blog.imlibo.com/2016/06/20/golang-token-bucket/
 func downloadLimitInterceptor(c *revel.Controller) revel.Result {
-	rcali.Logger.Debug("====================================downloadLimitInterceptor")
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	if controller == "Book" && method == "BookDown" {
 		limitConfig, _ := strconv.Atoi(sysConfigService.Get("alldownloadlimit").Value)
-		if takeAvailable("common", int64(limitConfig)) <= 0 {
+		if takeAvailable("common", int64(limitConfig), time.Hour*24) <= 0 {
 			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
 		}
 		// add status to sys status
@@ -175,8 +173,7 @@ func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 	return nil
 }
 
-func userDownloadInterceptor(c *revel.Controller) revel.Result {
-	rcali.Logger.Debug("====================================userDownloadInterceptor")
+func userDownloadLimitInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	if controller == "Book" && method == "BookDown" {
@@ -197,8 +194,20 @@ func userDownloadInterceptor(c *revel.Controller) revel.Result {
 	return nil
 }
 
+func ipLimitInterceptor(c *revel.Controller) revel.Result {
+	var controller = strings.Title(c.Name)
+	var method = strings.Title(c.MethodName)
+	limitConfig, _ := strconv.Atoi(sysConfigService.Get("iplimit").Value)
+	if method == "BookImage" {
+		limitConfig = limitConfig * 8
+	}
+	for takeAvailable(c.ClientIP+controller+method, int64(limitConfig), time.Minute) <= 0 {
+		time.Sleep(time.Second * 1)
+	}
+	return nil
+}
+
 func sysStatusInterceptor(c *revel.Controller) revel.Result {
-	rcali.Logger.Debug("====================================sysStatusInterceptor")
 	var controller = strings.Title(c.Name)
 	//var method = strings.Title(c.MethodName)
 	if controller == "View" {
@@ -216,8 +225,9 @@ func sysStatusInterceptor(c *revel.Controller) revel.Result {
 }
 
 func init() {
+	revel.InterceptFunc(ipLimitInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(authInterceptor, revel.BEFORE, revel.AllControllers)
-	revel.InterceptFunc(userDownloadInterceptor, revel.BEFORE, revel.AllControllers)
+	revel.InterceptFunc(userDownloadLimitInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(openRegistInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(downloadLimitInterceptor, revel.AFTER, revel.AllControllers)
 	revel.InterceptFunc(configInterceptor, revel.AFTER, revel.AllControllers)
