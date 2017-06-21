@@ -71,6 +71,7 @@ func init() {
 
 		RoleAction{Id: "adminSysStatusIndex", Role: "admin", Controller: "SysStatus", Method: "Index"},
 		RoleAction{Id: "adminSysStatusStatus", Role: "admin", Controller: "SysStatus", Method: "Status"},
+		RoleAction{Id: "adminSysStatusDelete", Role: "admin", Controller: "SysStatus", Method: "Delete"},
 	)
 
 	//user

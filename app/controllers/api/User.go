@@ -160,7 +160,7 @@ func (c User) QueryUserCount() revel.Result {
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		role := userRoleService.GetRoleByUser(user.Id)
 		if role.Name == "admin" {
-			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.QueryUserCount("")))
+			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.QueryUserCount(c.Request.FormValue("loginName"))))
 		}
 	}
 	return c.RenderJSONP(callback, models.NewErrorApi())
@@ -175,7 +175,7 @@ func (c User) QueryUser() revel.Result {
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		role := userRoleService.GetRoleByUser(user.Id)
 		if role.Name == "admin" {
-			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.QueryUser("", limit, start)))
+			return c.RenderJSONP(callback, models.NewOKApiWithInfo(userService.QueryUser(c.Request.FormValue("loginName"), limit, start)))
 		}
 	}
 	return c.RenderJSONP(callback, models.NewErrorApi())

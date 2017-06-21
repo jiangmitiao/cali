@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/google/uuid"
 	"github.com/jiangmitiao/cali/app/models"
+	"time"
 )
 
 type SysConfigService struct {
@@ -21,7 +22,8 @@ func (service SysConfigService) QuerySysConfigs(limit, start int) []models.SysCo
 }
 
 func (service SysConfigService) UpdateConfig(sysConfig models.SysConfig) bool {
-	_, err := localEngine.Id(sysConfig.Id).Cols("key", "value").Update(sysConfig)
+	sysConfig.UpdatedAt = time.Now().Unix()
+	_, err := localEngine.Id(sysConfig.Id).Cols("key", "value", "updated").Update(sysConfig)
 	if err == nil {
 		return true
 	} else {
@@ -32,13 +34,16 @@ func (service SysConfigService) UpdateConfig(sysConfig models.SysConfig) bool {
 func (service SysConfigService) AddSysConfig(sysConfig models.SysConfig) bool {
 	if count, err := localEngine.Where("key = ?", sysConfig.Key).Count(models.SysConfig{}); err == nil {
 		if count == 1 {
-			if _, err := localEngine.Where("key = ?", sysConfig.Key).Cols("value").Update(sysConfig); err == nil {
+			sysConfig.UpdatedAt = time.Now().Unix()
+			if _, err := localEngine.Where("key = ?", sysConfig.Key).Cols("value", "updated").Update(sysConfig); err == nil {
 				return true
 			} else {
 				return false
 			}
 		} else {
 			sysConfig.Id = uuid.New().String()
+			sysConfig.UpdatedAt = time.Now().Unix()
+			sysConfig.CreatedAt = time.Now().Unix()
 			if _, err := localEngine.InsertOne(sysConfig); err == nil {
 				return true
 			} else {

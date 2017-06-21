@@ -25,6 +25,7 @@ var (
 	DefaultRoleActionService = RoleActionService{}
 	DefaultSysConfigService  = SysConfigService{}
 	DefaultSysStatusService  = SysStatusService{lock: &sync.Mutex{}}
+	DefaultUserConfigService = UserConfigService{}
 )
 
 //init the db,should take a db filepath
@@ -198,8 +199,8 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 		return false, err
 	}
 
-	//sync user and book
-	if err = localEngine.Sync2(models.UserInfoBookUploadLink{}, models.UserInfoBookDownloadLink{}); err != nil {
+	//sync user and book and confg
+	if err = localEngine.Sync2(models.UserInfoBookUploadLink{}, models.UserInfoBookDownloadLink{}, models.UserConfig{}); err != nil {
 		return false, err
 	}
 

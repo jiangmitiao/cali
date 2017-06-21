@@ -56,6 +56,8 @@
                 <div v-show="listseen.userlist" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.userlist')"></span></div>
                     <div class="panel-body">
+                        <input type="text" maxlength="64" v-model="searchloginname" class="form-control">
+                        <input type="button" @click="searchloginnameclick" value="Search" class="btn btn-info form-control">
                         <usersdiv v-bind:userlist="userlist"></usersdiv>
 
                         <div class="col-md-6 col-md-offset-3 col-xs-12">

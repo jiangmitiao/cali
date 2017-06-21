@@ -18,6 +18,7 @@ var (
 	roleActionService = services.DefaultRoleActionService
 	sysConfigService  = services.DefaultSysConfigService
 	sysStatusService  = services.DefaultSysStatusService
+	userConfigService = services.DefaultUserConfigService
 
 	//roleActionCache controller action role
 	roleActionCache = make(map[string]map[string]map[string]string)
@@ -59,6 +60,7 @@ func validateOK(controller, method, role string) bool {
 }
 
 func authInterceptor(c *revel.Controller) revel.Result {
+	rcali.Logger.Debug("====================================authInterceptor")
 	// 全部变成首字大写
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
@@ -93,6 +95,7 @@ func authInterceptor(c *revel.Controller) revel.Result {
 }
 
 func openRegistInterceptor(c *revel.Controller) revel.Result {
+	rcali.Logger.Debug("====================================openRegistInterceptor")
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	if (controller == "View" && method == "SignUp") || (controller == "User" && method == "Regist") {
@@ -107,6 +110,7 @@ func openRegistInterceptor(c *revel.Controller) revel.Result {
 }
 
 func configInterceptor(c *revel.Controller) revel.Result {
+	rcali.Logger.Debug("====================================configInterceptor")
 	var controller = strings.Title(c.Name)
 	if controller == "View" {
 		c.ViewArgs["cnzzid"] = sysConfigService.Get("cnzzid").Value
@@ -147,6 +151,7 @@ func takeAvailable(userId string, maxDayLimit int64) int64 {
 
 //download action need to limit ,to defense attack http://blog.imlibo.com/2016/06/20/golang-token-bucket/
 func downloadLimitInterceptor(c *revel.Controller) revel.Result {
+	rcali.Logger.Debug("====================================downloadLimitInterceptor")
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	if controller == "Book" && method == "BookDown" {
@@ -167,11 +172,33 @@ func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 		}
 	}
 
+	return nil
+}
+
+func userDownloadInterceptor(c *revel.Controller) revel.Result {
+	rcali.Logger.Debug("====================================userDownloadInterceptor")
+	var controller = strings.Title(c.Name)
+	var method = strings.Title(c.MethodName)
+	if controller == "Book" && method == "BookDown" {
+		tmp := time.Now()
+		start := time.Date(tmp.Year(), tmp.Month(), tmp.Day(), 0, 0, 0, 0, tmp.Location())
+		stop := start.AddDate(0, 0, 1)
+		user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
+		if user.Id == "" {
+			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
+		}
+		count := userService.GetDownloadCount(user.Id, start, stop)
+		config, _ := userConfigService.GetUserConfig(user.Id)
+		if count >= config.MaxDownload {
+			return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApiWithMessageAndInfo(c.Message("limitdownload"), nil))
+		}
+	}
 
 	return nil
 }
 
 func sysStatusInterceptor(c *revel.Controller) revel.Result {
+	rcali.Logger.Debug("====================================sysStatusInterceptor")
 	var controller = strings.Title(c.Name)
 	//var method = strings.Title(c.MethodName)
 	if controller == "View" {
@@ -190,6 +217,7 @@ func sysStatusInterceptor(c *revel.Controller) revel.Result {
 
 func init() {
 	revel.InterceptFunc(authInterceptor, revel.BEFORE, revel.AllControllers)
+	revel.InterceptFunc(userDownloadInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(openRegistInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(downloadLimitInterceptor, revel.AFTER, revel.AllControllers)
 	revel.InterceptFunc(configInterceptor, revel.AFTER, revel.AllControllers)

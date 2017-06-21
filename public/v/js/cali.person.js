@@ -94,6 +94,7 @@ $(document).ready(function(){
                     <th>#</th>\
                     <th>#</th>\
                     <th>#</th>\
+                    <th>#</th>\
                 </tr>\
             </thead>\
             <tbody>\
@@ -101,10 +102,16 @@ $(document).ready(function(){
                     <td v-text="item.key"></td>\
                     <td v-text="item.value"></td>\
                     <td v-text="item.comments"></td>\
+                    <td><a class="btn btn-danger" @click="deletestatus" :id="item.id">delete</a></td>\
                 </tr>\
             </tbody>\
         </table>\
-        '
+        ',
+        methods:{
+            deletestatus:function (t) {
+                app.sysstatusdelete(t.target.id);
+            }
+        }
     });
 
 
@@ -127,6 +134,7 @@ $(document).ready(function(){
             //userlist
             userlistseen:false,
             userlist:[],
+            searchloginname:"",
 
             //sysconfig
             sysconfigseen:false,
@@ -183,6 +191,62 @@ $(document).ready(function(){
                     console.log('parsing failed', ex)
                 });
                 alert("please wait...");
+            },
+            searchloginnameclick:function () {
+                var form = commonData();
+                form.append("loginName",app.searchloginname);
+                fetch('/api/user/queryusercount',{method:'post',body:form}).then(function(response) {
+                    if (response.redirected){
+                        app.userlistseen = false;
+                        var tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        $('#userlistpage').pagination({
+                            dataSource:function (done) {
+                                var tmp = [];
+                                for(var i=0; i<json.info;i++){
+                                    tmp.push(i)
+                                }
+                                return done(tmp);
+                            },
+                            pageRange:1,
+                            totalNumber:json.info,
+                            pageSize: 8,
+                            showGoInput: true,
+                            showGoButton: true,
+                            callback: function(data, pagination) {
+                                var form = commonData();
+                                form.append("start",_.min(data));
+                                form.append("limit",data.length);
+                                form.append("loginName",app.searchloginname);
+                                fetch('/api/user/queryuser',{method:'post',body:form}).then(function(response) {
+                                    if (response.redirected){
+                                        app.userlistseen = false;
+                                        var tmpJson = {};
+                                        tmpJson.statusCode = 500;
+                                        return tmpJson;
+                                    }
+                                    return response.json();
+                                }).then(function(json) {
+                                    if (json.statusCode ==200){
+                                        app.userlistseen = true;
+                                        app.userlist = json.info
+                                    }
+                                }).
+                                catch(function(ex) {
+                                    console.log('parsing failed', ex)
+                                });
+                            }
+                        });
+                    }
+                }).
+                catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
             },
             changeuserinfo:function () {
                 if (app.user.userName == null || app.user.userName=="" || app.user.email == null || app.user.email==""){
@@ -286,6 +350,36 @@ $(document).ready(function(){
                 if (!find){
                     alert("update error");
                 }
+            },
+            sysstatusdelete : function (id) {
+                var find = false;
+
+                for (var i=0;i< app.sysstatuslist.length; i++){
+                    if (app.sysstatuslist[i].id == id){
+                        var tmp = app.sysstatuslist[i] ;
+                        find = true;
+                        var form = commonData();
+                        form.append("id",id);
+                        form.append("key",tmp.key);
+                        form.append("value",tmp.value);
+                        fetch('/api/sysstatus/delete',{method:'post',body:form}).then(function(response) {
+                            return response.json();
+                        }).then(function(json) {
+                            if (json.statusCode ==200){
+                                app.sysstatuslist = _.difference(app.sysstatuslist,[tmp]);
+                                alert("delete success");
+                            }else {
+                                alert("delete error");
+                            }
+                        }).
+                        catch(function(ex) {
+                            console.log('parsing failed', ex)
+                        });
+                    }
+                }
+                if (!find){
+                    alert("delete error");
+                }
             }
         },
         computed: {
@@ -322,6 +416,7 @@ $(document).ready(function(){
             }).catch(function(ex) {
                 console.log('parsing failed', ex)
             });
+
 
             fetch('/api/user/queryusercount',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){

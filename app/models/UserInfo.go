@@ -15,6 +15,8 @@ type UserInfo struct {
 	Img      string `json:"img" xorm:"varchar(256) 'img'"`
 	Valid    int    `json:"valid" xorm:"int default 0 'valid'"` //0 有效 1 无效
 
+	CreatedAt int64 `json:"created" xorm:"'created'"`
+	UpdatedAt int64 `json:"updated" xorm:"'updated'"`
 }
 
 func (UserInfo) TableName() string {

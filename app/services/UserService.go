@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
+	"time"
 )
 
 type UserService struct {
@@ -23,7 +24,15 @@ func (userService UserService) GetUserByLoginName(loginName string) (models.User
 	} else {
 		return userInfo, false
 	}
+}
 
+func (userService UserService) GetAllUserByLoginName(loginName string) (models.UserInfo, bool) {
+	var userInfo = models.UserInfo{}
+	if has, err := localEngine.Where("login_name = ?", loginName).Get(&userInfo); has && err == nil {
+		return userInfo, true
+	} else {
+		return userInfo, false
+	}
 }
 
 func (userService UserService) FreshLoginSession(loginSession string, UserId string) {
@@ -40,7 +49,7 @@ func (userService UserService) GetLoginUser(loginSession string) (models.UserInf
 }
 
 func (userService UserService) Regist(user models.UserInfo) bool {
-	_, has := userService.GetUserByLoginName(user.UserName)
+	_, has := userService.GetAllUserByLoginName(user.UserName)
 	if !has {
 		session := localEngine.NewSession()
 		defer session.Close()
@@ -81,7 +90,7 @@ func (userService UserService) Regist(user models.UserInfo) bool {
 func (userService UserService) QueryUserCount(name string) int64 {
 	var count int64 = 0
 	if name != "" {
-		count, _ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like '%?%'", name).Or("user_name like '%?%'", name).Where("valid = ?", 0).Count(&models.UserInfo{})
+		count, _ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like ?", "%"+name+"%").Or("user_name like ?", "%"+name+"%").Where("valid = ?", 0).Count(&models.UserInfo{})
 	} else {
 		count, _ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Count(&models.UserInfo{})
 	}
@@ -92,7 +101,7 @@ func (userService UserService) QueryUserCount(name string) int64 {
 func (userService UserService) QueryUser(name string, limit, start int) []models.UserInfo {
 	users := make([]models.UserInfo, 0)
 	if name != "" {
-		localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like '%?%'", name).Or("user_name like '%?%'", name).Where("valid = ?", 0).Limit(limit, start).Find(&users)
+		localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like ?", "%"+name+"%").Or("user_name like ?", "%"+name+"%").Where("valid = ?", 0).Limit(limit, start).Find(&users)
 	} else {
 		localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Limit(limit, start).Find(&users)
 	}
@@ -136,7 +145,7 @@ func (userService UserService) UpdatePassword(user models.UserInfo) bool {
 }
 
 func (userService UserService) AddUpload(userId string, bookId int) bool {
-	upload := models.UserInfoBookUploadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId}
+	upload := models.UserInfoBookUploadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
 	if _, err := localEngine.InsertOne(upload); err == nil {
 		return true
 	} else {
@@ -145,11 +154,15 @@ func (userService UserService) AddUpload(userId string, bookId int) bool {
 }
 
 func (userService UserService) AddDownload(userId string, bookId int) bool {
-	download := models.UserInfoBookDownloadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId}
+	download := models.UserInfoBookDownloadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
 	if _, err := localEngine.InsertOne(download); err == nil {
 		return true
 	} else {
 		return false
 	}
+}
 
+func (userService UserService) GetDownloadCount(userId string, start, stop time.Time) int {
+	count, _ := localEngine.Where("user_info = ?", userId).And("created >= ?", start.Unix()).And("created <= ?", stop.Unix()).Count(models.UserInfoBookDownloadLink{})
+	return int(count)
 }
