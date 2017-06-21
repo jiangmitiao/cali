@@ -162,7 +162,7 @@ func (service BookService) QueryBook(bookid int) models.BookVo {
 	engine.Where("book=?", bookid).Get(&data)
 	book.Format = data.Format
 	identifier := models.Identifier{}
-	engine.Where("book=?",bookid).Where("type=?","isbn").Get(&identifier)
+	engine.Where("book=?", bookid).Where("type=?", "isbn").Get(&identifier)
 	book.Isbn = identifier.Val
 	return book
 }

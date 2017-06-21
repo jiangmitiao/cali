@@ -12,4 +12,5 @@ var (
 	roleActionService = services.DefaultRoleActionService
 	sysConfigService  = services.DefaultSysConfigService
 	sysStatusService  = services.DefaultSysStatusService
+	userConfigService = services.DefaultUserConfigService
 )

@@ -62,6 +62,7 @@ func init() {
 		RoleAction{Id: "adminUserQueryUserCount", Role: "admin", Controller: "User", Method: "QueryUserCount"},
 		RoleAction{Id: "adminUserQueryUser", Role: "admin", Controller: "User", Method: "QueryUser"},
 		RoleAction{Id: "adminUserChangeDelete", Role: "admin", Controller: "User", Method: "Delete"},
+		RoleAction{Id: "adminUserUserStatus", Role: "admin", Controller: "User", Method: "UserStatus"},
 
 		RoleAction{Id: "adminAppIndex", Role: "admin", Controller: "App", Method: "Index"},
 
@@ -108,6 +109,7 @@ func init() {
 		RoleAction{Id: "userTagIndex", Role: "user", Controller: "Tag", Method: "Index"},
 		RoleAction{Id: "userTagTagsCount", Role: "user", Controller: "Tag", Method: "TagsCount"},
 		RoleAction{Id: "userTagTags", Role: "user", Controller: "Tag", Method: "Tags"},
+		RoleAction{Id: "userUserUserStatus", Role: "user", Controller: "User", Method: "UserStatus"},
 
 		RoleAction{Id: "userUserIndex", Role: "user", Controller: "User", Method: "Index"},
 		RoleAction{Id: "userUserLogin", Role: "user", Controller: "User", Method: "Login"},

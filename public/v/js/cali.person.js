@@ -143,6 +143,9 @@ $(document).ready(function(){
             //sysstatus
             sysstatusseen:false,
             sysstatuslist:[],
+
+            //download
+            downloadstats:{}
         },
         methods: {
             changeseen:function (e) {
@@ -151,6 +154,7 @@ $(document).ready(function(){
                 this.listseen["userlist"] = false;
                 this.listseen["sysconfig"] = false;
                 this.listseen["sysstatus"] = false;
+                this.listseen["download"] = false;
                 this.listseen["upload"] = false;
                 this.listseen["changeuserinfo"] = false;
                 this.listseen["changepassword"] = false;
@@ -392,6 +396,12 @@ $(document).ready(function(){
             },
             userlist_computed : function () {
                 return this.userlist;
+            },
+            computed_userstatus : function () {
+                if (_.has(app.downloadstats,"count") && _.has(app.downloadstats,"maxcount")){
+                    return "已下载 "+app.downloadstats.count+" 本.可下载 "+(app.downloadstats.maxcount-app.downloadstats.count)+"本";
+                }
+                return "暂无信息"
             }
         },
         created: function() {
@@ -501,6 +511,23 @@ $(document).ready(function(){
                 if (json.statusCode ==200){
                     app.sysstatusseen = true;
                     app.sysstatuslist = json.info;
+                }
+            }).
+            catch(function(ex) {
+                console.log('parsing failed', ex)
+            });
+
+            fetch('/api/user/userstatus',{method:'post',body:commonData()}).then(function(response) {
+                if (response.redirected){
+                    app.sysstatusseen = false;
+                    var tmpJson = {};
+                    tmpJson.statusCode = 500;
+                    return tmpJson;
+                }
+                return response.json();
+            }).then(function(json) {
+                if (json.statusCode ==200){
+                    app.downloadstats = json.info;
                 }
             }).
             catch(function(ex) {

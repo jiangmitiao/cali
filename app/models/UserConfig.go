@@ -5,7 +5,7 @@ import "github.com/google/uuid"
 type UserConfig struct {
 	Id          string `json:"id" xorm:"pk 'id'"`
 	UserInfo    string `json:"user_info" xorm:"'user_info'"`
-	MaxDownload int    `json:"max_download" xorm:"'max_download' default 1"`
+	MaxDownload int    `json:"max_download" xorm:"'max_download' default 5"`
 }
 
 func (UserConfig) TableName() string {
@@ -13,5 +13,5 @@ func (UserConfig) TableName() string {
 }
 
 func NewUserConfig(userInfoId string) UserConfig {
-	return UserConfig{Id: uuid.New().String(), UserInfo: userInfoId, MaxDownload: 1}
+	return UserConfig{Id: uuid.New().String(), UserInfo: userInfoId, MaxDownload: 5}
 }

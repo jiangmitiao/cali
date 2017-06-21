@@ -196,3 +196,20 @@ func (c User) Delete() revel.Result {
 	}
 	return c.RenderJSONP(callback, models.NewErrorApi())
 }
+
+func (c User) UserStatus() revel.Result {
+	user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
+	if user.Id != "" {
+		tmp := time.Now()
+		start := time.Date(tmp.Year(), tmp.Month(), tmp.Day(), 0, 0, 0, 0, tmp.Location())
+		stop := start.AddDate(0, 0, 1)
+		config, _ := userConfigService.GetUserConfig(user.Id)
+		status := make(map[string]string)
+		status["count"] = strconv.Itoa(userService.GetDownloadCount(user.Id, start, stop))
+		status["maxcount"] = strconv.Itoa(config.MaxDownload)
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(status))
+	} else {
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
+	}
+
+}

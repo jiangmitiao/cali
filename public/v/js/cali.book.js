@@ -41,7 +41,7 @@ $(document).ready(function(){
                         <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="book.isbn"></span></p>\
                         <p><span v-text="$t(\'lang.bookmodifiedtime\')"></span>: <span v-text="formatdate(book.last_modified)"></span></p>\
                         <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="book.rating"></span></p>\
-                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/api/book/bookdown?bookid=\'+book.id+withSession"><span v-text="$t(\'lang.download\')"></span></a></p>\
+                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/api/book/bookdown?bookid=\'+book.id+withSession"><span v-text="$t(\'lang.clickdownload\')"></span></a></p>\
                         <p v-if="book.format==\'EPUB\'"><span v-text="$t(\'lang.read\')"></span>: <a :href="\'/read?bookid=\'+book.id"><span v-text="$t(\'lang.read\')"></span></a></p>\
                         <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(book.comments)"></span></p>\
                     </div>\
