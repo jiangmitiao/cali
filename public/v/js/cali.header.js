@@ -14,6 +14,9 @@ function commonData() {
 }
 
 $(document).ready(function(){
+    if (window.location.href.indexOf("login")<=0){
+        store.set("location",window.location.href);
+    }
     // 定义名为 headerdiv 的新组件
     Vue.component('headerdiv', {
         // headerdiv 组件现在接受一个

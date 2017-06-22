@@ -166,6 +166,7 @@ func init() {
 		RoleAction{Id: "watcherUserRegist", Role: "watcher", Controller: "User", Method: "Regist"},
 		//RoleAction{Id: "watcherUserUpdate", Role: "watcher", Controller: "User", Method: "Update"}, watcher can not change info
 		//RoleAction{Id: "watcherUserChangePassword", Role: "watcher", Controller: "User", Method: "ChangePassword"}, watcher can not change password
+		RoleAction{Id: "watcherUserActive", Role: "watcher", Controller: "User", Method: "Active"},
 
 		RoleAction{Id: "watcherAppIndex", Role: "watcher", Controller: "App", Method: "Index"},
 	)

@@ -13,6 +13,8 @@ loginSuccess=登录成功
 signup=注册
 signupfail=注册失败
 signupsuccess=注册成功
+needemail=需要Email
+pleaseactive=请前往邮箱激活
 
 ## person
 person=个人中心

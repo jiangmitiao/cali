@@ -86,6 +86,11 @@ func (c User) Regist() revel.Result {
 	callback := c.Request.FormValue("callback")
 	loginName := c.Request.FormValue("loginName")
 	loginPassword := c.Request.FormValue("loginPassword")
+
+	if !c.Validation.Check(loginName, revel.ValidEmail()).Ok {
+		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("signupfail")+" - "+c.Message("needemail"), nil))
+	}
+
 	if loginName == "" || loginPassword == "" || len(loginName) > 64 || len(loginPassword) > 64 {
 		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("signupfail")+c.Message("loginNameOrLoginPasswordError"), nil))
 	} else {
@@ -97,10 +102,16 @@ func (c User) Regist() revel.Result {
 			LoginPassword: safePassword,
 			Salt:          salt,
 			UserName:      loginName,
-			Email:         "",
+			Email:         loginName,
+		}
+		returnmessage := c.Message("signupsuccess")
+		if rcali.HasNeedActive() {
+			newUser.Valid = 2
+			returnmessage = c.Message("pleaseactive")
 		}
 		if userService.Regist(newUser) {
-			return c.RenderJSONP(callback, models.NewOKApiWithMessageAndInfo(c.Message("signupsuccess"), nil))
+			rcali.SendActiveMail(newUser.Email, newUser.Salt)
+			return c.RenderJSONP(callback, models.NewOKApiWithMessageAndInfo(returnmessage, nil))
 		} else {
 			return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("signupfail")+c.Message("loginNameOrLoginPasswordError"), nil))
 		}
@@ -112,13 +123,11 @@ func (c User) Update() revel.Result {
 	callback := c.Request.FormValue("callback")
 	session := c.Request.FormValue("session")
 	userName := c.Request.FormValue("userName")
-	email := c.Request.FormValue("email")
-	if len(userName) > 64 || len(email) > 128 {
+	if len(userName) > 64 {
 		return c.RenderJSONP(callback, models.NewErrorApiWithMessageAndInfo(c.Message("emailOrUsernameIsTooLong"), nil))
 	}
 	if user, isLogin := userService.GetLoginUser(session); isLogin {
 		user.UserName = userName
-		user.Email = email
 		user.Img = ""
 		if updateOK := userService.UpdateInfo(user); updateOK {
 			return c.RenderJSONP(callback, models.NewOKApi())
@@ -212,4 +221,12 @@ func (c User) UserStatus() revel.Result {
 		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
 	}
 
+}
+
+func (c User) Active()revel.Result {
+	key := c.Request.FormValue("key")
+	if userService.ActiveUser(key){
+		return c.Redirect("/login")
+	}
+	return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
 }

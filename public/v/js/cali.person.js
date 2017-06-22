@@ -253,14 +253,13 @@ $(document).ready(function(){
                 });
             },
             changeuserinfo:function () {
-                if (app.user.userName == null || app.user.userName=="" || app.user.email == null || app.user.email==""){
+                if (app.user.userName == null || app.user.userName==""){
                     app.changeuserinfotipinfo = "lang.notnull";
                     return;
                 }else {
                     app.changeuserinfotipinfo = "";
                     var form = commonData();
                     form.append("userName",app.user.userName);
-                    form.append("email",app.user.email);
                     fetch('/api/user/update',{method:'post',body:form}).then(function(response) {
                         if (response.redirected){
                             alert("role action setting error !");

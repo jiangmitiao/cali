@@ -126,7 +126,7 @@ func (userService UserService) DeleteUser(userId string) bool {
 
 //update info .not in password or other.
 func (userService UserService) UpdateInfo(user models.UserInfo) bool {
-	_, err := localEngine.ID(user.Id).Cols("user_name", "email", "img").Where("valid = ?", 0).Update(user)
+	_, err := localEngine.ID(user.Id).Cols("user_name", "img").Where("valid = ?", 0).Update(user)
 	if err != nil {
 		return false
 	} else {
@@ -165,4 +165,16 @@ func (userService UserService) AddDownload(userId string, bookId int) bool {
 func (userService UserService) GetDownloadCount(userId string, start, stop time.Time) int {
 	count, _ := localEngine.Where("user_info = ?", userId).And("created >= ?", start.Unix()).And("created <= ?", stop.Unix()).Count(models.UserInfoBookDownloadLink{})
 	return int(count)
+}
+
+func (userService UserService) ActiveUser(salt string) bool {
+	userinfo := models.UserInfo{}
+	localEngine.Where("salt = ?", salt).Get(&userinfo)
+	if userinfo.Salt == salt {
+		userinfo.Valid = 0
+		localEngine.Where("salt = ?", salt).Cols("valid").Update(userinfo)
+		return true
+	} else {
+		return false
+	}
 }

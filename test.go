@@ -9,9 +9,11 @@ import (
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
 	"github.com/jiangmitiao/cali/app/models"
+	"github.com/jiangmitiao/cali/app/rcali"
 	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/sha3"
 	"io"
+	"os"
 	"path"
 	"time"
 )
@@ -109,6 +111,21 @@ func SearchBooks() {
 	engineTest.Close()
 }
 
+func mailtest() {
+	user, _ := os.LookupEnv("CALIEMAIL")
+	password, _ := os.LookupEnv("CALIEMAILPASSWORD")
+	host, _ := os.LookupEnv("CALISMTP")
+	to, _ := os.LookupEnv("CALIEMAILTESTTO")
+
+	fmt.Println(user, password, host, to)
+	if user == "" || password == "" || host == "" || to == "" {
+		return
+	}
+	subject := "hello"
+	body := "ceshi kfnlgnlrnglkr <a href='http://baidu.com'>baidu</a>"
+	rcali.SendToMail(user, password, host, to, subject, body, "html")
+}
+
 func main() {
 	//DbInit()
 	//PathTest()
@@ -117,6 +134,6 @@ func main() {
 	//userhome, _ := rcali.Home()
 	//fmt.Println(userhome)
 
-	SearchBooks()
-
+	//SearchBooks()
+	mailtest()
 }

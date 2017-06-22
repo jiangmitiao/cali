@@ -29,7 +29,7 @@
 					<div class="box">
 						<div class="content-wrap">
 							<h6><span v-text="$t('lang.signin')"></span></h6>
-							<input class="form-control" type="text" maxlength="64" :placeholder="$t('lang.loginName')" v-model="loginName">
+							<input class="form-control" type="text" maxlength="64" :placeholder="$t('lang.email')" v-model="loginName">
 							<input class="form-control" type="password" maxlength="64" :placeholder="$t('lang.loginPassword')" v-model="loginPassword">
 							<div class="action">
 								<a class="btn btn-primary signup" @keyup.enter="login" @click="login"><span v-text="$t('lang.login')"></span></a>

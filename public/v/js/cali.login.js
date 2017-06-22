@@ -28,10 +28,10 @@ $(document).ready(function(){
                             if (user.statusCode ==200){
                                 store.set("user", user.info);
                                 store.set("session", json.info);
-                                if(window.history.length >=2){
-                                    window.history.go(-1);
+                                if (store.get("location") != undefined && store.get("location") != ""){
+                                    window.location = store.get("location");
                                 }else {
-                                    window.location = "/"
+                                    window.location = "/";
                                 }
                             }else {
                                 alert(user.message);

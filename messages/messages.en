@@ -12,6 +12,8 @@ loginSuccess=login success
 signup=Sign Up
 signupfail=Sign Up Fail
 signupsuccess=Sign Up Success
+needemail=Need Email
+pleaseactive=Please to Active from your email
 
 ## person
 person=Person

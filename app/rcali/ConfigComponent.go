@@ -131,3 +131,36 @@ func homeWindows() (string, error) {
 
 	return home, nil
 }
+
+func HasNeedActive() bool {
+	useremail, _ := os.LookupEnv("CALIEMAIL")
+	password, _ := os.LookupEnv("CALIEMAILPASSWORD")
+	host, _ := os.LookupEnv("CALISMTP")
+	to, _ := os.LookupEnv("CALIEMAILTESTTO")
+	domain, _ := os.LookupEnv("CALIDOMAIN")
+
+	if useremail == "" || password == "" || host == "" || to == "" || domain == "" {
+		return false
+	} else {
+		return true
+	}
+}
+
+func SendActiveMail(realto, key string) {
+	//CALIDOMAIN
+	useremail, _ := os.LookupEnv("CALIEMAIL")
+	password, _ := os.LookupEnv("CALIEMAILPASSWORD")
+	host, _ := os.LookupEnv("CALISMTP")
+	to, _ := os.LookupEnv("CALIEMAILTESTTO")
+	domain, _ := os.LookupEnv("CALIDOMAIN")
+
+	if useremail == "" || password == "" || host == "" || to == "" || domain == "" {
+		return
+	} else {
+		go func() {
+			subject := "Cali"
+			body := "<a href='http://" + domain + "/api/user/active?key=" + key + "'>http://" + domain + "/api/user/active?key=" + key + "</a>"
+			SendToMail(useremail, password, host, realto, subject, body, "html")
+		}()
+	}
+}
