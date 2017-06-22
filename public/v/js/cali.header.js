@@ -14,7 +14,7 @@ function commonData() {
 }
 
 $(document).ready(function(){
-    if (window.location.href.indexOf("login")<=0){
+    if (window.location.href.indexOf("login")<=0 && window.location.href.indexOf("signup")<=0){
         store.set("location",window.location.href);
     }
     // 定义名为 headerdiv 的新组件

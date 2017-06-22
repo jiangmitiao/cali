@@ -225,7 +225,7 @@ func sysStatusInterceptor(c *revel.Controller) revel.Result {
 }
 
 func init() {
-	revel.InterceptFunc(ipLimitInterceptor, revel.BEFORE, revel.AllControllers)
+	//revel.InterceptFunc(ipLimitInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(authInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(userDownloadLimitInterceptor, revel.BEFORE, revel.AllControllers)
 	revel.InterceptFunc(openRegistInterceptor, revel.BEFORE, revel.AllControllers)
