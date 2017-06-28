@@ -205,9 +205,9 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	}
 
 	//touch the metadb
-	if _, err = localEngine.Exec("ATTACH DATABASE \"" + SqliteDbPath + "\" AS \"data\""); err != nil {
-		return false, err
-	}
+	//if _, err = localEngine.Exec("ATTACH DATABASE \"" + SqliteDbPath + "\" AS \"data\""); err != nil {
+	//	return false, err
+	//}
 
 	rcali.Logger.Info("----------DbInitOk----------")
 	return true, nil
