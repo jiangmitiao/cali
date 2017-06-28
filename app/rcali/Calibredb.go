@@ -3,6 +3,12 @@ package rcali
 import (
 	"os/exec"
 	"strconv"
+	"github.com/jiangmitiao/ebook-go"
+	"github.com/google/uuid"
+	"path/filepath"
+	"path"
+	"io"
+	"os"
 )
 
 /**
@@ -26,17 +32,31 @@ func calibredbPath() string {
 	return ""
 }
 
-func AddBook(bookpath string) bool {
-	if hasCalibredb() {
-		cmd := exec.Command(calibredbPath(), "add", bookpath)
-		err := cmd.Run()
-		if err == nil {
-			return cmd.ProcessState.Success()
+func AddBook(bookpath string) (books.Ebook,string) {
+	ebook := books.GetEBook(bookpath)
+	if ebook!=nil{
+		bookspath,_ := GetBooksPath()
+		filename :=path.Join(bookspath,uuid.New().String()+filepath.Ext(bookpath))
+		if err :=CopyFile(bookpath,filename);err==nil{
+			return ebook,filename
 		}
-	} else {
-		return false
 	}
-	return false
+	return nil,""
+}
+
+func CopyFile(srcName ,dstName string)error  {
+	src, err := os.Open(srcName)
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+	dst, err := os.OpenFile(dstName, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+	_,err = io.Copy(dst, src)
+	return err
 }
 
 func DeleteBook(bookid int) bool {

@@ -18,7 +18,7 @@ func GetBooksPath() (string, bool) {
 }
 
 func GetSqliteDbPath() (string, bool) {
-	return revel.Config.String("sqlitedb.path")
+	return revel.Config.String("books.path")
 }
 
 func GetUploadPath() (string, bool) {

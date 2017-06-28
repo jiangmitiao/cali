@@ -13,13 +13,13 @@ type UserService struct {
 //获取user信息
 func (userService UserService) GetUserById(Id string) models.UserInfo {
 	var userInfo = models.UserInfo{}
-	localEngine.ID(Id).Where("valid = ?", 0).Get(&userInfo)
+	engine.ID(Id).Where("valid = ?", 0).Get(&userInfo)
 	return userInfo
 }
 
 func (userService UserService) GetUserByLoginName(loginName string) (models.UserInfo, bool) {
 	var userInfo = models.UserInfo{}
-	if has, err := localEngine.Where("login_name = ?", loginName).Where("valid = ?", 0).Get(&userInfo); has && err == nil {
+	if has, err := engine.Where("login_name = ?", loginName).Where("valid = ?", 0).Get(&userInfo); has && err == nil {
 		return userInfo, true
 	} else {
 		return userInfo, false
@@ -28,7 +28,7 @@ func (userService UserService) GetUserByLoginName(loginName string) (models.User
 
 func (userService UserService) GetAllUserByLoginName(loginName string) (models.UserInfo, bool) {
 	var userInfo = models.UserInfo{}
-	if has, err := localEngine.Where("login_name = ?", loginName).Get(&userInfo); has && err == nil {
+	if has, err := engine.Where("login_name = ?", loginName).Get(&userInfo); has && err == nil {
 		return userInfo, true
 	} else {
 		return userInfo, false
@@ -51,7 +51,7 @@ func (userService UserService) GetLoginUser(loginSession string) (models.UserInf
 func (userService UserService) Regist(user models.UserInfo) bool {
 	_, has := userService.GetAllUserByLoginName(user.UserName)
 	if !has {
-		session := localEngine.NewSession()
+		session := engine.NewSession()
 		defer session.Close()
 		// add Begin() before any action
 		err := session.Begin()
@@ -90,9 +90,9 @@ func (userService UserService) Regist(user models.UserInfo) bool {
 func (userService UserService) QueryUserCount(name string) int64 {
 	var count int64 = 0
 	if name != "" {
-		count, _ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like ?", "%"+name+"%").Or("user_name like ?", "%"+name+"%").Where("valid = ?", 0).Count(&models.UserInfo{})
+		count, _ = engine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like ?", "%"+name+"%").Or("user_name like ?", "%"+name+"%").Where("valid = ?", 0).Count(&models.UserInfo{})
 	} else {
-		count, _ = localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Count(&models.UserInfo{})
+		count, _ = engine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Count(&models.UserInfo{})
 	}
 	return count
 }
@@ -101,9 +101,9 @@ func (userService UserService) QueryUserCount(name string) int64 {
 func (userService UserService) QueryUser(name string, limit, start int) []models.UserInfo {
 	users := make([]models.UserInfo, 0)
 	if name != "" {
-		localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like ?", "%"+name+"%").Or("user_name like ?", "%"+name+"%").Where("valid = ?", 0).Limit(limit, start).Find(&users)
+		engine.Cols("id", "login_name", "user_name", "email", "img").Where("login_name like ?", "%"+name+"%").Or("user_name like ?", "%"+name+"%").Where("valid = ?", 0).Limit(limit, start).Find(&users)
 	} else {
-		localEngine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Limit(limit, start).Find(&users)
+		engine.Cols("id", "login_name", "user_name", "email", "img").Where("valid = ?", 0).Limit(limit, start).Find(&users)
 	}
 	return users
 }
@@ -113,7 +113,7 @@ func (userService UserService) DeleteUser(userId string) bool {
 	user := userService.GetUserById(userId)
 	if user.Id != "" && user.LoginName != "admin" {
 		user.Valid = 1
-		_, err := localEngine.Id(userId).Cols("valid").Update(user)
+		_, err := engine.Id(userId).Cols("valid").Update(user)
 		if err != nil {
 			return false
 		} else {
@@ -126,7 +126,7 @@ func (userService UserService) DeleteUser(userId string) bool {
 
 //update info .not in password or other.
 func (userService UserService) UpdateInfo(user models.UserInfo) bool {
-	_, err := localEngine.ID(user.Id).Cols("user_name", "img").Where("valid = ?", 0).Update(user)
+	_, err := engine.ID(user.Id).Cols("user_name", "img").Where("valid = ?", 0).Update(user)
 	if err != nil {
 		return false
 	} else {
@@ -136,7 +136,7 @@ func (userService UserService) UpdateInfo(user models.UserInfo) bool {
 
 //change password and salt
 func (userService UserService) UpdatePassword(user models.UserInfo) bool {
-	_, err := localEngine.ID(user.Id).Cols("login_password", "salt").Where("valid = ?", 0).Update(user)
+	_, err := engine.ID(user.Id).Cols("login_password", "salt").Where("valid = ?", 0).Update(user)
 	if err != nil {
 		return false
 	} else {
@@ -146,16 +146,16 @@ func (userService UserService) UpdatePassword(user models.UserInfo) bool {
 
 func (userService UserService) AddUpload(userId string, bookId int) bool {
 	upload := models.UserInfoBookUploadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
-	if _, err := localEngine.InsertOne(upload); err == nil {
+	if _, err := engine.InsertOne(upload); err == nil {
 		return true
 	} else {
 		return false
 	}
 }
 
-func (userService UserService) AddDownload(userId string, bookId int) bool {
+func (userService UserService) AddDownload(userId string, bookId string) bool {
 	download := models.UserInfoBookDownloadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
-	if _, err := localEngine.InsertOne(download); err == nil {
+	if _, err := engine.InsertOne(download); err == nil {
 		return true
 	} else {
 		return false
@@ -163,16 +163,16 @@ func (userService UserService) AddDownload(userId string, bookId int) bool {
 }
 
 func (userService UserService) GetDownloadCount(userId string, start, stop time.Time) int {
-	count, _ := localEngine.Where("user_info = ?", userId).And("created >= ?", start.Unix()).And("created <= ?", stop.Unix()).Count(models.UserInfoBookDownloadLink{})
+	count, _ := engine.Where("user_info = ?", userId).And("created >= ?", start.Unix()).And("created <= ?", stop.Unix()).Count(models.UserInfoBookDownloadLink{})
 	return int(count)
 }
 
 func (userService UserService) ActiveUser(salt string) bool {
 	userinfo := models.UserInfo{}
-	localEngine.Where("salt = ?", salt).Get(&userinfo)
+	engine.Where("salt = ?", salt).Get(&userinfo)
 	if userinfo.Salt == salt {
 		userinfo.Valid = 0
-		localEngine.Where("salt = ?", salt).Cols("valid").Update(userinfo)
+		engine.Where("salt = ?", salt).Cols("valid").Update(userinfo)
 		return true
 	} else {
 		return false
