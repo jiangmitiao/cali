@@ -223,9 +223,9 @@ func (c User) UserStatus() revel.Result {
 
 }
 
-func (c User) Active()revel.Result {
+func (c User) Active() revel.Result {
 	key := c.Request.FormValue("key")
-	if userService.ActiveUser(key){
+	if userService.ActiveUser(key) {
 		return c.Redirect("/login")
 	}
 	return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())

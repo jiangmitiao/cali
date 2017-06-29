@@ -3,8 +3,9 @@ package api
 import "github.com/jiangmitiao/cali/app/services"
 
 var (
-	bookService       = services.DefaultBookService
-	formatService 	  = services.DefaultFormatService
+	bookService   = services.DefaultBookService
+	formatService = services.DefaultFormatService
+	categoryService = services.DefaultCategoryService
 
 	userService       = services.DefaultUserService
 	userRoleService   = services.DefaultUserRoleService

@@ -13,10 +13,11 @@ import (
 )
 
 var (
-	engine      *xorm.Engine
+	engine *xorm.Engine
 
 	DefaultBookService       = CaliBookService{lock: &sync.Mutex{}}
-	DefaultFormatService	 = CaliFormatService{}
+	DefaultFormatService     = CaliFormatService{}
+	DefaultCategoryService   = CaliCategoryService{}
 	DefaultUserService       = UserService{}
 	DefaultUserRoleService   = UserRoleService{}
 	DefaultRoleActionService = RoleActionService{}
@@ -27,7 +28,7 @@ var (
 
 //init the db,should take a db filepath
 func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, database string
-	SqliteDbPath =  path.Join(SqliteDbPath,"cali.db")
+	SqliteDbPath = path.Join(SqliteDbPath, "cali.db")
 	//OPEN
 	var err error
 	if engine, err = xorm.NewEngine("sqlite3", SqliteDbPath); err != nil {
@@ -44,9 +45,11 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	}
 
 	//BOOKS
-	if err = engine.Sync2(models.CaliBook{},models.CaliFormat{},models.CaliCategory{},models.CaliBookCategory{}); err != nil {
+	if err = engine.Sync2(models.CaliBook{}, models.CaliFormat{}, models.CaliCategory{}, models.CaliBookCategory{}); err != nil {
 		return false, err
 	}
+	engine.InsertOne(models.DefaultCaliCategory)
+
 
 	//USERS
 	if err = engine.Sync2(models.UserInfo{}); err != nil {

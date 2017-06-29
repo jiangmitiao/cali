@@ -27,7 +27,7 @@
 
     <div class="page-content">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="sidebar content-box" style="display: block;">
                     <ul class="nav">
                         <!--&lt;!&ndash; Main menu &ndash;&gt;<span v-text=""></span>-->
@@ -36,115 +36,29 @@
                                 <i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.browse')"></span>
                                 <span class="caret pull-right"></span>
                                 <ul>
-                                    <li @click="changeseen('hotbooks')" :class="booksseen.hotbooks?'current':''"><a href="#hotbooks"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.hotbooks')"></span></a></li>
-                                    <li @click="changeseen('newbooks')" :class="booksseen.newbooks?'current':''"><a href="#newbooks"><i class="glyphicon glyphicon-open"></i> <span v-text="$t('lang.newbooks')"></span></a></li>
-                                    <li @click="changeseen('discover')" :class="booksseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> <span v-text="$t('lang.discover')"></span></a></li>
-                                    <li @click="changeseen('categories')" :class="booksseen.categories?'current':''"><a href="#categories"><i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.categories')"></span></a></li>
-                                    <li @click="changeseen('authors')" :class="booksseen.authors?'current':''"><a href="#authors"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.authors')"></span></a></li>
-                                    <li @click="changeseen('language')" :class="booksseen.language?'current':''"><a href="#language"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.language')"></span></a></li>
+                                    <categorydiv v-for="item in categories" v-bind:category="item"></categorydiv>
                                 </ul>
                             </a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-md-9">
-                <div v-show="booksseen.hotbooks" class="row">
+            <div class="col-md-10">
+                <div class="row">
                     <div class="col-md-12">
                         <div class="panel-heading">
-                            <h3><span v-text="$t('lang.hotbooks')"></span></h3>
+                            <h3><span v-text="categoryname"></span></h3>
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <!--hotbook-->
-                        <bookdiv v-for="item in hotbooks_computed" v-bind:book="item"></bookdiv>
+                        <!--books-->
+                        <bookdiv v-for="item in books" v-bind:book="item"></bookdiv>
                     </div>
                     <div class="col-md-6 col-md-offset-3 col-xs-12">
-                        <div id="hotbookspage" class="col-center-block"> </div>
+                        <div id="bookspage" class="col-center-block"> </div>
                     </div>
                 </div>
 
-                <div v-show="booksseen.newbooks" class="row">
-                    <div class="col-md-12">
-                        <div class="panel-heading">
-                            <h3><span v-text="$t('lang.newbooks')"></span></h3>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <!--newbook-->
-                        <bookdiv v-for="item in newbooks_computed" v-bind:book="item"></bookdiv>
-                    </div>
-                    <div class="col-md-6 col-md-offset-3 col-xs-12">
-                        <div id="newbookspage"> </div>
-                    </div>
-
-                </div>
-
-                <div v-show="booksseen.discover" class="row">
-                    <div class="col-md-12">
-                        <div class="panel-heading">
-                            <h3><span v-text="$t('lang.discover')"></span></h3>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <!--discover-->
-                        <bookdiv v-for="item in discover_computed" v-bind:book="item"></bookdiv>
-                    </div>
-                    <div class="col-md-6 col-md-offset-3 col-xs-12">
-                        <div id="discoverpage"> </div>
-                    </div>
-                </div>
-
-                <div v-show="booksseen.categories" class="row">
-                    <div class="col-md-12">
-                        <div class="panel-heading">
-                            <h3><span v-text="$t('lang.categories')"></span></h3>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <!--categories-->
-                        <tagdiv v-show="tagsseen" v-for="item in tags" v-bind:tag="item"></tagdiv>
-                        <bookdiv v-show="!tagsseen" v-for="item in categories_computed" v-bind:book="item"></bookdiv>
-                    </div>
-                    <div class="col-md-6 col-md-offset-3 col-xs-12">
-                        <div v-show="tagsseen" id="tagspage"> </div>
-                        <div v-show="!tagsseen" id="tagpage"> </div>
-                    </div>
-                </div>
-
-                <div v-show="booksseen.authors" class="row">
-                    <div class="col-md-12">
-                        <div class="panel-heading">
-                            <h3><span v-text="$t('lang.authors')"></span></h3>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <!--authors-->
-                        <authordiv v-show="authorsseen" v-for="item in authornames" v-bind:author="item"></authordiv>
-                        <bookdiv v-show="!authorsseen" v-for="item in authors_computed" v-bind:book="item"></bookdiv>
-                    </div>
-                    <div class="col-md-6 col-md-offset-3 col-xs-12">
-                        <div v-show="authorsseen" id="authornamespage"> </div>
-                        <div v-show="!authorsseen" id="authorspage"> </div>
-                    </div>
-                </div>
-
-                <div v-show="booksseen.language" class="row">
-                    <div class="col-md-12">
-                        <div class="panel-heading">
-                            <h3><span v-text="$t('lang.language')"></span></h3>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <!--authors-->
-                        <languagediv v-show="languagesseen" v-for="item in languagenames" v-bind:language="item"></languagediv>
-                        <bookdiv v-show="!languagesseen" v-for="item in languages_computed" v-bind:book="item"></bookdiv>
-                    </div>
-                    <div class="col-md-6 col-md-offset-3 col-xs-12">
-                        <div v-show="languagesseen" id="languagenamespage"> </div>
-                        <div v-show="!languagesseen" id="languagespage"> </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="row footer-up"></div>

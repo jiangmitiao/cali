@@ -145,7 +145,12 @@ $(document).ready(function(){
             sysstatuslist:[],
 
             //download
-            downloadstats:{}
+            downloadstats:{},
+
+            //upload
+            uploadfileconfirmseen:false,
+            formatid:"",
+            uploadbook:{}
         },
         methods: {
             changeseen:function (e) {
@@ -186,7 +191,37 @@ $(document).ready(function(){
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
-                        alert(json.info);
+                        alert(json.message);
+                        app.formatid = json.info.id;
+                        app.uploadbook.title = json.info.title;
+                        app.uploadbook.author = json.info.author;
+                        app.uploadbook.douban_id = "123456";
+                        app.uploadfileconfirmseen = true;
+                    }else {
+                        alert("upload error "+json.info);
+                    }
+                }).
+                catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
+                alert("please wait...");
+            },
+            uploadfileconfirm :function () {
+                var form = new FormData(document.getElementById("uploadfileconfirm"));
+                form.append('session',store.get("session"));
+                fetch("/api/book/uploadbookconfirm", {
+                    method: "post",
+                    body: form
+                }).then(function(response) {
+                    if (response.redirected){
+                        alert("role action setting error !");
+                        return;
+                    }
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        alert("success");
+                        app.uploadfileconfirmseen = false;
                     }else {
                         alert("upload error "+json.info);
                     }

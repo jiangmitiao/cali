@@ -1,14 +1,14 @@
 package rcali
 
 import (
-	"os/exec"
-	"strconv"
-	"github.com/jiangmitiao/ebook-go"
 	"github.com/google/uuid"
-	"path/filepath"
-	"path"
+	"github.com/jiangmitiao/ebook-go"
 	"io"
 	"os"
+	"os/exec"
+	"path"
+	"path/filepath"
+	"strconv"
 )
 
 /**
@@ -32,19 +32,19 @@ func calibredbPath() string {
 	return ""
 }
 
-func AddBook(bookpath string) (books.Ebook,string) {
+func AddBook(bookpath string) (books.Ebook, string) {
 	ebook := books.GetEBook(bookpath)
-	if ebook!=nil{
-		bookspath,_ := GetBooksPath()
-		filename :=path.Join(bookspath,uuid.New().String()+filepath.Ext(bookpath))
-		if err :=CopyFile(bookpath,filename);err==nil{
-			return ebook,filename
+	if ebook != nil {
+		bookspath, _ := GetBooksPath()
+		filename := path.Join(bookspath, uuid.New().String()+filepath.Ext(bookpath))
+		if err := CopyFile(bookpath, filename); err == nil {
+			return ebook, filename
 		}
 	}
-	return nil,""
+	return nil, ""
 }
 
-func CopyFile(srcName ,dstName string)error  {
+func CopyFile(srcName, dstName string) error {
 	src, err := os.Open(srcName)
 	if err != nil {
 		return err
@@ -55,7 +55,7 @@ func CopyFile(srcName ,dstName string)error  {
 		return err
 	}
 	defer dst.Close()
-	_,err = io.Copy(dst, src)
+	_, err = io.Copy(dst, src)
 	return err
 }
 

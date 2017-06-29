@@ -6,7 +6,6 @@ import (
 	"github.com/revel/revel"
 	"io/ioutil"
 	"net/url"
-	"os"
 	"path"
 	"strconv"
 	"time"
@@ -22,18 +21,20 @@ func (c Book) Index() revel.Result {
 
 //all books count
 func (c Book) BooksCount() revel.Result {
+	categoryid := c.Request.FormValue("categoryid")
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(bookService.QueryBooksCount()))
+		models.NewOKApiWithInfo(bookService.QueryBooksCount(categoryid)))
 }
 
 //all books info
 func (c Book) Books() revel.Result {
+	categoryid := c.Request.FormValue("categoryid")
 	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.ClassNumsStr))
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(bookService.QueryBooks(limit, start)),
+		models.NewOKApiWithInfo(bookService.QueryBooks(limit, start,categoryid)),
 	)
 }
 
@@ -41,40 +42,46 @@ func (c Book) Books() revel.Result {
 func (c Book) BookDown() revel.Result {
 	//bytes := rcali.FILE(bookService.QueryBookFile(bookid))
 	formatid := rcali.ValueOrDefault(c.Request.FormValue("formatid"), "0")
-	if ok,format := formatService.GetById(formatid);ok{
+	if ok, format := formatService.GetById(formatid); ok {
 		if f, err := bookService.QueryBookFile(format.Id); err == nil {
 			user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
-			book := bookService.QueryBook(format.CaliBook)
-			if addOk := userService.AddDownload(user.Id, book.Id); addOk {
-
-				// add status to sys status
-				key := time.Now().Format("20060102") + "-downsize"
-				if finfo, err := f.Stat(); err == nil {
-					if status := sysStatusService.Get(key); status.Key != "" {
-						value, _ := strconv.ParseInt(status.Value, 10, 0)
-						value += finfo.Size()
-						status.Value = strconv.FormatInt(value, 10)
-						sysStatusService.UpdateStatus(status)
-
-					} else {
-						status = models.SysStatus{Key: key, Value: strconv.FormatInt(finfo.Size(), 10)}
-						sysStatusService.AddSysStatus(status)
-					}
-				}
-
-				return c.RenderFile(f, revel.Attachment)
-			} else {
-				return c.RenderText("database error")
-			}
+			c.addDownloadRecord(format, user)
+			return c.RenderFile(f, revel.Attachment)
 		}
 	}
 
 	return c.RenderText("file is not exit")
 }
 
+func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) {
+	// add status to sys status
+	key := time.Now().Format("20060102") + "-downsize"
+	if status := sysStatusService.Get(key); status.Key != "" {
+		value, _ := strconv.ParseInt(status.Value, 10, 0)
+		value += format.UncompressedSize
+		status.Value = strconv.FormatInt(value, 10)
+		sysStatusService.UpdateStatus(status)
+	} else {
+		status = models.SysStatus{Key: key, Value: strconv.FormatInt(format.UncompressedSize, 10)}
+		sysStatusService.AddSysStatus(status)
+	}
+
+	//add books download count
+	book := bookService.QueryBook(format.CaliBook)
+	book.DownloadCount += 1
+	bookService.UpdateCaliBookDownload(book)
+
+	//add format download count
+	format.DownloadCount += 1
+	formatService.UpdateCaliFormatDownload(format)
+
+	//user download
+	userService.AddDownload(user.Id, format.Id)
+}
+
 //query a book by bookid
 func (c Book) Book() revel.Result {
-	bookid:= rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0")
+	bookid := rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0")
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
 		models.NewOKApiWithInfo(bookService.QueryBook(bookid)),
@@ -82,26 +89,6 @@ func (c Book) Book() revel.Result {
 }
 
 //query a book's info from //https://developers.douban.com/wiki/?title=book_v2#get_isbn_book by bookid by bookname
-//func (c Book) DoubanBook() revel.Result {
-//	bookid, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0"))
-//	callback := c.Request.FormValue("callback")
-//
-//	bookVo := bookService.QueryBook(bookid)
-//	rcali.Logger.Debug("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
-//	resp, err := http.Get("https://api.douban.com/v2/book/search?q=" + bookVo.Title)
-//	if err != nil {
-//		// handle error
-//		return c.RenderJSONP(callback, models.NewErrorApi())
-//	}
-//
-//	defer resp.Body.Close()
-//	body, err := ioutil.ReadAll(resp.Body)
-//	if err != nil {
-//		// handle error
-//		return c.RenderJSONP(callback, models.NewErrorApi())
-//	}
-//	return c.RenderJSONP(callback, models.NewOKApiWithInfo(string(body)))
-//}
 
 //UPLOAD
 func (c *Book) UploadBook() revel.Result {
@@ -110,33 +97,16 @@ func (c *Book) UploadBook() revel.Result {
 	if err == nil {
 		defer file.Close()
 		b, _ := ioutil.ReadAll(file)
-		ioutil.WriteFile(path.Join(uploadpath, header.Filename), b, 0755)
-
-		// add status to sys status
-		key := time.Now().Format("20060102") + "-uploadsize"
-		f, _ := os.Open(path.Join(uploadpath, header.Filename))
-		defer f.Close()
-		if finfo, err := f.Stat(); err == nil {
-			if status := sysStatusService.Get(key); status.Key != "" {
-				value, _ := strconv.ParseInt(status.Value, 10, 0)
-				value += finfo.Size()
-				status.Value = strconv.FormatInt(value, 10)
-				sysStatusService.UpdateStatus(status)
-
-			} else {
-				status = models.SysStatus{Key: key, Value: strconv.FormatInt(finfo.Size(), 10)}
-				sysStatusService.AddSysStatus(status)
-			}
-		}
-
+		tmpPath := path.Join(uploadpath, header.Filename)
+		ioutil.WriteFile(tmpPath, b, 0755)
 		//ok := rcali.AddBook(path.Join(uploadpath, header.Filename))
-		ok, bookid := bookService.UploadBookFormat(path.Join(uploadpath, header.Filename))
-		if !ok {
-			return c.RenderJSON(models.NewErrorApiWithInfo("add book error"))
-		} else {
+		if ok, format := bookService.UploadBookFormat(tmpPath,c.Request.FormValue("tag")); ok {
 			user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
-			userService.AddUpload(user.Id, bookid)
-			return c.RenderJSON(models.NewOKApiWithInfo("add book success"))
+			c.addUploadRecord(format, user)
+			return c.RenderJSON(models.NewOKApiWithMessageAndInfo("add book success", format))
+		} else {
+			return c.RenderJSON(models.NewErrorApiWithInfo("add book error"))
+
 		}
 	} else {
 		rcali.Logger.Debug("read file error :", err.Error())
@@ -145,10 +115,40 @@ func (c *Book) UploadBook() revel.Result {
 	return c.RenderJSON(models.NewOKApi())
 }
 
-func (c *Book) UploadBookConfirm() revel.Result {
-	return c.RenderJSON(models.NewOKApi())
+func (c Book) addUploadRecord(format models.CaliFormat, user models.UserInfo) {
+	// add status to sys status
+	key := time.Now().Format("20060102") + "-uploadsize"
+
+	if status := sysStatusService.Get(key); status.Key != "" {
+		value, _ := strconv.ParseInt(status.Value, 10, 0)
+		value += format.UncompressedSize
+		status.Value = strconv.FormatInt(value, 10)
+		sysStatusService.UpdateStatus(status)
+	} else {
+		status = models.SysStatus{Key: key, Value: strconv.FormatInt(format.UncompressedSize, 10)}
+		sysStatusService.AddSysStatus(status)
+	}
+
+	//user upload
+	userService.AddUpload(user.Id, format.Id)
 }
 
+func (c *Book) UploadBookConfirm() revel.Result {
+	//book
+	book := bookService.GetBookOrInsertByTitleAndAuthor(c.Request.FormValue("title"), c.Request.FormValue("author"))
+	book.DoubanId = rcali.ValueOrDefault(c.Request.FormValue("douban_id"), book.DoubanId)
+	book.DoubanJson = rcali.GetDoubanInfoById(book.DoubanId)
+	bookService.UpdateCaliBook(book)
+
+	//category
+	bookService.AddBookCategory(book.Id,models.DefaultCaliCategory.Id)
+
+	//format
+	formatid := c.Request.FormValue("formatid")
+	formatService.UpdateBookid(formatid, book.Id)
+
+	return c.RenderJSON(models.NewOKApi())
+}
 
 //SEARCH
 func (c *Book) SearchCount() revel.Result {

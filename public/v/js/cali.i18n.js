@@ -80,7 +80,8 @@ const messages = {
             sysconfig:"SysConfig",
             sysstatus:"SysStatus",
             searchresult:"Search Result",
-            searchresultwith0:"Search Result 0 Books"
+            searchresultwith0:"Search Result 0 Books",
+            tag:"tag"
         }
     },
     cn: {
@@ -147,7 +148,8 @@ const messages = {
             sysconfig:"SysConfig",
             sysstatus:"SysStatus",
             searchresult:"搜索结果",
-            searchresultwith0:"搜索结果为0"
+            searchresultwith0:"搜索结果为0",
+            tag:"标签"
         }
     }
 };

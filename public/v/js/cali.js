@@ -10,7 +10,7 @@ $(document).ready(function(){
             <div class="content-box">\
                 <div class="panel-body text-center">\
                     <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="\'/api/book/bookimage?bookid=\'+book.id" width="80%" height="80%"/>\
+                        <img class="cover" :src="toJson(book.douban_json).image" width="80%" height="80%"/>\
                     </a>\
                     <p class="text-center">\
                         <a :href="\'/book?bookid=\'+book.id" target="_blank">\
@@ -18,11 +18,11 @@ $(document).ready(function(){
                         </a>\
                     </p>\
                     <p class="text-center">\
-                        <a :href="\'/search?q=\'+book.name" target="_blank">\
-                        <span v-text="maxstring(book.name,10)"></span>\
+                        <a :href="\'/search?q=\'+book.author" target="_blank">\
+                        <span v-text="maxstring(book.author,10)"></span>\
                         </a>\
                     </p>\
-                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="book.rating"></span></p>\
+                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="toJson(book.douban_json).rating.average"></span></p>\
                     <br>\
                 </div>\
             </div>\
@@ -36,57 +36,28 @@ $(document).ready(function(){
                     result+="...";
                 }
                 return result;
+            },
+            toJson : function (str) {
+                return JSON.parse(str);
             }
         }
     });
 
-    // 定义名为 tagdiv 的新组件
-    Vue.component('tagdiv', {
-        // tagdiv 组件现在接受一个
-        // 这个属性名为 tag。
-        props: ['tag'],
+    // 定义名为 categorydiv 的新组件
+    Vue.component('categorydiv', {
+        // categorydiv 组件现在接受一个
+        // 这个属性名为 category。
+        props: ['category'],
         template: '\
-            <a @click="tagclick(tag.id)" class="btn btn-default" style="margin-bottom: 25px;margin-left: 25px;">\
-                <span v-text="tag.name"></span>\
-            </a>\
-        '
-        ,
-        methods:{
-            //the tagdiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods tagclick
-            tagclick:function (tagid) {
-                app.tagclick(tagid);
-            }
-        }
-    });
-
-    // 定义名为 authordiv 的新组件
-    Vue.component('authordiv', {
-        // tagdiv 组件现在接受一个
-        // 这个属性名为 tag。
-        props: ['author'],
-        template: '\
-        <a @click="authorclick(author.id)" class="btn btn-default" style="margin-bottom: 25px;margin-left: 25px;">\
-            <span v-text="author.name"></span>\
-        </a>\
+        <li @click="categoryclick(category)"><a href="#"><i class="glyphicon glyphicon-star"></i><span v-text="category.category"></span></a></li>\
         ',
         methods:{
-            //the authordiv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods authorclick
-            authorclick:function (tagid) {
-                app.authorclick(tagid);
-            }
-        }
-    });
-
-    // 定义名为 languagediv 的新组件
-    Vue.component('languagediv', {
-        // languagediv 组件现在接受一个
-        // 这个属性名为 language。
-        props: ['language'],
-        template: '<a @click="languageclick(language.id)" class="btn btn-default"><span v-text="language.lang_code"></span></a>',
-        methods:{
-            //the languagediv component's method.if click the <a/> ,then invoke the methods ,then invoke the Vue's instance app's methods languageclick
-            languageclick:function (lang_code) {
-                app.languageclick(lang_code);
+            //return a sub string ,sub's length is max .if src string not equals result the result add '...'
+            categoryclick : function (c) {
+                //alert(c.id);
+                app.categoryid = c.id;
+                app.categoryname = c.category;
+                app.showbooks();
             }
         }
     });
@@ -96,525 +67,95 @@ $(document).ready(function(){
         i18n,
         el: "#root",
         data: {
-            // the hotbooks control one div where is hotbooks which has 8 items
-            hotbooks:[],
-            // the newbooks control one div where is newbooks which has 8 items
-            newbooks:[],
-            // the discover control one div where is discover which has 8 items
-            discover:[],
-            // the categories control one div where is categories which has 8 items
-            categories:[],
-            // the authors control one div where is authors which has 8 items
-            authors:[],
-            // the language control one div where is language which has 8 items
-            language:[],
-            // booksseen is a object which has 6 attrs.one boolean attr control one div which in hotbooks,newbooks,discover,categories,authors,language.
-            booksseen:{},
-            // the tags is an array ,which has a struct like '{id:0,name:"history"}'.and it is first display in categories.
-            tags:[],  //tags
-            // tagsseen is a condition for dispaly or hide the tags.if tagsseen is true the display the tags then hide the categories.
-            tagsseen:true,
-            // one page display 20 tags
-            tagssize:20,
-            // the authornames is an array,like the tags
-            authornames:[],//authors
-            // like tagsize
-            authorsize:20,
-            // authorsseen like tagsseen
-            authorsseen : true,
-            // the languagenames like tags .item struct like '{id:0,lang_code:"zho"}'
-            languagenames:[],//languages
-            // the languagesseen like tagsseen
-            languagesseen:true
+            categories :[],
+            categoryid:"",
+            categoryname:"",
+
+            // the books control one div where is books which has 8 items
+            books:[],
+
         },
         methods: {
-            // when user click one item on left bar,then invoke this method.to display one div
-            changeseen:function (e) {
-                this.booksseen = {};
-                this.booksseen["hotbooks"] = false;
-                this.booksseen["newbooks"] = false;
-                this.booksseen["discover"] = false;
-                this.booksseen["categories"] = false;
-                this.booksseen["authors"] = false;
-                this.booksseen["language"] = false;
-                this.booksseen[e] = true;
-                // when user click the three items ,then display first display
-                if (e=="categories"){
-                    this.tagsseen = true;
+            showbooks:function () {
+                //books展示分页
+                if (app.categoryid == "") {
+                    return
                 }
-                if (e=="authors"){
-                    this.authorsseen = true;
-                }
-                if (e=="language"){
-                    this.languagesseen = true;
-                }
-            },
-            // the categories first display,when click tag's item ,then hide first div,fetch 8 books items which has the click's item'tag to display
-            tagclick:function (tagid) {
                 var form = commonData();
-                form.append("tagid",tagid);
-                fetch('/api/book/tagbookscount',{method:'post',body:form}).then(function(response) {
-                    if (response.redirected){
+                form.append("categoryid", app.categoryid);
+                fetch('/api/book/bookscount', {method: 'post', body: form}).then(function (response) {
+                    if (response.redirected) {
                         window.location.href = response.url;
                     }
                     return response.json();
-                }).then(function(json) {
-                    // when result code is 200, then rending div
-                    if (json.statusCode ==200){
-                        $('#tagpage').pagination({
-                            dataSource:function (done) {
+                }).then(function (json) {
+                    if (json.statusCode == 200) {
+                        $('#bookspage').pagination({
+                            dataSource: function (done) {
                                 var tmp = [];
-                                for(var i=0; i<json.info;i++){
-                                    tmp.push(i)
+                                for (var i = 0; i < json.info; i++) {
+                                    tmp.push(i);
                                 }
                                 return done(tmp);
                             },
-                            pageRange:1,
-                            totalNumber:json.info,
-                            pageSize: 8,
+                            pageRange: 1,
+                            totalNumber: json.info,
+                            pageSize: 10,
                             showGoInput: true,
                             showGoButton: true,
-                            callback: function(data, pagination) {
+                            callback: function (data, pagination) {
                                 var form = commonData();
-                                form.append("start",_.min(data));
-                                form.append("limit",data.length);
-                                form.append("tagid",tagid);
-                                fetch('/api/book/tagbooks',{method:'post',body:form}).then(function(response) {
-                                    if (response.redirected){
+                                form.append("start", _.min(data));
+                                form.append("limit", data.length);
+                                form.append("categoryid", app.categoryid);
+                                fetch('/api/book/books', {method: 'post', body: form}).then(function (response) {
+                                    if (response.redirected) {
                                         window.location.href = response.url;
                                     }
                                     return response.json();
-                                }).then(function(json) {
-                                    if (json.statusCode ==200){
-                                        app.categories = json.info
+                                }).then(function (json) {
+                                    if (json.statusCode == 200) {
+                                        app.books = json.info
                                     }
-                                }).
-                                catch(function(ex) {
+                                }).catch(function (ex) {
                                     console.log('parsing failed', ex)
                                 });
                             }
                         });
                     }
-                }).
-                catch(function(ex) {
+                }).catch(function (ex) {
                     console.log('parsing failed', ex)
                 });
-                this.tagsseen = false;
-            },
-            // like tags click
-            authorclick:function (authorid) {
-                var form = commonData();
-                form.append("authorid",authorid);
-                fetch('/api/book/authorbookscount',{method:'post',body:form}).then(function(response) {
-                    if (response.redirected){
-                        window.location.href = response.url;
-                    }
-                    return response.json();
-                }).then(function(json) {
-                    if (json.statusCode ==200){
-                        $('#authorspage').pagination({
-                            dataSource:function (done) {
-                                var tmp = [];
-                                for(var i=0; i<json.info;i++){
-                                    tmp.push(i)
-                                }
-                                return done(tmp);
-                            },
-                            pageRange:1,
-                            totalNumber:json.info,
-                            pageSize: 8,
-                            showGoInput: true,
-                            showGoButton: true,
-                            callback: function(data, pagination) {
-                                var form = commonData();
-                                form.append("start",_.min(data));
-                                form.append("limit",data.length);
-                                form.append("authorid",authorid);
-                                fetch('/api/book/authorbooks',{method:'post',body:form}).then(function(response) {
-                                    if (response.redirected){
-                                        window.location.href = response.url;
-                                    }
-                                    return response.json();
-                                }).then(function(json) {
-                                    if (json.statusCode ==200){
-                                        app.authors = json.info
-                                    }
-                                }).
-                                catch(function(ex) {
-                                    console.log('parsing failed', ex)
-                                });
-                            }
-                        });
-                    }
-                }).
-                catch(function(ex) {
-                    console.log('parsing failed', ex)
-                });
-                this.authorsseen = false;
-            },
-            // like tags click
-            languageclick:function (lang_code) {
-                var form = commonData();
-                form.append("lang_code",lang_code);
-                fetch('/api/book/languagebookscount',{method:'post',body:form}).then(function(response) {
-                    if (response.redirected){
-                        window.location.href = response.url;
-                    }
-                    return response.json();
-                }).then(function(json) {
-                    if (json.statusCode ==200){
-                        $('#languagespage').pagination({
-                            dataSource:function (done) {
-                                var tmp = [];
-                                for(var i=0; i<json.info;i++){
-                                    tmp.push(i)
-                                }
-                                return done(tmp);
-                            },
-                            pageRange:1,
-                            totalNumber:json.info,
-                            pageSize: 8,
-                            showGoInput: true,
-                            showGoButton: true,
-                            callback: function(data, pagination) {
-                                var form = commonData();
-                                form.append("start",_.min(data));
-                                form.append("limit",data.length);
-                                form.append("lang_code",lang_code);
-                                fetch('/api/book/languagebooks',{method:'post',body:form}).then(function(response) {
-                                    if (response.redirected){
-                                        window.location.href = response.url;
-                                    }
-                                    return response.json();
-                                }).then(function(json) {
-                                    if (json.statusCode ==200){
-                                        app.language = json.info
-                                    }
-                                }).
-                                catch(function(ex) {
-                                    console.log('parsing failed', ex)
-                                });
-                            }
-                        });
-                    }
-                }).
-                catch(function(ex) {
-                    console.log('parsing failed', ex)
-                });
-                this.languagesseen = false;
             }
         },
         computed: {
-            // we not use the data,we use the computed data
-            hotbooks_computed : function () {
-                return this.hotbooks;
-            },
-            newbooks_computed : function () {
-                return this.newbooks;
-            },
-            discover_computed : function () {
-                return this.discover;
-            },
-            categories_computed : function () {
-                return this.categories;
-            },
-            authors_computed:function () {
-                return this.authors;
-            },
-            languages_computed:function () {
-                return this.language;
-            }
+
+        },
+        watched:{
+
         },
         created: function() {
-            //when page's instance created,we should get the data to render the page
-            //console.log("created");
-            //hotbooks展示分页
-            fetch('/api/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
+            fetch('/api/category/all',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     window.location.href = response.url;
                 }
                 return response.json();
             }).then(function(json) {
                 if (json.statusCode ==200){
-                    $('#hotbookspage').pagination({
-                        dataSource:function (done) {
-                            var tmp = [];
-                            for(var i=0; i<json.info;i++){
-                                tmp.push(i);
-                            }
-                            return done(tmp);
-                        },
-                        pageRange:1,
-                        totalNumber:json.info,
-                        pageSize: 8,
-                        showGoInput: true,
-                        showGoButton: true,
-                        callback: function(data, pagination) {
-                            var form = commonData();
-                            form.append("start",_.min(data));
-                            form.append("limit",data.length);
-                            fetch('/api/book/ratingbooks',{method:'post',body:form}).then(function(response) {
-                                if (response.redirected){
-                                    window.location.href = response.url;
-                                }
-                                return response.json();
-                            }).then(function(json) {
-                                if (json.statusCode ==200){
-                                    app.hotbooks = json.info
-                                }
-                            }).
-                            catch(function(ex) {
-                                console.log('parsing failed', ex)
-                            });
-                        }
-                    });
+                    app.categories = json.info
+                    if (app.categories.length !=0){
+                        //app.categoryid = app.categories[0].id;
+                        //app.categoryname = app.categories[0].category;
+                    }
                 }
             }).
             catch(function(ex) {
                 console.log('parsing failed', ex)
             });
-
-            //newbooks展示分页
-            fetch('/api/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
-                if (response.redirected){
-                    window.location.href = response.url;
-                }
-                return response.json();
-            }).then(function(json) {
-                if (json.statusCode ==200){
-                    $('#newbookspage').pagination({
-                        dataSource:function (done) {
-                            var tmp = [];
-                            for(var i=0; i<json.info;i++){
-                                tmp.push(i)
-                            }
-                            return done(tmp);
-                        },
-                        pageRange:1,
-                        totalNumber:json.info,
-                        pageSize: 8,
-                        showGoInput: true,
-                        showGoButton: true,
-                        callback: function(data, pagination) {
-                            var form = commonData();
-                            form.append("start",_.min(data));
-                            form.append("limit",data.length);
-                            fetch('/api/book/newbooks',{method:'post',body:form}).then(function(response) {
-                                if (response.redirected){
-                                    window.location.href = response.url;
-                                }
-                                return response.json();
-                            }).then(function(json) {
-                                if (json.statusCode ==200){
-                                    app.newbooks = json.info
-                                }
-                            }).
-                            catch(function(ex) {
-                                console.log('parsing failed', ex)
-                            });
-                        }
-                    });
-                }
-            }).
-            catch(function(ex) {
-                console.log('parsing failed', ex)
-            });
-
-            //discover展示分页
-            fetch('/api/book/bookscount',{method:'post',body:commonData()}).then(function(response) {
-                if (response.redirected){
-                    window.location.href = response.url;
-                }
-                return response.json();
-            }).then(function(json) {
-                if (json.statusCode ==200){
-                    $('#discoverpage').pagination({
-                        dataSource:function (done) {
-                            var tmp = [];
-                            for(var i=0; i<json.info;i++){
-                                tmp.push(i)
-                            }
-                            return done(tmp);
-                        },
-                        pageRange:1,
-                        totalNumber:json.info,
-                        pageSize: 8,
-                        showGoInput: true,
-                        showGoButton: true,
-                        callback: function(data, pagination) {
-                            var form = commonData();
-                            form.append("start",_.min(data));
-                            form.append("limit",data.length);
-                            fetch('/api/book/discoverbooks',{method:'post',body:form}).then(function(response) {
-                                if (response.redirected){
-                                    window.location.href = response.url;
-                                }
-                                return response.json();
-                            }).then(function(json) {
-                                if (json.statusCode ==200){
-                                    app.discover = json.info
-                                }
-                            }).
-                            catch(function(ex) {
-                                console.log('parsing failed', ex)
-                            });
-                        }
-                    });
-                }
-            }).
-            catch(function(ex) {
-                console.log('parsing failed', ex)
-            });
-
-            //tags展示分页
-            fetch('/api/tag/tagscount',{method:'post',body:commonData()}).then(function(response) {
-                if (response.redirected){
-                    window.location.href = response.url;
-                }
-                return response.json();
-            }).then(function(json) {
-                if (json.statusCode ==200){
-                    $('#tagspage').pagination({
-                        dataSource:function (done) {
-                            var tmp = [];
-                            for(var i=0; i<json.info;i++){
-                                tmp.push(i)
-                            }
-                            return done(tmp);
-                        },
-                        pageRange:1,
-                        totalNumber:json.info,
-                        pageSize: app.tagssize,
-                        showGoInput: true,
-                        showGoButton: true,
-                        callback: function(data, pagination) {
-                            var form = commonData();
-                            form.append("start",_.min(data));
-                            form.append("limit",data.length);
-                            fetch('/api/tag/tags',{method:'post',body:form}).then(function(response) {
-                                if (response.redirected){
-                                    window.location.href = response.url;
-                                }
-                                return response.json();
-                            }).then(function(json) {
-                                if (json.statusCode ==200){
-                                    app.tags = json.info
-                                }
-                            }).
-                            catch(function(ex) {
-                                console.log('parsing failed', ex)
-                            });
-                        }
-                    });
-                }
-            }).
-            catch(function(ex) {
-                console.log('parsing failed', ex)
-            });
-
-            //authornames展示分页
-            fetch('/api/author/authorscount',{method:'post',body:commonData()}).then(function(response) {
-                if (response.redirected){
-                    window.location.href = response.url;
-                }
-                return response.json();
-            }).then(function(json) {
-                if (json.statusCode ==200){
-                    $('#authornamespage').pagination({
-                        dataSource:function (done) {
-                            var tmp = [];
-                            for(var i=0; i<json.info;i++){
-                                tmp.push(i)
-                            }
-                            return done(tmp);
-                        },
-                        pageRange:1,
-                        totalNumber:json.info,
-                        pageSize: app.authorsize,
-                        showGoInput: true,
-                        showGoButton: true,
-                        callback: function(data, pagination) {
-                            var form = commonData();
-                            form.append("start",_.min(data));
-                            form.append("limit",data.length);
-                            fetch('/api/author/authors',{method:'post',body:form}).then(function(response) {
-                                if (response.redirected){
-                                    window.location.href = response.url;
-                                }
-                                return response.json();
-                            }).then(function(json) {
-                                if (json.statusCode ==200){
-                                    app.authornames = json.info
-                                }
-                            }).
-                            catch(function(ex) {
-                                console.log('parsing failed', ex)
-                            });
-                        }
-                    });
-                }
-            }).
-            catch(function(ex) {
-                console.log('parsing failed', ex)
-            });
-
-            //languagenames展示分页
-            fetch('/api/language/languagescount',{method:'post',body:commonData()}).then(function(response) {
-                if (response.redirected){
-                    window.location.href = response.url;
-                }
-                return response.json();
-            }).then(function(json) {
-                if (json.statusCode ==200){
-                    $('#languagenamespage').pagination({
-                        dataSource:function (done) {
-                            var tmp = [];
-                            for(var i=0; i<json.info;i++){
-                                tmp.push(i)
-                            }
-                            return done(tmp);
-                        },
-                        pageRange:1,
-                        totalNumber:json.info,
-                        pageSize: 8,
-                        showGoInput: true,
-                        showGoButton: true,
-                        callback: function(data, pagination) {
-                            var form = commonData();
-                            form.append("start",_.min(data));
-                            form.append("limit",data.length);
-                            fetch('/api/language/languages',{method:'post',body:form}).then(function(response) {
-                                if (response.redirected){
-                                    window.location.href = response.url;
-                                }
-                                return response.json();
-                            }).then(function(json) {
-                                if (json.statusCode ==200){
-                                    app.languagenames = json.info
-                                }
-                            }).
-                            catch(function(ex) {
-                                console.log('parsing failed', ex)
-                            });
-                        }
-                    });
-                }
-            }).
-            catch(function(ex) {
-                console.log('parsing failed', ex)
-            });
-
 
         },
         beforeMount: function () {
-            // when instance created and prepare to render page ,we should confirm we display one div
-            //console.log("beforeMount");
-            this.booksseen["hotbooks"] = true;
-            this.booksseen["newbooks"] = false;
-            this.booksseen["discover"] = false;
-            this.booksseen["categories"] = false;
-            this.booksseen["authors"] = false;
-            this.booksseen["language"] = false;
+
         },
         mounted: function () {
             //console.log("mounted");

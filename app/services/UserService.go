@@ -144,8 +144,8 @@ func (userService UserService) UpdatePassword(user models.UserInfo) bool {
 	}
 }
 
-func (userService UserService) AddUpload(userId string, bookId int) bool {
-	upload := models.UserInfoBookUploadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
+func (userService UserService) AddUpload(userId string, formatid string) bool {
+	upload := models.UserInfoBookUploadLink{Id: uuid.New().String(), UserInfo: userId, CaliFormat: formatid, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
 	if _, err := engine.InsertOne(upload); err == nil {
 		return true
 	} else {
@@ -153,8 +153,8 @@ func (userService UserService) AddUpload(userId string, bookId int) bool {
 	}
 }
 
-func (userService UserService) AddDownload(userId string, bookId string) bool {
-	download := models.UserInfoBookDownloadLink{Id: uuid.New().String(), UserInfo: userId, Book: bookId, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
+func (userService UserService) AddDownload(userId string, formatid string) bool {
+	download := models.UserInfoBookDownloadLink{Id: uuid.New().String(), UserInfo: userId, CaliFormat: formatid, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
 	if _, err := engine.InsertOne(download); err == nil {
 		return true
 	} else {
