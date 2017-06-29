@@ -49,7 +49,6 @@ func (c Book) BookDown() revel.Result {
 			return c.RenderFile(f, revel.Attachment)
 		}
 	}
-
 	return c.RenderText("file is not exit")
 }
 
@@ -82,9 +81,14 @@ func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) 
 //query a book by bookid
 func (c Book) Book() revel.Result {
 	bookid := rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0")
+	bookvo := models.CaliBookVo{CaliBook:bookService.QueryBook(bookid)}
+
+	if bookvo.Id != ""{
+		bookvo.Formats = formatService.QueryByCaliBook(bookvo.Id)
+	}
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(bookService.QueryBook(bookid)),
+		models.NewOKApiWithInfo(bookvo),
 	)
 }
 

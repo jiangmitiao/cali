@@ -19,7 +19,10 @@ $(document).ready(function(){
 
     Book = ePub({
         restore: true ,
-        spreads : false});
+        spreads : false,
+        // width : true,
+        // height: true,
+    });
 
     var app = new Vue({
         i18n,
@@ -46,8 +49,8 @@ $(document).ready(function(){
             $("#area").css("height",""+(document.body.clientHeight-200)+"px");
             $("#area").css("height",""+(600)+"px");
             $("#area").css("width",""+(500)+"px");
-            var bookid=Request.bookid;
-            var url = "/api/book/bookdown.epub?bookid="+bookid+"&session="+store.get("session");
+            var formatid=Request.formatid;
+            var url = "/api/book/bookdown.epub?formatid="+formatid+"&session="+store.get("session");
             //console.log(url);
             Book.open(url);
             Book.getMetadata().then(function(meta){

@@ -27,41 +27,41 @@
                 <bookinfodiv v-bind:book="book"> </bookinfodiv>
             </div>
 
-            <div v-if="doubanbookseen" class="col-md-12">
-                <div class="content-box-large">
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <p><span v-text="$t('lang.ifd')"></span></p>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-3 col-md-offset-1">
-                                    <img width="100%" height="100%" :src="doubanbook.images.large"/>
-                                </div>
-                                <div class="col-md-7">
-                                    <p><span v-text="$t('lang.bookname')"></span>: <span v-text="doubanbook.title"></span></p>
-                                    <p><span v-text="$t('lang.bookauthor')"></span>: <span v-text="doubanbook.author.join(',')"></span></p>
-                                    <p><span v-text="$t('lang.bookpage')"></span>: <span v-text="doubanbook.pages"></span></p>
-                                    <p><span v-text="$t('lang.bookdblink')"></span>: <span v-text="doubanbook.alt"></span></p>
-                                    <p><span v-text="$t('lang.bookpublisher')"></span>: <span v-text="doubanbook.publisher"></span></p>
-                                    <p><span v-text="$t('lang.bookpublishtime')"></span>: <span v-text="doubanbook.pubdate"></span></p>
-                                    <p style="display: none">Book's API: <span v-text="doubanbook.url"></span></p>
-                                    <p><span v-text="$t('lang.bookisbn')"></span>: <span v-text="doubanbook.isbn10+'/'+doubanbook.isbn13"></span></p>
-                                    <p><span v-text="$t('lang.bookrating')"></span>: <span v-text="doubanbook.rating.average"></span></p>
-                                    <p><span v-text="$t('lang.bookprice')"></span>: <span v-text="doubanbook.price"></span></p>
-                                    <p><span v-text="$t('lang.bookauthorinfo')"></span>: <span v-html="markdown2html(doubanbook.author_intro)"></span></p>
-                                    <p><span v-text="$t('lang.booksummary')"></span>: <span v-html="markdown2html(doubanbook.summary)"></span></p>
-                                    <p><span v-text="$t('lang.bookcatalog')"></span>: <span v-html="markdown2html(doubanbook.catalog)"></span></p>
+            <!--<div v-if="doubanbookseen" class="col-md-12">-->
+                <!--<div class="content-box-large">-->
+                    <!--<div class="row">-->
+                        <!--<div class="col-md-12 text-center">-->
+                            <!--<p><span v-text="$t('lang.ifd')"></span></p>-->
+                        <!--</div>-->
+                        <!--<div class="col-md-12">-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-md-3 col-md-offset-1">-->
+                                    <!--<img width="100%" height="100%" :src="doubanbook.images.large"/>-->
+                                <!--</div>-->
+                                <!--<div class="col-md-7">-->
+                                    <!--<p><span v-text="$t('lang.bookname')"></span>: <span v-text="doubanbook.title"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookauthor')"></span>: <span v-text="doubanbook.author.join(',')"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookpage')"></span>: <span v-text="doubanbook.pages"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookdblink')"></span>: <span v-text="doubanbook.alt"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookpublisher')"></span>: <span v-text="doubanbook.publisher"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookpublishtime')"></span>: <span v-text="doubanbook.pubdate"></span></p>-->
+                                    <!--<p style="display: none">Book's API: <span v-text="doubanbook.url"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookisbn')"></span>: <span v-text="doubanbook.isbn10+'/'+doubanbook.isbn13"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookrating')"></span>: <span v-text="doubanbook.rating.average"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookprice')"></span>: <span v-text="doubanbook.price"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookauthorinfo')"></span>: <span v-html="markdown2html(doubanbook.author_intro)"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.booksummary')"></span>: <span v-html="markdown2html(doubanbook.summary)"></span></p>-->
+                                    <!--<p><span v-text="$t('lang.bookcatalog')"></span>: <span v-html="markdown2html(doubanbook.catalog)"></span></p>-->
 
-                                    <p style="display: none" v-text="doubanbook"></p>
-                                </div>
-                            </div>
+                                    <!--<p style="display: none" v-text="doubanbook"></p>-->
+                                <!--</div>-->
+                            <!--</div>-->
 
-                        </div>
-                    </div>
-                </div>
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
 
-            </div>
+            <!--</div>-->
         </div>
         <div class="row footer-up"></div>
     </div>

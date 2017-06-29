@@ -20,7 +20,7 @@ func (CaliBook) TableName() string {
 type CaliBookVo struct {
 	CaliBook
 
-	Formats []CaliFormat
+	Formats []CaliFormat `json:"formats"`
 
-	Categories []CaliCategory
+	Categories []CaliCategory `json:"categories"`
 }

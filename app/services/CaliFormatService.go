@@ -23,6 +23,12 @@ func (service CaliFormatService) GetById(formatid string) (ok bool, format model
 	return
 }
 
+func (service CaliFormatService) QueryByCaliBook(bookid string)[]models.CaliFormat  {
+	formats :=make([]models.CaliFormat,0)
+	engine.Where("cali_book = ?",bookid).Find(&formats)
+	return formats
+}
+
 func (service CaliFormatService) UpdateBookid(formatid, bookid string) bool {
 	service.UpdateBookFormatCaliBook(models.CaliFormat{Id: formatid, CaliBook: bookid})
 	return true

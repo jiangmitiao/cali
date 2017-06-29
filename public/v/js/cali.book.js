@@ -31,19 +31,21 @@ $(document).ready(function(){
             <div class="panel-body">\
                 <div class="row">\
                     <div class="col-md-3 col-md-offset-1">\
-                        <img width="100%" height="100%" :src="\'/api/book/bookimage?bookid=\'+book.id"/>\
+                        <img width="100%" height="100%" :src="toJson(book.douban_json).image"/>\
                     </div>\
                     <div class="col-md-5">\
                         <p <span v-text="$t(\'lang.bookname\')"></span>: <span v-text="book.title"></span></p>\
-                        <p><span v-text="$t(\'lang.bookauthor\')"></span>: <span v-text="book.name"></span></p>\
-                        <p><span v-text="$t(\'lang.bookpublishtime\')"></span>: <span v-text="formatdate(book.pubdate)"></span></p>\
-                        <p><span v-text="$t(\'lang.bookupdatetime\')"></span>: <span v-text="formatdate(book.timestamp)"></span></p>\
-                        <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="book.isbn"></span></p>\
-                        <p><span v-text="$t(\'lang.bookmodifiedtime\')"></span>: <span v-text="formatdate(book.last_modified)"></span></p>\
-                        <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="book.rating"></span></p>\
+                        <p><span v-text="$t(\'lang.bookauthor\')"></span>: <span v-text="book.author"></span></p>\
+                        <p><span v-text="$t(\'lang.bookpublishtime\')"></span>: <span v-text="formatdate(toJson(book.douban_json).pubdate)"></span></p>\
+                        <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="toJson(book.douban_json).isbn13"></span></p>\
+                        <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="toJson(book.douban_json).rating.average"></span></p>\
                         <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/api/book/bookdown?bookid=\'+book.id+withSession"><span v-text="$t(\'lang.clickdownload\')"></span></a></p>\
-                        <p v-if="book.format==\'EPUB\'"><span v-text="$t(\'lang.read\')"></span>: <a :href="\'/read?bookid=\'+book.id"><span v-text="$t(\'lang.read\')"></span></a></p>\
-                        <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(book.comments)"></span></p>\
+                        <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(toJson(book.douban_json).summary)"></span></p>\
+                    </div>\
+                </div>\
+                <div class="row">\
+                    <div class="col-md-10 col-md-offset-1" v-for="item in book.formats">\
+                        <a :href="\'/api/book/bookdown?formatid=\'+item.id+withSession"><h4 v-text="item.title"></h4></a><a v-if="item.format==\'EPUB\'" :href="\'/read?formatid=\'+item.id"><span v-text="$t(\'lang.read\')"></span></a></p>\
                     </div>\
                 </div>\
             </div>\
@@ -60,6 +62,9 @@ $(document).ready(function(){
                 var converter = new showdown.Converter();
                 var html      = converter.makeHtml(m);
                 return html;
+            },
+            toJson : function (str) {
+                return JSON.parse(str);
             }
         },
         data:function () {
@@ -82,11 +87,7 @@ $(document).ready(function(){
             // the only one book's info
             book:{},
             //if bookseen is true ,then display the book's div
-            bookseen:false,
-            //douban's book info
-            doubanbook:{},
-            //if doubanbookseen is true ,then display the doubanbook's div
-            doubanbookseen:false
+            bookseen:false
         },
         methods: {
             markdown2html: function (m) {
@@ -116,26 +117,6 @@ $(document).ready(function(){
                 if (json.statusCode ==200){
                     app.book = json.info;
                     app.bookseen = true;
-                    var form = commonData();
-                    form.append("bookid",json.info.id);
-                    fetch('/api/book/doubanbook',{method:'post',body:form}).then(function(response) {
-                        if (response.redirected){
-                            window.location.href = response.url;
-                        }
-                        return response.json();
-                    }).then(function(json) {
-                        if (json.statusCode ==200){
-                            var info = JSON.parse(json.info);
-                            if (info.count != undefined & info.count!=0){
-                                //console.log(info.books[0]);
-                                app.doubanbook = info.books[0];
-                                app.doubanbookseen = true;
-                            }
-                        }
-                    }).
-                    catch(function(ex) {
-                        console.log('parsing failed', ex)
-                    });
                 }
             }).
             catch(function(ex) {
