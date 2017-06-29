@@ -91,7 +91,7 @@ const messages = {
             hotbooks: "热门书籍",
             newbooks:"新书推荐",
             discover:"探索发现",
-            categories:"标签",
+            categories:"类目",
             authors:"作者",
             language:"语言",
             rating:"评分",

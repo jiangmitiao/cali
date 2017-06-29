@@ -39,13 +39,17 @@ $(document).ready(function(){
                         <p><span v-text="$t(\'lang.bookpublishtime\')"></span>: <span v-text="formatdate(toJson(book.douban_json).pubdate)"></span></p>\
                         <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="toJson(book.douban_json).isbn13"></span></p>\
                         <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="toJson(book.douban_json).rating.average"></span></p>\
-                        <p><span v-text="$t(\'lang.bookdownloadlink\')"></span>: <a :href="\'/api/book/bookdown?bookid=\'+book.id+withSession"><span v-text="$t(\'lang.clickdownload\')"></span></a></p>\
                         <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(toJson(book.douban_json).summary)"></span></p>\
                     </div>\
                 </div>\
                 <div class="row">\
+                    <div class="col-md-10 col-md-offset-1">\
+                        <h4 v-text="$t(\'lang.bookdownloadlink\')"></h4>\
+                    </div>\
+                </div>\
+                <div class="row">\
                     <div class="col-md-10 col-md-offset-1" v-for="item in book.formats">\
-                        <a :href="\'/api/book/bookdown?formatid=\'+item.id+withSession"><h4 v-text="item.title"></h4></a><a v-if="item.format==\'EPUB\'" :href="\'/read?formatid=\'+item.id"><span v-text="$t(\'lang.read\')"></span></a></p>\
+                        <a :href="\'/api/book/bookdown?formatid=\'+item.id+withSession"><h4 v-text="item.title+\'.\'+item.format"></h4></a><a v-if="item.format==\'EPUB\'" :href="\'/read?formatid=\'+item.id" target="_blank"><span v-text="$t(\'lang.read\')"></span></a></p>\
                     </div>\
                 </div>\
             </div>\

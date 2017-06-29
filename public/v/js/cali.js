@@ -6,11 +6,11 @@ $(document).ready(function(){
         // 这个属性名为 book。
         props: ['book'],
         template: '\
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">\
+        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">\
             <div class="content-box">\
                 <div class="panel-body text-center">\
                     <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="toJson(book.douban_json).image" width="80%" height="80%"/>\
+                        <img class="cover" :src="toJson(book.douban_json).image" width="95%" height="95%"/>\
                     </a>\
                     <p class="text-center">\
                         <a :href="\'/book?bookid=\'+book.id" target="_blank">\
@@ -49,7 +49,7 @@ $(document).ready(function(){
         // 这个属性名为 category。
         props: ['category'],
         template: '\
-        <li @click="categoryclick(category)"><a href="#"><i class="glyphicon glyphicon-star"></i><span v-text="category.category"></span></a></li>\
+        <button type="button" @click="categoryclick(category)" :class="\'list-group-item \'+active(category)"><i class="glyphicon glyphicon-star"></i><span v-text="category.category"></span></button>\
         ',
         methods:{
             //return a sub string ,sub's length is max .if src string not equals result the result add '...'
@@ -58,6 +58,13 @@ $(document).ready(function(){
                 app.categoryid = c.id;
                 app.categoryname = c.category;
                 app.showbooks();
+            },
+            active:function (c) {
+                if (app.categoryid == c.id){
+                    return "active"
+                }else {
+                    return ""
+                }
             }
         }
     });
@@ -100,7 +107,7 @@ $(document).ready(function(){
                             },
                             pageRange: 1,
                             totalNumber: json.info,
-                            pageSize: 10,
+                            pageSize: 24,
                             showGoInput: true,
                             showGoButton: true,
                             callback: function (data, pagination) {
@@ -129,7 +136,9 @@ $(document).ready(function(){
             }
         },
         computed: {
-
+            categories_computed:function () {
+                return this.categories;
+            }
         },
         watched:{
 
@@ -142,10 +151,11 @@ $(document).ready(function(){
                 return response.json();
             }).then(function(json) {
                 if (json.statusCode ==200){
-                    app.categories = json.info
+                    app.categories = json.info;
                     if (app.categories.length !=0){
-                        //app.categoryid = app.categories[0].id;
-                        //app.categoryname = app.categories[0].category;
+                        app.categoryid = app.categories[0].id;
+                        app.categoryname = app.categories[0].category;
+                        app.showbooks();
                     }
                 }
             }).

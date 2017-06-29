@@ -195,7 +195,7 @@ $(document).ready(function(){
                         app.formatid = json.info.id;
                         app.uploadbook.title = json.info.title;
                         app.uploadbook.author = json.info.author;
-                        app.uploadbook.douban_id = "123456";
+                        app.uploadbook.douban_id = "";
                         app.uploadfileconfirmseen = true;
                     }else {
                         alert("upload error "+json.info);
@@ -229,7 +229,7 @@ $(document).ready(function(){
                 catch(function(ex) {
                     console.log('parsing failed', ex)
                 });
-                alert("please wait...");
+                //alert("please wait...");
             },
             searchloginnameclick:function () {
                 var form = commonData();

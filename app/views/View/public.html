@@ -29,18 +29,11 @@
         <div class="row">
             <div class="col-md-2">
                 <div class="sidebar content-box" style="display: block;">
-                    <ul class="nav">
-                        <!--&lt;!&ndash; Main menu &ndash;&gt;<span v-text=""></span>-->
-                        <li class="submenu open">
-                            <a href="#">
-                                <i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.browse')"></span>
-                                <span class="caret pull-right"></span>
-                                <ul>
-                                    <categorydiv v-for="item in categories" v-bind:category="item"></categorydiv>
-                                </ul>
-                            </a>
+                    <div class="list-group">
+                        <categorydiv v-for="item in categories_computed" v-bind:category="item"></categorydiv>
+
                         </li>
-                    </ul>
+                    </div>
                 </div>
             </div>
             <div class="col-md-10">

@@ -24,11 +24,11 @@ $(document).ready(function(){
         // 这个属性名为 book。
         props: ['book'],
         template: '\
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">\
+        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">\
             <div class="content-box">\
                 <div class="panel-body text-center">\
                     <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="\'/api/book/bookimage?bookid=\'+book.id" width="80%" height="80%"/>\
+                        <img class="cover" :src="toJson(book.douban_json).image" width="95%" height="95%"/>\
                     </a>\
                     <p class="text-center">\
                         <a :href="\'/book?bookid=\'+book.id" target="_blank">\
@@ -36,11 +36,11 @@ $(document).ready(function(){
                         </a>\
                     </p>\
                     <p class="text-center">\
-                        <a :href="\'/search?q=\'+book.name" target="_blank">\
-                        <span v-text="maxstring(book.name,10)"></span>\
+                        <a :href="\'/search?q=\'+book.author" target="_blank">\
+                        <span v-text="maxstring(book.author,10)"></span>\
                         </a>\
                     </p>\
-                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="book.rating"></span></p>\
+                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="toJson(book.douban_json).rating.average"></span></p>\
                     <br>\
                 </div>\
             </div>\
@@ -54,6 +54,9 @@ $(document).ready(function(){
                     result+="...";
                 }
                 return result;
+            },
+            toJson : function (str) {
+                return JSON.parse(str);
             }
         }
     });
@@ -94,7 +97,7 @@ $(document).ready(function(){
                         },
                         pageRange:1,
                         totalNumber:json.info,
-                        pageSize: 8,
+                        pageSize: 24,
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {

@@ -9,6 +9,8 @@ import (
 	"path"
 	"strconv"
 	"time"
+	"strings"
+	"fmt"
 )
 
 type Book struct {
@@ -46,7 +48,8 @@ func (c Book) BookDown() revel.Result {
 		if f, err := bookService.QueryBookFile(format.Id); err == nil {
 			user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 			c.addDownloadRecord(format, user)
-			return c.RenderFile(f, revel.Attachment)
+			return c.RenderBinary(f,format.Title+"-"+format.Author+"."+format.Format,revel.Attachment,time.Unix(format.UpdatedAt, 0),)
+			//return c.RenderFile(f, revel.Attachment)
 		}
 	}
 	return c.RenderText("file is not exit")
@@ -145,7 +148,13 @@ func (c *Book) UploadBookConfirm() revel.Result {
 	bookService.UpdateCaliBook(book)
 
 	//category
-	bookService.AddBookCategory(book.Id,models.DefaultCaliCategory.Id)
+	categoryName :=rcali.ValueOrDefault(c.Request.FormValue("categories"),models.DefaultCaliCategory.Category)
+	categoryNames := strings.Split(categoryName,",")
+	fmt.Println("==============================",categoryNames)
+	for _,name :=range categoryNames  {
+		category :=categoryService.GetOrInsertCategoryByName(name)
+		bookService.AddBookCategory(book.Id,category.Id)
+	}
 
 	//format
 	formatid := c.Request.FormValue("formatid")
