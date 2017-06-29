@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"time"
 	"strings"
-	"fmt"
 )
 
 type Book struct {
