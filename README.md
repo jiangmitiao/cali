@@ -27,20 +27,6 @@ You can manage your books by [Cali](https://github.com/jiangmitial/cali).
 
 # Usages
 
-### Requirements
-
-#### Get Calibre
-
-you shoud have [calibre](https://calibre-ebook.com/) to manage your books which like *.epub,*.mobi ,.etc
-
-then remenber your calibre library's path and the `metadata.db`.
-
-**or**
-
-```shell
-apt-get install calibre
-calibre --with-library=WITH_LIBRARY
-```
 
 
 ### Download SourceCode or Releases
@@ -62,10 +48,9 @@ you should open `conf/app.conf`
 
 then modify there:
 ```ini
-books.path = your library        #/home/gavin/Calibre 书库/
-books.uploadpath = /home/yourname/uploadpath/ #/home/gavin/uploadpath/
-sqlitedb.path = the calibre's db #/home/gavin/Calibre 书库/metadata.db
-``` 
+books.path = program init path  #/home/gavin/uploadpath/
+books.uploadpath = user upload path #/tmp/
+```
 
 ### Start the web server:
 
@@ -84,6 +69,10 @@ sh run.sh
 ![index.png](index.png "")
 
 # Changelog
+
+* **v0.1.0**
+    * **update system** no need calibre more
+    * display more books on index
 
 * **v0.0.4**
     * add monitor on download and view

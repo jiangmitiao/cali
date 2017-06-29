@@ -17,7 +17,7 @@
 它的功能有:
 
 * 添加书籍
-* 根据不同的分类查看书籍
+* 分类查看书籍
 * 从 douban.com 获取更多关于查看书籍的信息
 * 下载你想阅读的书籍
 * 在线阅读(目前仅支持epub格式)
@@ -29,20 +29,6 @@
 
 # 使用说明
 
-### 安装Cali前的需求
-
-#### 获取Calibre
-
-你应该下载 [calibre](https://calibre-ebook.com/) 去管理你的类似epub，mobi之类的书籍
-
-接下来，你要记住calibre创建书籍的目录和`metadata.db`的位置.
-
-**或**
-
-```shell
-apt-get install calibre
-calibre --with-library=WITH_LIBRARY
-```
 
 ### 下载
 
@@ -63,9 +49,8 @@ go get -u -v github.com/jiangmitiao/cali
 
 接下来，修改它:
 ```ini
-books.path = 你的书籍目录        #/home/gavin/Calibre 书库/
-books.uploadpath = 上传书籍临时存放的目录 #/home/gavin/uploadpath/
-sqlitedb.path = metadata.db的全路径 #/home/gavin/Calibre 书库/metadata.db
+books.path = 书籍存放地址 #/home/gavin/uploadpath/
+books.uploadpath =书籍上传地址 #/tmp/
 ```
 
 ### 打开程序:
@@ -85,6 +70,10 @@ sh run.sh
 ![index_cn.png](index_cn.png "")
 
 # 修改日志
+
+* **v0.1.0**
+    * **升级系统** 不再需要额外的程序支持，例如Calibre
+    * 在首页展示更多的书
 
 * **v0.0.4**
     * 增加下载和浏览记录

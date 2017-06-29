@@ -150,7 +150,6 @@ func (c *Book) UploadBookConfirm() revel.Result {
 	//category
 	categoryName :=rcali.ValueOrDefault(c.Request.FormValue("categories"),models.DefaultCaliCategory.Category)
 	categoryNames := strings.Split(categoryName,",")
-	fmt.Println("==============================",categoryNames)
 	for _,name :=range categoryNames  {
 		category :=categoryService.GetOrInsertCategoryByName(name)
 		bookService.AddBookCategory(book.Id,category.Id)
