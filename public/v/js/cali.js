@@ -10,16 +10,16 @@ $(document).ready(function(){
             <div class="content-box">\
                 <div class="panel-body text-center">\
                     <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="toJson(book.douban_json).image" width="95%" height="95%"/>\
+                        <img class="cover" :src="toJson(book.douban_json).image" width="100px" height="150px"/>\
                     </a>\
                     <p class="text-center">\
                         <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                            <span v-text="maxstring(book.title,10)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
+                            <span v-text="maxstring(book.title,5)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
                         </a>\
                     </p>\
                     <p class="text-center">\
                         <a :href="\'/search?q=\'+book.author" target="_blank">\
-                        <span v-text="maxstring(book.author,10)"></span>\
+                        <span v-text="maxstring(book.author,5)"></span>\
                         </a>\
                     </p>\
                     <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="toJson(book.douban_json).rating.average"></span></p>\
