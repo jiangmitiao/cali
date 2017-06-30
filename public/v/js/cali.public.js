@@ -22,6 +22,7 @@ $(document).ready(function(){
                 if (app.categoryid == "") {
                     return
                 }
+                app.books = [];
                 var form = commonData();
                 form.append("categoryid", app.categoryid);
                 fetch('/api/book/bookscount', {method: 'post', body: form}).then(function (response) {

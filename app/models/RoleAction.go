@@ -31,6 +31,9 @@ func init() {
 
 		RoleAction{Id: "adminCategoryIndex", Role: "admin", Controller: "Category", Method: "Index"},
 		RoleAction{Id: "adminCategoryAll", Role: "admin", Controller: "Category", Method: "All"},
+		RoleAction{Id: "adminCategoryAdd", Role: "admin", Controller: "Category", Method: "Add"},
+		RoleAction{Id: "adminCategoryUpdate", Role: "admin", Controller: "Category", Method: "Update"},
+		RoleAction{Id: "adminCategoryDelete", Role: "admin", Controller: "Category", Method: "Delete"},
 
 		RoleAction{Id: "adminUserIndex", Role: "admin", Controller: "User", Method: "Index"},
 		RoleAction{Id: "adminUserLogin", Role: "admin", Controller: "User", Method: "Login"},

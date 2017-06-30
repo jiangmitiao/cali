@@ -33,3 +33,11 @@ func (service CaliCategoryService) GetOrInsertCategoryByName(categoryName string
 		return
 	}
 }
+
+func (service CaliCategoryService)UpdateCategoryName(categoryId,categoryName string)  {
+	engine.Where("id = ?",categoryId).Cols("category","updated").Update(models.CaliCategory{Id:categoryId,Category:categoryName,UpdatedAt:time.Now().Unix()})
+}
+
+func (service CaliCategoryService)DeleteById(categoryId string)  {
+	engine.Where("id = ?",categoryId).Delete(models.CaliCategory{})
+}

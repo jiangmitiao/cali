@@ -16,5 +16,5 @@ func (CaliCategory) TableName() string {
 
 
 var (
-	DefaultCaliCategory = CaliCategory{Id:"default",Category:"默认",CreatedAt:time.Now().Unix(),UpdatedAt:time.Now().Unix()}
+	DefaultCaliCategory = CaliCategory{Id:"default",Category:"全部",CreatedAt:time.Now().Unix(),UpdatedAt:time.Now().Unix()}
 )

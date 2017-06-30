@@ -68,7 +68,7 @@ $(document).ready(function(){
             <tbody>\
                 <tr v-for="item in sysconfiglist">\
                     <td v-text="item.key"></td>\
-                    <td><input type="text" maxlength="64" v-model="item.value" class="form-control"></td>\
+                    <td><input type="text" maxlength="64" v-model="item.value" class="form-control"/></td>\
                     <td v-text="item.comments"></td>\
                     <td><a class="btn btn-info" @click="update" :id="item.id">update</a></td>\
                 </tr>\
@@ -115,14 +115,52 @@ $(document).ready(function(){
     });
 
 
+    // 定义名为 categoriesdiv 的新组件
+    Vue.component('categoriesdiv', {
+        // categoriesdiv 组件现在接受一个
+        // 这个属性名为 categorylist。
+        props: ['categorylist'],
+        template: '\
+        <table class="table">\
+            <thead>\
+                <tr>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                </tr>\
+            </thead>\
+            <tbody>\
+                <tr v-for="item in categorylist">\
+                    <td v-text="item.id"></td>\
+                    <td><input type="text" maxlength="12" v-model="item.category" class="form-control"></td>\
+                    <td><a class="btn btn-warning" @click="updatecategory(item)">update</a></td>\
+                    <td><a class="btn btn-danger" @click="deletecategory(item)">delete</a></td>\
+                </tr>\
+            </tbody>\
+        </table>\
+        ',
+        methods:{
+            updatecategory:function (c) {
+                this.$emit('updatecategory',c);
+            },
+            deletecategory:function (c) {
+                this.$emit('deletecategory',c);
+            }
+        }
+    });
+
+
     var app = new Vue({
         i18n,
         el: "#root",
         data: {
+            listseen :"discover",
+            //首页展示readme
+            discover:"",
+
             session:"",
             user:{},
-            discover:"",
-            listseen:{},
             changeuserinfotipinfo:"",
 
             //change password
@@ -144,6 +182,11 @@ $(document).ready(function(){
             sysstatusseen:false,
             sysstatuslist:[],
 
+            //category change
+            categoryseen:false,
+            categories:[],
+            newcategory:{},
+
             //download
             downloadstats:{},
 
@@ -154,16 +197,10 @@ $(document).ready(function(){
         },
         methods: {
             changeseen:function (e) {
-                this.listseen = {};
-                this.listseen["discover"] = false;
-                this.listseen["userlist"] = false;
-                this.listseen["sysconfig"] = false;
-                this.listseen["sysstatus"] = false;
-                this.listseen["download"] = false;
-                this.listseen["upload"] = false;
-                this.listseen["changeuserinfo"] = false;
-                this.listseen["changepassword"] = false;
-                this.listseen[e] = true;
+                this.listseen = e;
+            },
+            needseen:function (e) {
+                return this.listseen===e;
             },
             markdown2html: function (m) {
                 showdown.setOption('simpleLineBreaks', true);
@@ -172,6 +209,7 @@ $(document).ready(function(){
                 var html      = converter.makeHtml(m);
                 return html;
             },
+            //上传文件
             uploadfile:function () {
                 var file = document.getElementById("book").value;
                 if (file == null || (file.match(/.epub$/g)==null && file.match(/.mobi$/g)==null && file.match(/.pdf$/g)==null && file.match(/.txt$/g)==null)){
@@ -206,6 +244,7 @@ $(document).ready(function(){
                 });
                 //alert("please wait...");
             },
+            //上传文件确认
             uploadfileconfirm :function () {
                 var form = new FormData(document.getElementById("uploadfileconfirm"));
                 form.append('session',store.get("session"));
@@ -231,6 +270,7 @@ $(document).ready(function(){
                 });
                 //alert("please wait...");
             },
+            //搜索用户
             searchloginnameclick:function () {
                 var form = commonData();
                 form.append("loginName",app.searchloginname);
@@ -287,6 +327,7 @@ $(document).ready(function(){
                     console.log('parsing failed', ex)
                 });
             },
+            //修改用户昵称
             changeuserinfo:function () {
                 if (app.user.userName == null || app.user.userName==""){
                     app.changeuserinfotipinfo = "lang.notnull";
@@ -389,6 +430,7 @@ $(document).ready(function(){
                     alert("update error");
                 }
             },
+            //删除系统状态
             sysstatusdelete : function (id) {
                 var find = false;
 
@@ -418,6 +460,88 @@ $(document).ready(function(){
                 if (!find){
                     alert("delete error");
                 }
+            },
+            addcategory:function () {
+              //alert("add "+this.newcategory.category);
+              var form = commonData();
+              form.append("categoryName",this.newcategory.category);
+              fetch('/api/category/add',{method:'post',body:form}).then(function(response) {
+                    if (response.redirected){
+                        var tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }
+                    return response.json();
+              }).then(function(json) {
+                    if (json.statusCode ==200){
+                        app.showcategories();
+                    }else {
+                        alert("失败");
+                    }
+              }).catch(function(ex) {
+                    console.log('parsing failed', ex)
+              });
+            },
+            deletecategory:function (c) {
+                //alert("deletecategory "+c.category);
+                var form = commonData();
+                form.append("categoryId",c.id);
+                form.append("categoryName",c.category);
+                fetch('/api/category/delete',{method:'post',body:form}).then(function(response) {
+                    if (response.redirected){
+                        var tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        app.showcategories();
+                    }else {
+                        alert("失败");
+                    }
+                }).catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
+            },
+            updatecategory:function (c) {
+                //alert("updatecategory "+c.category);
+                var form = commonData();
+                form.append("categoryId",c.id);
+                form.append("categoryName",c.category);
+                fetch('/api/category/update',{method:'post',body:form}).then(function(response) {
+                    if (response.redirected){
+                        var tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        app.showcategories();
+                    }else {
+                        alert("失败");
+                    }
+                }).catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
+            },
+            showcategories:function () {
+                fetch('/api/category/all',{method:'post',body:commonData()}).then(function(response) {
+                    if (response.redirected){
+                        var tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }
+                    return response.json();
+                }).then(function(json) {
+                    if (json.statusCode ==200){
+                        app.categories = json.info;
+                    }
+                }).
+                catch(function(ex) {
+                    console.log('parsing failed', ex)
+                });
             }
         },
         computed: {
@@ -427,9 +551,6 @@ $(document).ready(function(){
                 var converter = new showdown.Converter();
                 var html      = converter.makeHtml(this.discover);
                 return html;
-            },
-            userlist_computed : function () {
-                return this.userlist;
             },
             computed_userstatus : function () {
                 if (_.has(app.downloadstats,"count") && _.has(app.downloadstats,"maxcount")){
@@ -553,7 +674,7 @@ $(document).ready(function(){
 
             fetch('/api/user/userstatus',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
-                    app.sysstatusseen = false;
+                    //app.sysstatusseen = false;
                     var tmpJson = {};
                     tmpJson.statusCode = 500;
                     return tmpJson;
@@ -567,17 +688,30 @@ $(document).ready(function(){
             catch(function(ex) {
                 console.log('parsing failed', ex)
             });
+
+            //是否显示类目
+            fetch('/api/sysstatus/status',{method:'post',body:commonData()}).then(function(response) {
+                if (response.redirected){
+                    app.categoryseen = false;
+                    var tmpJson = {};
+                    tmpJson.statusCode = 500;
+                    app.showcategories();
+                    return tmpJson;
+                }
+                return response.json();
+            }).then(function(json) {
+                if (json.statusCode ==200){
+                    app.categoryseen = true;
+                    app.showcategories();
+                }
+            }).
+            catch(function(ex) {
+                console.log('parsing failed', ex)
+            });
+
         },
         beforeMount: function () {
             //console.log("beforeMount");
-            this.listseen = {};
-            this.listseen["discover"] = true;
-            this.listseen["sysconfig"] = false;
-            this.listseen["sysstatus"] = false;
-            this.listseen["userlist"] = false;
-            this.listseen["upload"] = false;
-            this.listseen["changeuserinfo"] = false;
-            this.listseen["changepassword"] = false;
         },
         mounted: function () {
             //console.log("mounted");

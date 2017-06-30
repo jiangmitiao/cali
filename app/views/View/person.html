@@ -26,35 +26,29 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="sidebar content-box" style="display: block;">
-                    <ul class="nav">
-                        <li class="submenu open">
-                            <a href="#">
-                                <i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.personcenter')"></span>
-                                <span class="caret pull-right"></span>
-                                <ul>
-                                    <li @click="changeseen('discover')" :class="listseen.discover?'current':''"><a href="#discover"><i class="glyphicon glyphicon-eye-open"></i> <span v-text="$t('lang.discover')"></span></a></li>
-                                    <li v-if="userlistseen" @click="changeseen('userlist')" :class="listseen.userlist?'current':''"><a href="#userlist"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.userlist')"></span></a></li>
-                                    <li v-if="sysconfigseen" @click="changeseen('sysconfig')" :class="listseen.sysconfig?'current':''"><a href="#sysconfig"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysconfig')"></span></a></li>
-                                    <li v-if="sysstatusseen" @click="changeseen('sysstatus')" :class="listseen.sysstatus?'current':''"><a href="#sysstatus"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysstatus')"></span></a></li>
-                                    <li @click="changeseen('download')" :class="listseen.download?'current':''"><a href="#download"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.download')"></span></a></li>
-                                    <li @click="changeseen('upload')" :class="listseen.upload?'current':''"><a href="#upload"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></a></li>
-                                    <li @click="changeseen('changeuserinfo')" :class="listseen.changeuserinfo?'current':''"><a href="#changeuserinfo"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></a></li>
-                                    <li @click="changeseen('changepassword')" :class="listseen.changepassword?'current':''"><a style="color: red;" href="#changepassword"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.changepassword')"></span></a></li>
-                                </ul>
-                            </a>
-                        </li>
-                    </ul>
+                    <div class="list-group">
+                        <button @click="changeseen('discover')" class="list-group-item"><i class="glyphicon glyphicon-eye-open"></i><span v-text="$t('lang.discover')"></span></button>
+                        <button v-if="userlistseen" @click="changeseen('userlist')" class="list-group-item"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.userlist')"></span></button>
+                        <button v-if="sysconfigseen" @click="changeseen('sysconfig')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysconfig')"></span></button>
+                        <button v-if="sysstatusseen" @click="changeseen('sysstatus')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysstatus')"></span></button>
+                        <button v-if="categoryseen" @click="changeseen('categoryseen')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.categories')"></span></button>
+                        <button @click="changeseen('download')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.download')"></span></button>
+                        <button @click="changeseen('upload')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></button>
+                        <button @click="changeseen('changeuserinfo')" class="list-group-item"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></button>
+                        <button @click="changeseen('changepassword')" class="list-group-item list-group-item-danger"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.changepassword')"></span></button>
+
+                    </div>
                 </div>
             </div>
             <div class="col-md-9">
-                <div v-if="listseen.discover" class="panel panel-default">
+                <div v-if="needseen('discover')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.discover')"></span></div>
                     <div class="panel-body">
                         <div v-html="computed_discover"></div>
                     </div>
                 </div>
 
-                <div v-show="listseen.userlist" class="panel panel-default">
+                <div v-show="needseen('userlist')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.userlist')"></span></div>
                     <div class="panel-body">
                         <input type="text" maxlength="64" v-model="searchloginname" class="form-control">
@@ -67,28 +61,38 @@
                     </div>
                 </div>
 
-                <div v-show="listseen.sysconfig" class="panel panel-default">
+                <div v-show="needseen('sysconfig')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.sysconfig')"></span></div>
                     <div class="panel-body">
                         <sysconfigdiv v-bind:sysconfiglist="sysconfiglist"></sysconfigdiv>
                     </div>
                 </div>
 
-                <div v-show="listseen.sysstatus" class="panel panel-default">
+                <div v-show="needseen('sysstatus')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.sysstatus')"></span></div>
                     <div class="panel-body">
                         <sysstatusdiv v-bind:sysstatuslist="sysstatuslist"></sysstatusdiv>
                     </div>
                 </div>
 
-                <div v-if="listseen.download" class="panel panel-default">
+                <div v-show="needseen('categoryseen')" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.categories')"></span></div>
+                    <div class="panel-body">
+                        <input type="text" maxlength="12" v-model="newcategory.category" class="form-control"/>
+                        <button type="button" class="btn btn-info form-control" @click="addcategory">ADD</button>
+
+                        <categoriesdiv v-bind:categorylist="categories" v-on:updatecategory="updatecategory" v-on:deletecategory="deletecategory"></categoriesdiv>
+                    </div>
+                </div>
+
+                <div v-if="needseen('download')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.download')"></span></div>
                     <div class="panel-body">
                         <h4 v-text="computed_userstatus"></h4>
                     </div>
                 </div>
 
-                <div v-if="listseen.upload" class="panel panel-default">
+                <div v-if="needseen('upload')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.upload')"></span></div>
                     <div class="panel-body">
                         <form id="uploadfile" method="post" action="/api/book/uploadbook" enctype="multipart/form-data" class="form-horizontal">
@@ -150,7 +154,7 @@
                     </div>
                 </div>
 
-                <div v-if="listseen.changeuserinfo" class="panel panel-default">
+                <div v-if="needseen('changeuserinfo')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.changeuserinfo')"></span></div>
                     <div class="panel-body">
                         <form method="post" action="#" class="form-horizontal">
@@ -172,7 +176,7 @@
                     </div>
                 </div>
 
-                <div v-if="listseen.changepassword" class="panel panel-default">
+                <div v-if="needseen('changepassword')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.changepassword')"></span></div>
                     <div class="panel-body">
                         <form method="post" action="#" class="form-horizontal">
@@ -201,7 +205,6 @@
                                     <input @click="changepassword" type="button" :value="$t('lang.submit')" class="btn btn-default">
                                 </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
