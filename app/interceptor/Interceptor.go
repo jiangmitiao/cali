@@ -22,6 +22,7 @@ var (
 
 	//roleActionCache controller action role
 	roleActionCache = make(map[string]map[string]map[string]string)
+	roleActionCacheLock = sync.Mutex{}
 
 	//download need to limit
 	limitLock         = sync.Mutex{}
@@ -29,6 +30,8 @@ var (
 )
 
 func roleActionGet(controller, method, role string) string {
+	roleActionCacheLock.Lock()
+	defer roleActionCacheLock.Unlock()
 	//roleActionCache
 	if methods, ok := roleActionCache[controller]; ok {
 		if roles, ok := methods[method]; ok {

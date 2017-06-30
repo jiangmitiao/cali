@@ -49,7 +49,12 @@ func (userService UserService) GetLoginUser(loginSession string) (models.UserInf
 }
 
 func (userService UserService) Regist(user models.UserInfo) bool {
-	_, has := userService.GetAllUserByLoginName(user.UserName)
+	olduser, has := userService.GetAllUserByLoginName(user.UserName)
+	if has && olduser.Valid == 2{
+		engine.Delete(olduser)
+		engine.Where("user_info = ?",olduser.Id).Delete(models.UserInfoRoleLink{})
+		has = false
+	}
 	if !has {
 		session := engine.NewSession()
 		defer session.Close()

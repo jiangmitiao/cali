@@ -25,7 +25,7 @@ func (service CaliBookService) QueryBooksCount(categoryid string) int64 {
 //all books info
 func (service CaliBookService) QueryBooks(limit, start int, categoryid string) []models.CaliBook {
 	books := make([]models.CaliBook, 0)
-	engine.Where("id in (select cali_book from cali_book_category where cali_category = ?)", categoryid).Limit(limit, start).Find(&books)
+	engine.Where("id in (select cali_book from cali_book_category where cali_category = ?)", categoryid).Desc("updated").Limit(limit, start).Find(&books)
 	return books
 }
 
