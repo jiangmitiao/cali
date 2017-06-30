@@ -32,6 +32,15 @@ func calibredbPath() string {
 	return ""
 }
 
+func GetRealBookInfo(bookpath string) (books.Ebook, bool) {
+	ebook := books.GetEBook(bookpath)
+	if ebook == nil {
+		return nil, false
+	} else {
+		return ebook, true
+	}
+}
+
 func AddBook(bookpath string) (books.Ebook, string) {
 	ebook := books.GetEBook(bookpath)
 	if ebook != nil {

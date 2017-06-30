@@ -1,11 +1,11 @@
 package rcali
 
 import (
-	"net/http"
 	"io/ioutil"
+	"net/http"
 )
 
-func GetDoubanInfoById(id string)string  {
+func GetDoubanInfoById(id string) string {
 	if id == "" {
 		return ""
 	}

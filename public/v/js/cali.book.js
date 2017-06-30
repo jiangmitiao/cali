@@ -18,71 +18,7 @@ $(document).ready(function(){
     }
     var Request=new UrlSearch(); //实例化
 
-    // 定义名为 bookinfodiv 的新组件
-    Vue.component('bookinfodiv', {
-        // bookinfodiv 组件现在接受一个
-        // 这个属性名为 book。
-        props: ['book'],
-        template: '\
-        <div class="content-box-large">\
-            <div class="panel-heading">\
-                    <div class="panel-title"><span v-text="book.title"></span></div>\
-            </div>\
-            <div class="panel-body">\
-                <div class="row">\
-                    <div class="col-md-3 col-md-offset-1">\
-                        <img width="100%" height="100%" :src="toJson(book.douban_json).image"/>\
-                    </div>\
-                    <div class="col-md-5">\
-                        <p <span v-text="$t(\'lang.bookname\')"></span>: <span v-text="book.title"></span></p>\
-                        <p><span v-text="$t(\'lang.bookauthor\')"></span>: <span v-text="book.author"></span></p>\
-                        <p><span v-text="$t(\'lang.bookpublishtime\')"></span>: <span v-text="formatdate(toJson(book.douban_json).pubdate)"></span></p>\
-                        <p><span v-text="$t(\'lang.bookisbn\')"></span>: <span v-text="toJson(book.douban_json).isbn13"></span></p>\
-                        <p><span v-text="$t(\'lang.bookrating\')"></span>: <span v-text="toJson(book.douban_json).rating.average"></span></p>\
-                        <p><span v-text="$t(\'lang.booksummary\')"></span>: <span v-html="markdown2html(toJson(book.douban_json).summary)"></span></p>\
-                    </div>\
-                </div>\
-                <div class="row">\
-                    <div class="col-md-10 col-md-offset-1">\
-                        <h4 v-text="$t(\'lang.bookdownloadlink\')"></h4>\
-                    </div>\
-                </div>\
-                <div class="row">\
-                    <div class="col-md-10 col-md-offset-1" v-for="item in book.formats">\
-                        <a :href="\'/api/book/bookdown?formatid=\'+item.id+withSession"><h4 v-text="item.title+\'.\'+item.format"></h4></a><a v-if="item.format==\'EPUB\'" :href="\'/read?formatid=\'+item.id" target="_blank"><span v-text="$t(\'lang.read\')"></span></a></p>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-        ',
-        methods:{
-            //format the data which from back to 'YYYY-MM-DD'
-            formatdate:function (d) {
-                return moment(new Date(d)).format("YYYY-MM-DD")
-            },
-            markdown2html: function (m) {
-                showdown.setOption('simpleLineBreaks', true);
-                //showdown.setOption('\n', '<br/>');
-                var converter = new showdown.Converter();
-                var html      = converter.makeHtml(m);
-                return html;
-            },
-            toJson : function (str) {
-                return JSON.parse(str);
-            }
-        },
-        data:function () {
-            return {
-                withSession: function () {
-                    if (_.isUndefined(store.get("session"))){
-                        return "&session=ok";
-                    }else {
-                        return "&session="+store.get("session");
-                    }
-                }()
-            };
-        }
-    });
+
 
     var app = new Vue({
         i18n,

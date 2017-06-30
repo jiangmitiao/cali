@@ -9,7 +9,6 @@ import (
 	"path"
 	"strconv"
 	"time"
-	"strings"
 )
 
 type Book struct {
@@ -22,7 +21,7 @@ func (c Book) Index() revel.Result {
 
 //all books count
 func (c Book) BooksCount() revel.Result {
-	categoryid := c.Request.FormValue("categoryid")
+	categoryid := rcali.ValueOrDefault(c.Request.FormValue("categoryid"), models.DefaultCaliCategory.Id)
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
 		models.NewOKApiWithInfo(bookService.QueryBooksCount(categoryid)))
@@ -30,12 +29,12 @@ func (c Book) BooksCount() revel.Result {
 
 //all books info
 func (c Book) Books() revel.Result {
-	categoryid := c.Request.FormValue("categoryid")
+	categoryid := rcali.ValueOrDefault(c.Request.FormValue("categoryid"), models.DefaultCaliCategory.Id)
 	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.ClassNumsStr))
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(bookService.QueryBooks(limit, start,categoryid)),
+		models.NewOKApiWithInfo(bookService.QueryBooks(limit, start, categoryid)),
 	)
 }
 
@@ -47,7 +46,7 @@ func (c Book) BookDown() revel.Result {
 		if f, err := bookService.QueryBookFile(format.Id); err == nil {
 			user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 			c.addDownloadRecord(format, user)
-			return c.RenderBinary(f,format.Title+"-"+format.Author+"."+format.Format,revel.Attachment,time.Unix(format.UpdatedAt, 0),)
+			return c.RenderBinary(f, format.Title+"-"+format.Author+"."+format.Format, revel.Attachment, time.Unix(format.UpdatedAt, 0))
 			//return c.RenderFile(f, revel.Attachment)
 		}
 	}
@@ -83,9 +82,9 @@ func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) 
 //query a book by bookid
 func (c Book) Book() revel.Result {
 	bookid := rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0")
-	bookvo := models.CaliBookVo{CaliBook:bookService.QueryBook(bookid)}
+	bookvo := models.CaliBookVo{CaliBook: bookService.QueryBook(bookid)}
 
-	if bookvo.Id != ""{
+	if bookvo.Id != "" {
 		bookvo.Formats = formatService.QueryByCaliBook(bookvo.Id)
 	}
 	return c.RenderJSONP(
@@ -99,14 +98,14 @@ func (c Book) Book() revel.Result {
 //UPLOAD
 func (c *Book) UploadBook() revel.Result {
 	uploadpath, _ := rcali.GetUploadPath()
-	file, header, err := c.Request.FormFile("book")
-	if err == nil {
+	tag := rcali.ValueOrDefault(c.Request.FormValue("tag"), "")
+	if file, header, err := c.Request.FormFile("book"); err == nil {
 		defer file.Close()
 		b, _ := ioutil.ReadAll(file)
 		tmpPath := path.Join(uploadpath, header.Filename)
 		ioutil.WriteFile(tmpPath, b, 0755)
-		//ok := rcali.AddBook(path.Join(uploadpath, header.Filename))
-		if ok, format := bookService.UploadBookFormat(tmpPath,c.Request.FormValue("tag")); ok {
+
+		if ok, format := bookService.UploadBookFormat(tmpPath, tag); ok {
 			user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 			c.addUploadRecord(format, user)
 			return c.RenderJSON(models.NewOKApiWithMessageAndInfo("add book success", format))
@@ -141,21 +140,19 @@ func (c Book) addUploadRecord(format models.CaliFormat, user models.UserInfo) {
 
 func (c *Book) UploadBookConfirm() revel.Result {
 	//book
-	book := bookService.GetBookOrInsertByTitleAndAuthor(c.Request.FormValue("title"), c.Request.FormValue("author"))
+	book := bookService.GetBookOrInsertByTitleAndAuthor(rcali.ValueOrDefault(c.Request.FormValue("title"), ""), rcali.ValueOrDefault(c.Request.FormValue("author"), ""))
 	book.DoubanId = rcali.ValueOrDefault(c.Request.FormValue("douban_id"), book.DoubanId)
 	book.DoubanJson = rcali.GetDoubanInfoById(book.DoubanId)
 	bookService.UpdateCaliBook(book)
 
 	//category
-	categoryName :=rcali.ValueOrDefault(c.Request.FormValue("categories"),models.DefaultCaliCategory.Category)
-	categoryNames := strings.Split(categoryName,",")
-	for _,name :=range categoryNames  {
-		category :=categoryService.GetOrInsertCategoryByName(name)
-		bookService.AddBookCategory(book.Id,category.Id)
-	}
+	categoryId := rcali.ValueOrDefault(c.Request.FormValue("categoryid"), models.DefaultCaliCategory.Id)
+
+	bookService.AddBookCategory(book.Id, categoryId)
+	bookService.AddBookCategory(book.Id, models.DefaultCaliCategory.Id)
 
 	//format
-	formatid := c.Request.FormValue("formatid")
+	formatid := rcali.ValueOrDefault(c.Request.FormValue("formatid"), "")
 	formatService.UpdateBookid(formatid, book.Id)
 
 	return c.RenderJSON(models.NewOKApi())
@@ -164,6 +161,7 @@ func (c *Book) UploadBookConfirm() revel.Result {
 //SEARCH
 func (c *Book) SearchCount() revel.Result {
 	q, _ := url.QueryUnescape(c.Request.FormValue("q"))
+	q = rcali.ValueOrDefault(q, "")
 	if q == "" {
 		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
 	} else {
@@ -173,6 +171,7 @@ func (c *Book) SearchCount() revel.Result {
 
 func (c *Book) Search() revel.Result {
 	q, _ := url.QueryUnescape(c.Request.FormValue("q"))
+	q = rcali.ValueOrDefault(q, "")
 	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.ClassNumsStr))
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	if q == "" {

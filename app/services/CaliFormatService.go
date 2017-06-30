@@ -23,9 +23,9 @@ func (service CaliFormatService) GetById(formatid string) (ok bool, format model
 	return
 }
 
-func (service CaliFormatService) QueryByCaliBook(bookid string)[]models.CaliFormat  {
-	formats :=make([]models.CaliFormat,0)
-	engine.Where("cali_book = ?",bookid).Find(&formats)
+func (service CaliFormatService) QueryByCaliBook(bookid string) []models.CaliFormat {
+	formats := make([]models.CaliFormat, 0)
+	engine.Where("cali_book = ?", bookid).Find(&formats)
 	return formats
 }
 
@@ -50,4 +50,9 @@ func (service CaliFormatService) UpdateCaliFormatDownload(format models.CaliForm
 func (service CaliFormatService) UpdateBookFormatCaliBook(format models.CaliFormat) {
 	format.UpdatedAt = time.Now().Unix()
 	engine.ID(format.Id).Cols("cali_book", "updated").Update(format)
+}
+
+func (service CaliFormatService) GetFormatBySize(size int64) (format models.CaliFormat) {
+	engine.Where("UncompressedSize = ? ", size).Get(&format)
+	return
 }

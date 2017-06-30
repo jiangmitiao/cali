@@ -50,7 +50,6 @@ func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, dat
 	}
 	engine.InsertOne(models.DefaultCaliCategory)
 
-
 	//USERS
 	if err = engine.Sync2(models.UserInfo{}); err != nil {
 		return false, err

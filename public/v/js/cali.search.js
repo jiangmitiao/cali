@@ -18,51 +18,6 @@ $(document).ready(function(){
     }
     var Request=new UrlSearch(); //实例化
 
-    // 定义名为 bookdiv 的新组件
-    Vue.component('bookdiv', {
-        // bookdiv 组件现在接受一个
-        // 这个属性名为 book。
-        props: ['book'],
-        template: '\
-        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">\
-            <div class="content-box">\
-                <div class="panel-body text-center">\
-                    <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="toJson(book.douban_json).image" width="100px" height="150px"/>\
-                    </a>\
-                    <p class="text-center">\
-                        <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                            <span v-text="maxstring(book.title,5)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
-                        </a>\
-                    </p>\
-                    <p class="text-center">\
-                        <a :href="\'/search?q=\'+book.author" target="_blank">\
-                        <span v-text="maxstring(book.author,5)"></span>\
-                        </a>\
-                    </p>\
-                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="toJson(book.douban_json).rating.average"></span></p>\
-                    <br>\
-                </div>\
-            </div>\
-        </div>\
-        ',
-        methods:{
-            //return a sub string ,sub's length is max .if src string not equals result the result add '...'
-            maxstring : function (str,max) {
-                var result = str.substr(0,max);
-                if (result != str){
-                    result+="...";
-                }
-                return result;
-            },
-            toJson : function (str) {
-                return JSON.parse(str);
-            }
-        }
-    });
-
-
-
     //the instance is only one html's Vue's instance on search.html
     var app = new Vue({
         i18n,

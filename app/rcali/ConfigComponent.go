@@ -51,8 +51,8 @@ func FileExists(path string) (bool, error) {
 
 // Return value if nonempty, def otherwise.
 func ValueOrDefault(value, def string) string {
-	if value != "" {
-		return value
+	if strings.TrimSpace(value) != "" {
+		return strings.TrimSpace(value)
 	}
 	return def
 }
