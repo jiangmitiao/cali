@@ -94,7 +94,7 @@ func (service CaliBookService) UploadBookFormat(filePath, tag string) (bool, mod
 	service.lock.Lock()
 	defer service.lock.Unlock()
 	if ebook, ok := rcali.GetRealBookInfo(filePath); ok {
-		if tmpFormat := DefaultFormatService.GetFormatBySize(ebook.UncompressedSize()); tmpFormat.Id != "" {
+		if tmpFormat := DefaultFormatService.GetFormatBySize(ebook.UncompressedSize()); tmpFormat.Id == "" {
 			if _, pathname := rcali.AddBook(filePath); pathname != "" {
 				format := models.CaliFormat{
 					Id:               uuid.New().String(),
@@ -107,6 +107,8 @@ func (service CaliBookService) UploadBookFormat(filePath, tag string) (bool, mod
 				}
 				return DefaultFormatService.Add(format), format
 			}
+		}else {
+			rcali.Logger.Info("has the book id:"+tmpFormat.Id)
 		}
 	}
 

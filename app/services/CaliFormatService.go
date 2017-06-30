@@ -53,6 +53,6 @@ func (service CaliFormatService) UpdateBookFormatCaliBook(format models.CaliForm
 }
 
 func (service CaliFormatService) GetFormatBySize(size int64) (format models.CaliFormat) {
-	engine.Where("UncompressedSize = ? ", size).Get(&format)
+	engine.Where("uncompressed_size = ? ", size).Get(&format)
 	return
 }

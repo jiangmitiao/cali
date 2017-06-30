@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Not found</title>
 	</head>
 	<body>
 {{if eq .RunMode "dev"}}
 {{template "errors/404-dev.html" .}}
 {{else}}
-	{{with .Error}}
-	<h1>
-		{{.Title}}
-	</h1>
-	<p>
-		{{.Description}}
-	</p>
-	{{end}}
+<script type="text/javascript">
+    window.location = "/"
+</script>
 {{end}}
 	</body>
+
+
+
 </html>
