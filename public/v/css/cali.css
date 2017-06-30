@@ -1,0 +1,8 @@
+.book {
+    width: 16.66666667%;
+}
+@media (min-width: 768px) {
+    .book {
+        width: 16.66666667%;
+    }
+}

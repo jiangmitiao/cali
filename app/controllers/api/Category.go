@@ -17,3 +17,7 @@ func (c Category) Index() revel.Result {
 func (c Category)All()revel.Result  {
 	return c.RenderJSONP(c.Request.FormValue("callback"),models.NewOKApiWithInfo(categoryService.Query()))
 }
+
+func (c Category) Add()revel.Result  {
+	return nil
+}

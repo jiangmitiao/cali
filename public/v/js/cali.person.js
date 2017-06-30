@@ -191,10 +191,10 @@ $(document).ready(function(){
                     return response.json();
                 }).then(function(json) {
                     if (json.statusCode ==200){
-                        alert(json.message);
+                        //alert(json.message);
                         app.formatid = json.info.id;
-                        app.uploadbook.title = json.info.title;
-                        app.uploadbook.author = json.info.author;
+                        app.uploadbook.title = _.trim(json.info.title);
+                        app.uploadbook.author = _.trim(json.info.author);
                         app.uploadbook.douban_id = "";
                         app.uploadfileconfirmseen = true;
                     }else {
@@ -204,7 +204,7 @@ $(document).ready(function(){
                 catch(function(ex) {
                     console.log('parsing failed', ex)
                 });
-                alert("please wait...");
+                //alert("please wait...");
             },
             uploadfileconfirm :function () {
                 var form = new FormData(document.getElementById("uploadfileconfirm"));

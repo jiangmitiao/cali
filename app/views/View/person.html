@@ -3,9 +3,9 @@
 <head>
     <title>Cali {{msg . "person"}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
+
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <!-- styles -->
+    <link href="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
     <link href="/public/v/css/styles.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -14,6 +14,7 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+
     {{if ne .cnzzid ""}}
     <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display:none' id='cnzz_stat_icon_{{.cnzzid}}'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D{{.cnzzid}}' type='text/javascript'%3E%3C/script%3E"));</script>
     {{end}}
@@ -26,7 +27,6 @@
             <div class="col-md-3">
                 <div class="sidebar content-box" style="display: block;">
                     <ul class="nav">
-                        <!--&lt;!&ndash; Main menu &ndash;&gt;<span v-text=""></span>-->
                         <li class="submenu open">
                             <a href="#">
                                 <i class="glyphicon glyphicon-list"></i> <span v-text="$t('lang.personcenter')"></span>
@@ -161,12 +161,6 @@
                                     <input type="text" class="form-control" maxlength="64" id="userName" name="userName" v-model="user.userName">
                                 </div>
                             </div>
-                            <!--<div class="form-group">-->
-                                <!--<label for="email" class="col-sm-2 control-label"><span v-text="$t('lang.email')"></span></label>-->
-                                <!--<div class="col-sm-10">-->
-                                    <!--<input type="email" class="form-control" maxlength="128" id="email" name="email" v-model="user.email">-->
-                                <!--</div>-->
-                            <!--</div>-->
                             <p class="col-sm-offset-2" style="color: red;"><span v-text="changeuserinfotipinfo==''?'':$t(changeuserinfotipinfo)"></span></p>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
@@ -219,21 +213,24 @@
 
     <footerdiv></footerdiv>
 </div>
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="/public/v/js/custom.js"></script>
-<link href="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
-<script src="https://cdn.rawgit.com/showdownjs/showdown/1.7.1/dist/showdown.min.js"></script>
-<script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore.js"></script>
-<script src="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.js"></script>
-<script src="https://cdn.bootcss.com/fetch/2.0.3/fetch.js"></script>
 <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
-<script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
+<script src="https://cdn.bootcss.com/fetch/2.0.3/fetch.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/underscore.js/1.8.3/underscore-min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script src="/public/v/js/custom.js"></script>
+
 <!--https://github.com/kazupon/vue-i18n-->
 <script src="https://cdn.bootcss.com/vue-i18n/7.0.0/vue-i18n.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.3.3/vue.js"></script>
+
+<script src="/public/v/js/custom.js"></script>
+
+<script src="https://cdn.bootcss.com/showdown/1.7.1/showdown.min.js"></script>
+<script src="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.min.js"></script>
+<script src="https://cdn.bootcss.com/underscore.string/3.3.4/underscore.string.min.js"></script>
+
 <script src="/public/v/js/cali.header.js"></script>
 <script src="/public/v/js/cali.footer.js"></script>
 <script src="/public/v/js/cali.i18n.js"></script>

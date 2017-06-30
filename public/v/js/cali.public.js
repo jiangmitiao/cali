@@ -1,73 +1,5 @@
 $(document).ready(function(){
     //console.log("start");
-    // 定义名为 bookdiv 的新组件
-    Vue.component('bookdiv', {
-        // bookdiv 组件现在接受一个
-        // 这个属性名为 book。
-        props: ['book'],
-        template: '\
-        <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">\
-            <div class="content-box">\
-                <div class="panel-body text-center">\
-                    <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                        <img class="cover" :src="toJson(book.douban_json).image" width="100px" height="150px"/>\
-                    </a>\
-                    <p class="text-center">\
-                        <a :href="\'/book?bookid=\'+book.id" target="_blank">\
-                            <span v-text="maxstring(book.title,5)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></span>\
-                        </a>\
-                    </p>\
-                    <p class="text-center">\
-                        <a :href="\'/search?q=\'+book.author" target="_blank">\
-                        <span v-text="maxstring(book.author,5)"></span>\
-                        </a>\
-                    </p>\
-                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="toJson(book.douban_json).rating.average"></span></p>\
-                    <br>\
-                </div>\
-            </div>\
-        </div>\
-        ',
-        methods:{
-            //return a sub string ,sub's length is max .if src string not equals result the result add '...'
-            maxstring : function (str,max) {
-                var result = str.substr(0,max);
-                if (result != str){
-                    result+="...";
-                }
-                return result;
-            },
-            toJson : function (str) {
-                return JSON.parse(str);
-            }
-        }
-    });
-
-    // 定义名为 categorydiv 的新组件
-    Vue.component('categorydiv', {
-        // categorydiv 组件现在接受一个
-        // 这个属性名为 category。
-        props: ['category'],
-        template: '\
-        <button type="button" @click="categoryclick(category)" :class="\'list-group-item \'+active(category)"><i class="glyphicon glyphicon-star"></i><span v-text="category.category"></span></button>\
-        ',
-        methods:{
-            //return a sub string ,sub's length is max .if src string not equals result the result add '...'
-            categoryclick : function (c) {
-                //alert(c.id);
-                app.categoryid = c.id;
-                app.categoryname = c.category;
-                app.showbooks();
-            },
-            active:function (c) {
-                if (app.categoryid == c.id){
-                    return "active"
-                }else {
-                    return ""
-                }
-            }
-        }
-    });
 
     //the instance is only one html's Vue's instance on public.html
     var app = new Vue({
@@ -83,8 +15,10 @@ $(document).ready(function(){
 
         },
         methods: {
-            showbooks:function () {
+            showbooks:function (c) {
                 //books展示分页
+                app.categoryid = c.id;
+                app.categoryname = c.category;
                 if (app.categoryid == "") {
                     return
                 }
@@ -107,7 +41,7 @@ $(document).ready(function(){
                             },
                             pageRange: 1,
                             totalNumber: json.info,
-                            pageSize: 24,
+                            pageSize: 12,
                             showGoInput: true,
                             showGoButton: true,
                             callback: function (data, pagination) {
@@ -122,7 +56,7 @@ $(document).ready(function(){
                                     return response.json();
                                 }).then(function (json) {
                                     if (json.statusCode == 200) {
-                                        app.books = json.info
+                                        app.books = json.info;
                                     }
                                 }).catch(function (ex) {
                                     console.log('parsing failed', ex)
@@ -155,7 +89,7 @@ $(document).ready(function(){
                     if (app.categories.length !=0){
                         app.categoryid = app.categories[0].id;
                         app.categoryname = app.categories[0].category;
-                        app.showbooks();
+                        app.showbooks(app.categories[0]);
                     }
                 }
             }).
