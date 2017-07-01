@@ -87,7 +87,7 @@ func (service CaliBookService) SearchBooksCount(searchStr string) int {
 
 func (service CaliBookService) SearchBooks(searchStr string, limit, start int) []models.CaliBook {
 	books := make([]models.CaliBook, 0)
-	engine.SQL("select * from cali_book where title like ? or author like ? limit ?,?", "%"+searchStr+"%", "%"+searchStr+"%", start, limit).Find(&books)
+	engine.SQL("select * from cali_book where title like ? or author like ? limit ?,?", "%"+searchStr+"%", "%"+searchStr+"%", start, limit).Desc("updated").Find(&books)
 
 	return books
 }

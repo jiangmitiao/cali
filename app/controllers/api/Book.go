@@ -186,6 +186,8 @@ func (c *Book) Search() revel.Result {
 	}
 }
 
+
+//tmp del
 func (c *Book) DelJSON()revel.Result  {
 	formats :=formatService.GetNoBookLink()
 	bookpathdir,_ :=rcali.GetBooksPath()
