@@ -139,7 +139,7 @@ func (service CaliBookService) GetBookByTitleAndAuthor(title, author string) (bo
 
 func (service CaliBookService) UpdateCaliBook(book models.CaliBook) {
 	book.UpdatedAt = time.Now().Unix()
-	engine.ID(book.Id).Update(book)
+	engine.ID(book.Id).Cols("id","title","author","download_count","douban_id","douban_json","created","updated").Update(book)
 }
 
 func (service CaliBookService) UpdateCaliBookDownload(book models.CaliBook) {
