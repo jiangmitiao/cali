@@ -79,15 +79,15 @@ func (service CaliBookService) QueryBook(bookid string) (has bool, book models.C
 	}
 }
 
-func (service CaliBookService) SearchBooksCount(searchStr string) int {
+func (service CaliBookService) SearchBooksCount(searchStr, categoryId string) int {
 	count := 0
-	engine.SQL("select count(1) from cali_book where title like ? or author like ?", "%"+searchStr+"%", "%"+searchStr+"%").Get(&count)
+	engine.SQL("select count(1) from cali_book where id in (select cali_book from cali_book_category where cali_category = ?) and ( title like ? or author like ? )", categoryId, "%"+searchStr+"%", "%"+searchStr+"%").Get(&count)
 	return count
 }
 
-func (service CaliBookService) SearchBooks(searchStr string, limit, start int) []models.CaliBook {
+func (service CaliBookService) SearchBooks(searchStr, categoryId string, limit, start int) []models.CaliBook {
 	books := make([]models.CaliBook, 0)
-	engine.SQL("select * from cali_book where title like ? or author like ? limit ?,?", "%"+searchStr+"%", "%"+searchStr+"%", start, limit).Desc("updated").Find(&books)
+	engine.SQL("select * from cali_book where id in (select cali_book from cali_book_category where cali_category = ?) and ( title like ? or author like ? ) limit ?,?", categoryId, "%"+searchStr+"%", "%"+searchStr+"%", start, limit).Desc("updated").Find(&books)
 
 	return books
 }
@@ -156,6 +156,6 @@ func (service CaliBookService) AddBookCategory(bookid, categoryid string) {
 	}
 }
 
-func (service CaliBookService)DeleteById(bookId string)  {
-	engine.Where("id = ?",bookId).Delete(models.CaliBook{})
+func (service CaliBookService) DeleteById(bookId string) {
+	engine.Where("id = ?", bookId).Delete(models.CaliBook{})
 }

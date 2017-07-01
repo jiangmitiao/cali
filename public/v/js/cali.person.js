@@ -37,6 +37,7 @@ $(document).ready(function(){
             //book edit
             bookseen:false,
             books:[],
+            bookSearchStr:"",
 
 
             //download
@@ -393,7 +394,68 @@ $(document).ready(function(){
                     tips("error", ex);
                 });
             },
+            searchBook:function () {
+                //books展示分页
+                this.books = [];
+                let form = commonData();
+                form.append("q",app.bookSearchStr);
+                fetch('/api/book/searchcount', {method: 'post', body: form}).then(function (response) {
+                    if (response.redirected) {
+                        let tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }else {
+                        return response.json();
+                    }
+                }).then(function (json) {
+                    if (json.statusCode === 200) {
+                        $('#bookspage').pagination({
+                            dataSource: function (done) {
+                                let tmp = [];
+                                for (let i = 0; i < json.info; i++) {
+                                    tmp.push(i);
+                                }
+                                return done(tmp);
+                            },
+                            pageRange: 1,
+                            totalNumber: json.info,
+                            pageSize: 20,
+                            showGoInput: true,
+                            showGoButton: true,
+                            callback: function (data, pagination) {
+                                let form = commonData();
+                                form.append("start", _.min(data));
+                                form.append("limit", data.length);
+                                form.append("q",app.bookSearchStr);
+                                form.append("more","more");
+                                fetch('/api/book/search', {method: 'post', body: form}).then(function (response) {
+                                    if (response.redirected) {
+                                        let tmpJson = {};
+                                        tmpJson.statusCode = 500;
+                                        return tmpJson;
+                                    }else {
+                                        return response.json();
+                                    }
+                                }).then(function (json) {
+                                    if (json.statusCode === 200) {
+                                        app.books = json.info;
+                                    }else {
+                                        tips("error","server error");
+                                    }
+                                }).catch(function (ex) {
+                                    tips("error",ex);
+                                });
+                            }
+                        });
+                    }
+                }).catch(function (ex) {
+                    tips("error",ex);
+                });
+            },
             showbooks:function () {
+                if (this.bookSearchStr !== ""){
+                    return this.searchBook();
+                }
                 //books展示分页
                 this.books = [];
                 let form = commonData();
@@ -418,7 +480,7 @@ $(document).ready(function(){
                             },
                             pageRange: 1,
                             totalNumber: json.info,
-                            pageSize: 2,
+                            pageSize: 20,
                             showGoInput: true,
                             showGoButton: true,
                             callback: function (data, pagination) {

@@ -88,6 +88,8 @@
 
                 <div v-show="needseen('bookseen')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.bookname')"></span></div>
+                    <input type="text" maxlength="12" v-model="bookSearchStr" class="form-control"/>
+                    <button type="button" class="btn btn-info form-control" @click="searchBook">Search</button>
                     <div class="panel-body">
                         <bookeditdiv v-bind:books="books" v-bind:categorylist="categories" v-on:updatebook="updatebook" v-on:deletebook="deletebook"></bookeditdiv>
                         <div class="col-md-6 col-md-offset-3 col-xs-12">

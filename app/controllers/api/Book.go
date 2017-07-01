@@ -21,10 +21,10 @@ func (c Book) Index() revel.Result {
 
 //all books count
 func (c Book) BooksCount() revel.Result {
-	categoryid := rcali.ValueOrDefault(c.Request.FormValue("categoryid"), models.DefaultCaliCategory.Id)
+	categoryId := rcali.ValueOrDefault(c.Request.FormValue("categoryid"), models.DefaultCaliCategory.Id)
 	return c.RenderJSONP(
 		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(bookService.QueryBooksCount(categoryid)))
+		models.NewOKApiWithInfo(bookService.QueryBooksCount(categoryId)))
 }
 
 //all books info
@@ -185,10 +185,11 @@ func (c *Book) UploadBookConfirm() revel.Result {
 func (c *Book) SearchCount() revel.Result {
 	q, _ := url.QueryUnescape(c.Request.FormValue("q"))
 	q = rcali.ValueOrDefault(q, "")
+	categoryId := rcali.ValueOrDefault(c.Request.FormValue("categoryid"), models.DefaultCaliCategory.Id)
 	if q == "" {
 		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
 	} else {
-		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(bookService.SearchBooksCount(q)))
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(bookService.SearchBooksCount(q,categoryId)))
 	}
 }
 
@@ -197,10 +198,28 @@ func (c *Book) Search() revel.Result {
 	q = rcali.ValueOrDefault(q, "")
 	limit, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("limit"), rcali.ClassNumsStr))
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
+	categoryId := rcali.ValueOrDefault(c.Request.FormValue("categoryid"), models.DefaultCaliCategory.Id)
+	more :=c.Request.FormValue("more")
 	if q == "" {
 		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
 	} else {
-		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(bookService.SearchBooks(q, limit, start)))
+		books :=bookService.SearchBooks(q,categoryId, limit, start)
+
+		booksVos :=make([]models.CaliBookVo,0)
+		if more != "" {
+			for _,value :=range books{
+				bookvo := models.CaliBookVo{CaliBook: value}
+				bookvo.Formats = formatService.QueryByBookId(bookvo.Id)
+				bookvo.Categories = categoryService.QueryByBookIdWithOutDefault(bookvo.Id)
+				booksVos =append(booksVos,bookvo)
+			}
+		}else {
+			for _,value :=range books {
+				bookvo := models.CaliBookVo{CaliBook: value}
+				booksVos = append(booksVos, bookvo)
+			}
+		}
+		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(booksVos))
 	}
 }
 
