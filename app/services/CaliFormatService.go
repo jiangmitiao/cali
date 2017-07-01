@@ -56,3 +56,13 @@ func (service CaliFormatService) GetFormatBySize(size int64) (format models.Cali
 	engine.Where("uncompressed_size = ? ", size).And("cali_book != ?", "").Get(&format)
 	return
 }
+
+func (service CaliFormatService)GetNoBookLink()(formats []models.CaliFormat)  {
+	formats = make([]models.CaliFormat,0)
+	engine.Where("cali_book = ?","").Find(&formats)
+	return formats
+}
+
+func (service CaliFormatService) DeleteById(formatid string)  {
+	engine.Where("id = ?",formatid).Delete(models.CaliFormat{})
+}

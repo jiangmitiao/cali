@@ -73,7 +73,7 @@ func (service CaliBookService) QueryBookFile(formatid string) (*os.File, error) 
 //find a book by bookid
 func (service CaliBookService) QueryBook(bookid string) (has bool, book models.CaliBook) {
 	if has, _ := engine.Where("id = ?", bookid).Get(&book); has {
-		return true,book
+		return true, book
 	} else {
 		return false, book
 	}

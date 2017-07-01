@@ -4,11 +4,8 @@ $(document).ready(function(){
         el: "#root",
         data: {},
         methods: {
-            ooo:function () {
-                tips("hello","<h4>world</h4>");
-            }
         },
-        computed: {},
+        omputed: {},
         created: function() {
             //console.log("created");
         },

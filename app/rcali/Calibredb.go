@@ -9,6 +9,7 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 /**
@@ -66,6 +67,21 @@ func CopyFile(srcName, dstName string) error {
 	defer dst.Close()
 	_, err = io.Copy(dst, src)
 	return err
+}
+
+func DeleteRealBook(bookpath string)  {
+	os.Remove(bookpath)
+}
+
+func DeleteTmpBook()  {
+	uploadbookdir ,_:=GetUploadPath()
+	uploadbookdir = path.Join(uploadbookdir)
+	filepath.Walk(uploadbookdir, func(path string, info os.FileInfo, err error) error {
+		if (strings.ToLower(filepath.Ext(info.Name())) == ".epub" || strings.ToLower(filepath.Ext(info.Name())) == ".mobi") && filepath.Dir(path)==uploadbookdir{
+			os.Remove(filepath.Join(uploadbookdir,info.Name()))
+		}
+		return nil
+	})
 }
 
 func DeleteBook(bookid int) bool {

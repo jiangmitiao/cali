@@ -9,6 +9,7 @@ import (
 	"path"
 	"strconv"
 	"time"
+	"path/filepath"
 )
 
 type Book struct {
@@ -114,14 +115,14 @@ func (c *Book) UploadBook() revel.Result {
 			c.addUploadRecord(format, user)
 			return c.RenderJSON(models.NewOKApiWithMessageAndInfo("add book success", format))
 		} else {
-			return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("add book error",nil))
+			return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("add book error", nil))
 
 		}
 	} else {
 		rcali.Logger.Debug("read file error :", err.Error())
-		return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(err.Error(),nil))
+		return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(err.Error(), nil))
 	}
-	return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("file read error",nil))
+	return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("file read error", nil))
 }
 
 func (c Book) addUploadRecord(format models.CaliFormat, user models.UserInfo) {
@@ -183,4 +184,15 @@ func (c *Book) Search() revel.Result {
 	} else {
 		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewOKApiWithInfo(bookService.SearchBooks(q, limit, start)))
 	}
+}
+
+func (c *Book) DelJSON()revel.Result  {
+	formats :=formatService.GetNoBookLink()
+	bookpathdir,_ :=rcali.GetBooksPath()
+	for _,format := range formats{
+		rcali.DeleteRealBook(filepath.Join(bookpathdir,format.FileName))
+		formatService.DeleteById(format.Id)
+	}
+	rcali.DeleteTmpBook()
+	return c.RenderJSON("ok")
 }

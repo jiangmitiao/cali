@@ -300,9 +300,9 @@ $(document).ready(function(){
                 }
             },
             addcategory:function () {
-              let form = commonData();
-              form.append("categoryName",this.newcategory.category);
-              fetch('/api/category/add',{method:'post',body:form}).then(function(response) {
+                let form = commonData();
+                form.append("categoryName",this.newcategory.category);
+                fetch('/api/category/add',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
                         let tmpJson = {};
                         tmpJson.statusCode = 500;
@@ -311,16 +311,16 @@ $(document).ready(function(){
                     }else {
                         return response.json();
                     }
-              }).then(function(json) {
+                }).then(function(json) {
                     if (json.statusCode ===200){
                         app.showcategories();
                         tips("info","add categoy success");
                     }else {
                         tips("error",json.message);
                     }
-              }).catch(function(ex) {
+                }).catch(function(ex) {
                     tips("error", ex);
-              });
+                });
             },
             deletecategory:function (c) {
                 let form = commonData();

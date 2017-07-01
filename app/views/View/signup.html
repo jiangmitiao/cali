@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Cali {{msg . "signup"}}</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cali {{msg . "signup"}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/public/v/css/styles.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/public/v/css/styles.css" rel="stylesheet">
 
-	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	<!--[if lt IE 9]>
-	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-	<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-	<![endif]-->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
 
-	{{if ne .cnzzid ""}}
-	<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display:none' id='cnzz_stat_icon_{{.cnzzid}}'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D{{.cnzzid}}' type='text/javascript'%3E%3C/script%3E"));</script>
-	{{end}}
+    {{if ne .cnzzid ""}}
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan style='display:none' id='cnzz_stat_icon_{{.cnzzid}}'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D{{.cnzzid}}' type='text/javascript'%3E%3C/script%3E"));</script>
+    {{end}}
 </head>
 <body class="login-bg">
 <div id="root">
-	<headerdiv></headerdiv>
+    <headerdiv></headerdiv>
 
-	<div class="page-content container">
-		<div class="row">
-			<div class="col-md-4 col-md-offset-4">
-				<div class="login-wrapper">
-					<div class="box">
-						<div class="content-wrap">
-							<h6><span v-text="$t('lang.signup')"></span></h6>
-							<input class="form-control" type="text" maxlength="64" :placeholder="$t('lang.email')" v-model="loginName">
+    <div class="page-content container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-wrapper">
+                    <div class="box">
+                        <div class="content-wrap">
+                            <h6><span v-text="$t('lang.signup')"></span></h6>
+                            <input class="form-control" type="text" maxlength="64" :placeholder="$t('lang.email')" v-model="loginName">
 
-							<input class="form-control" type="password" maxlength="64" :placeholder="$t('lang.loginPassword')" v-model="loginPassword">
-							<input class="form-control" type="password" maxlength="64" :placeholder="$t('lang.confirmloginPassword')" v-model="repeatLoginPassword">
-							<p style="color: red;"><span v-text="tipinfo==''?'':$t(tipinfo)"></span></p>
-							<div class="action">
-								<a class="btn btn-primary signup" @click="regist"><span v-text="$t('lang.signup')"></span></a>
-							</div>
-						</div>
-					</div>
+                            <input class="form-control" type="password" maxlength="64" :placeholder="$t('lang.loginPassword')" v-model="loginPassword">
+                            <input class="form-control" type="password" maxlength="64" :placeholder="$t('lang.confirmloginPassword')" v-model="repeatLoginPassword">
+                            <p style="color: red;"><span v-text="tipinfo==''?'':$t(tipinfo)"></span></p>
+                            <div class="action">
+                                <a class="btn btn-primary signup" @click="regist"><span v-text="$t('lang.signup')"></span></a>
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="already">
-						<p><span v-text="$t('lang.haaa')"></span></p>
-						<a href="/login"><span v-text="$t('lang.login')"></span></a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <div class="already">
+                        <p><span v-text="$t('lang.haaa')"></span></p>
+                        <a href="/login"><span v-text="$t('lang.login')"></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<footerdiv></footerdiv>
+    <footerdiv></footerdiv>
 
-	<tipsmodaldiv></tipsmodaldiv>
+    <tipsmodaldiv></tipsmodaldiv>
 </div>
 <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
 <script src="https://cdn.bootcss.com/fetch/2.0.3/fetch.min.js"></script>

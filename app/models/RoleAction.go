@@ -28,6 +28,7 @@ func init() {
 		RoleAction{Id: "adminBookUploadBookConfirm", Role: "admin", Controller: "Book", Method: "UploadBookConfirm"},
 		RoleAction{Id: "adminBookSearch", Role: "admin", Controller: "Book", Method: "Search"},
 		RoleAction{Id: "adminBookSearchCount", Role: "admin", Controller: "Book", Method: "SearchCount"},
+		RoleAction{Id: "adminBookDelJSON", Role: "admin", Controller: "Book", Method: "DelJSON"},
 
 		RoleAction{Id: "adminCategoryIndex", Role: "admin", Controller: "Category", Method: "Index"},
 		RoleAction{Id: "adminCategoryAll", Role: "admin", Controller: "Category", Method: "All"},
