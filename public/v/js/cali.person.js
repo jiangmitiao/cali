@@ -51,6 +51,12 @@ $(document).ready(function(){
         methods: {
             changeseen:function (e) {
                 this.listseen = e;
+                if (e === "categoryseen"){
+                    this.showcategories();
+                }
+                if (e === "bookseen"){
+                    this.showbooks();
+                }
             },
             needseen:function (e) {
                 return this.listseen===e;
