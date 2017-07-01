@@ -36,6 +36,7 @@ func calibredbPath() string {
 func GetRealBookInfo(bookpath string) (books.Ebook, bool) {
 	ebook := books.GetEBook(bookpath)
 	if ebook == nil {
+		Logger.Error("==== can not parse "+bookpath)
 		return nil, false
 	} else {
 		return ebook, true
@@ -51,6 +52,7 @@ func AddBook(bookpath string) (books.Ebook, string) {
 			return ebook, filename
 		}
 	}
+	Logger.Error("==== can not parse "+bookpath)
 	return nil, ""
 }
 
