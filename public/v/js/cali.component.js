@@ -145,11 +145,11 @@ $(document).ready(function(){
         <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">\
             <div class="content-box">\
                 <div class="panel-body text-center">\
-                    <a :href="\'/book?bookid=\'+book.id" target="_blank" class="text-center">\
+                    <a :href="\'/book?bookId=\'+book.id" target="_blank" class="text-center">\
                         <canvas :id="book.id" :src="fakePic(toJson(book.douban_json).image,book.id)"></canvas>\
                     </a>\
                     <p class="text-center">\
-                        <a :href="\'/book?bookid=\'+book.id" target="_blank">\
+                        <a :href="\'/book?bookId=\'+book.id" target="_blank">\
                             <nobr v-text="maxstring(book.title,5)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></nobr>\
                         </a>\
                     </p>\
@@ -236,7 +236,7 @@ $(document).ready(function(){
             <div class="panel-body">\
                 <div class="row">\
                     <div class="col-md-3 col-md-offset-1">\
-                        <img width="100%" height="100%" :src="toJson(book.douban_json).image"/>\
+                        <img width="100%" height="100%" :src="toJson(book.douban_json).images.large"/>\
                     </div>\
                     <div class="col-md-5">\
                         <p <span v-text="$t(\'lang.bookname\')"></span>: <span v-text="book.title"></span></p>\
@@ -280,6 +280,8 @@ $(document).ready(function(){
                     json.pubdate = "0";
                     json.isbn13 = "0";
                     json.format = "";
+                    json.images = {};
+                    json.images.large = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
                     return json;
                 }
             },
@@ -288,7 +290,7 @@ $(document).ready(function(){
                     tips("info","after 3 seconds, turn to login");
                     setTimeout("window.location.href = '/login'",3000);
                 }else {
-                    window.location.href = "/api/book/bookdown?formatid="+item.id+"&session="+store.get("session");
+                    window.location.href = "/api/book/bookdown?formatId="+item.id+"&session="+store.get("session");
                 }
             }
         }

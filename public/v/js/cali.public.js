@@ -20,7 +20,7 @@ $(document).ready(function(){
                 }
                 app.books = [];
                 let form = commonData();
-                form.append("categoryid", app.categoryid);
+                form.append("categoryId", app.categoryid);
                 fetch('/api/book/bookscount', {method: 'post', body: form}).then(function (response) {
                     if (response.redirected) {
                         let tmpJson = {};
@@ -48,7 +48,7 @@ $(document).ready(function(){
                                 let form = commonData();
                                 form.append("start", _.min(data));
                                 form.append("limit", data.length);
-                                form.append("categoryid", app.categoryid);
+                                form.append("categoryId", app.categoryid);
                                 fetch('/api/book/books', {method: 'post', body: form}).then(function (response) {
                                     if (response.redirected) {
                                         let tmpJson = {};

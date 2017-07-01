@@ -50,7 +50,7 @@ $(document).ready(function(){
     //set the current location
     if (window.location.href.indexOf("login")<=0 && window.location.href.indexOf("signup")<=0){
         store.set("location",window.location.href);
-    }else {
+    }else if (store.get("location") === undefined){
         store.set("location","/");
     }
 });

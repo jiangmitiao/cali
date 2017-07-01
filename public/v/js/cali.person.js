@@ -459,7 +459,7 @@ $(document).ready(function(){
                 //books展示分页
                 this.books = [];
                 let form = commonData();
-                form.append("categoryid", "default");
+                form.append("categoryId", "default");
                 fetch('/api/book/bookscount', {method: 'post', body: form}).then(function (response) {
                     if (response.redirected) {
                         let tmpJson = {};
@@ -487,7 +487,7 @@ $(document).ready(function(){
                                 let form = commonData();
                                 form.append("start", _.min(data));
                                 form.append("limit", data.length);
-                                form.append("categoryid", "default");
+                                form.append("categoryId", "default");
                                 form.append("more","more");
                                 fetch('/api/book/books', {method: 'post', body: form}).then(function (response) {
                                     if (response.redirected) {

@@ -34,8 +34,8 @@ $(document).ready(function(){
             $("#area").css("height",""+(document.body.clientHeight-200)+"px");
             $("#area").css("height",""+(600)+"px");
             $("#area").css("width",""+(500)+"px");
-            var formatid=Request.formatid;
-            var url = "/api/book/bookdown.epub?formatid="+formatid+"&session="+store.get("session");
+            var formatId=Request.formatid;
+            var url = "/api/book/bookdown.epub?formatId="+formatId+"&session="+store.get("session");
             //console.log(url);
             Book.open(url);
             Book.getMetadata().then(function(meta){

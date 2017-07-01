@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    var Request=new UrlSearch();
+    let Request = new UrlSearch();
+
     var app = new Vue({
         i18n,
         el: "#root",
@@ -22,7 +23,7 @@ $(document).ready(function(){
         },
         created: function() {
             let form = commonData();
-            form.append("bookid",Request.bookid);
+            form.append("bookId",Request.bookId);
             fetch('/api/book/book',{method:'post',body:form}).then(function(response) {
                 if (response.redirected){
                     tips("info","after 3 seconds, turn to "+response.url);
