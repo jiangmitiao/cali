@@ -71,10 +71,12 @@ func (service CaliBookService) QueryBookFile(formatid string) (*os.File, error) 
 }
 
 //find a book by bookid
-func (service CaliBookService) QueryBook(bookid string) models.CaliBook {
-	book := models.CaliBook{}
-	engine.Where("id = ?", bookid).Get(&book)
-	return book
+func (service CaliBookService) QueryBook(bookid string) (has bool, book models.CaliBook) {
+	if has, _ := engine.Where("id = ?", bookid).Get(&book); has {
+		return true,book
+	} else {
+		return false, book
+	}
 }
 
 func (service CaliBookService) SearchBooksCount(searchStr string) int {
@@ -107,8 +109,8 @@ func (service CaliBookService) UploadBookFormat(filePath, tag string) (bool, mod
 				}
 				return DefaultFormatService.Add(format), format
 			}
-		}else {
-			rcali.Logger.Info("has the book id:"+tmpFormat.Id)
+		} else {
+			rcali.Logger.Info("has the book id:" + tmpFormat.Id)
 		}
 	}
 

@@ -3,7 +3,11 @@ $(document).ready(function(){
         i18n,
         el: "#root",
         data: {},
-        methods: {},
+        methods: {
+            ooo:function () {
+                tips("hello","<h4>world</h4>");
+            }
+        },
         computed: {},
         created: function() {
             //console.log("created");

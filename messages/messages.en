@@ -23,6 +23,9 @@ emailOrUsernameIsTooLong=email or username is too long
 library=Library
 
 
+## book
+nofindbook=Not find book
+
 ## other
 uncatchedError=uncatched error
 needLogin=need login

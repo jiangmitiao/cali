@@ -21,7 +21,7 @@ var (
 	userConfigService = services.DefaultUserConfigService
 
 	//roleActionCache controller action role
-	roleActionCache = make(map[string]map[string]map[string]string)
+	roleActionCache     = make(map[string]map[string]map[string]string)
 	roleActionCacheLock = sync.Mutex{}
 
 	//download need to limit

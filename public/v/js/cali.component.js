@@ -1,5 +1,138 @@
 $(document).ready(function(){
+    //header
+    // 定义名为 headerdiv 的新组件
+    Vue.component('headerdiv', {
+        // headerdiv 组件现在接受一个
+        // 这个属性名为 book。
+        props: ['book'],
+        template: '\
+        <div class="row">\
+            <nav class="navbar navbar-default navbar-inverse navbar-fixed-top nav-background-color">\
+                <div class="container-fluid">\
+                <!-- Brand and toggle get grouped for better mobile display -->\
+                    <div class="navbar-header">\
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">\
+                        <span class="sr-only">Toggle navigation</span>\
+                        <span class="icon-bar"></span>\
+                        <span class="icon-bar"></span>\
+                        <span class="icon-bar"></span>\
+                    </button>\
+                    <a class="navbar-brand" href="/" target="_blank">Cali</a>\
+                    </div>\
+                    <!-- Collect the nav links, forms, and other content for toggling -->\
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">\
+                        <ul class="nav navbar-nav">\
+                            <li v-bind:class="{ active: isindex }"><a href="/"><span v-text="$t(\'lang.index\')"></span> <span class="sr-only">(current)</span></a></li>\
+                            <li v-bind:class="{ active: islibrary }"><a href="/public"><span v-text="$t(\'lang.library\')"></span> <span class="sr-only">(current)</span></a></li>\
+                            <li><a href="https://github.com/jiangmitiao/cali/blob/master/README.md"><span v-text="$t(\'lang.help\')"></span></a></li>\
+                            <li><a href="http://blog.gavinzh.com"><span v-text="$t(\'lang.blog\')"></span></a></li>\
+                            <li v-if="leftdropdownseen" class="dropdown">\
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>\
+                                    <ul class="dropdown-menu">\
+                                        <li><a href="#">Action</a></li>\
+                                        <li><a href="#">Another action</a></li>\
+                                        <li><a href="#">Something else here</a></li>\
+                                        <li role="separator" class="divider"></li>\
+                                        <li><a href="#">Separated link</a></li>\
+                                        <li role="separator" class="divider"></li>\
+                                        <li><a href="#">One more separated link</a></li>\
+                                    </ul>\
+                            </li>\
+                        </ul>\
+                        <form class="navbar-form navbar-left" method="get" action="/search" target="_blank">\
+                            <div class="form-group">\
+                                <input name="q" type="text" class="form-control" :placeholder="$t(\'lang.searchholder\')">\
+                            </div>\
+                            <button type="submit" class="btn btn-default"><span v-text="$t(\'lang.search\')"></span></button>\
+                        </form>\
+                        <ul class="nav navbar-nav navbar-right">\
+                            <li><a href="https://github.com/jiangmitiao/cali"  target="_blank">Github</a></li>\
+                            <li v-if="rightdropdownseen" class="dropdown">\
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span v-if="islogin" v-text="user.userName"></span><span v-if="!islogin" v-text="$t(\'lang.login\') + $t(\'lang.signup\')"></span><span class="caret"></span></a>\
+                                <ul class="dropdown-menu">\
+                                    <li v-if="islogin"><a href="/person"><span v-text="$t(\'lang.personcenter\')"></span></a></li>\
+                                    <li role="separator" class="divider"></li>\
+                                    <li v-if="!islogin"><a href="/login"><span v-text="$t(\'lang.login\')"></span></a></li>\
+                                    <li v-if="!islogin"><a href="/signup"><span v-text="$t(\'lang.signup\')"></span></a></li>\
+                                    <li v-if="islogin"><a @click="logout"><span v-text="$t(\'lang.logout\')"></span></a></li>\
+                                </ul>\
+                            </li>\
+                        </ul>\
+                    </div>\
+                </div>\
+            </nav>\
+    </div>\
+        ',
+        methods:{
+            logout:function () {
+                fetch('/api/user/logout',{method:'post',body:commonData()}).then(function(response) {
+                    store.remove('user');
+                    store.remove('session');
+                    if (response.redirected){
+                        window.location.href = response.url;
+                    }else {
+                        window.location.reload(true);
+                    }
+                }).catch(function(ex) {
+                    tips("error",ex);
+                });
+                return false;
+            }
+        },
+        data:function () {
+            return {
+                rightdropdownseen: function () {
+                    return true;
+                }(),
+                leftdropdownseen: function () {
+                    return false
+                }(),
+                isindex:function () {
+                    return window.location.pathname === "/";
+                }(),
+                islibrary:function () {
+                    return window.location.pathname.indexOf("public") >= 0;
+                }(),
+                islogin:function () {
+                    if (_.isUndefined(store.get("session")) || _.isUndefined(store.get("user"))){
+                        return false;
+                    }else {
+                        fetch('/api/user/islogin',{method:'post',body:commonData()}).then(function(response) {
+                            return response.json()
+                        }).then(function(json) {
+                            if (json.statusCode !== 200){
+                                store.remove('user');
+                                store.remove('session');
+                                window.location.reload(true);
+                            }
+                        }).catch(function(ex) {
+                            tips("error",ex);
+                        });
+                        return true;
+                    }
+                }(),
+                user:function () {
+                    return _.isUndefined(store.get("user"))?{}:store.get("user");
+                }()
+            };
+        }
+    });
 
+    // 定义名为 footerdiv 的新组件
+    Vue.component('footerdiv', {
+        // headerdiv 组件现在接受一个
+        // 这个属性名为。
+        props: [],
+        template: '\
+        <footer class="navbar-fixed-bottom">\
+            <div class="container">\
+                <div class="copy text-center">\
+                    Copyright 2017 <a href="/">Cali</a>\
+                </div>\
+            </div>\
+        </footer>\
+        '
+    });
 
 
     //public
@@ -34,7 +167,7 @@ $(document).ready(function(){
         methods:{
             //return a sub string ,sub's length is max .if src string not equals result the result add '...'
             maxstring : function (str,max) {
-                var result = str.substr(0,max);
+                let result = str.substr(0, max);
                 if (result.length !== str.length){
                     result+="...";
                 }
@@ -42,10 +175,9 @@ $(document).ready(function(){
             },
             toJson : function (str) {
                 try {
-                    var json = JSON.parse(str);
-                    return json
+                    return JSON.parse(str)
                 }catch (e){
-                    var json = {};
+                    let json = {};
                     json.image = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
                     json.rating = {};
                     json.rating.average = 0.0;
@@ -53,13 +185,13 @@ $(document).ready(function(){
                 }
             },
             fakePic:function (src,id) {
-                var img = new Image();
+                let img = new Image();
                 img.src = src;
                 img.onload = function(){
                     myCanvas = document.getElementById(id);
                     myCanvas.width = 100;
                     myCanvas.height = 150;
-                    var context = myCanvas.getContext('2d');
+                    let context = myCanvas.getContext('2d');
                     context.drawImage(img, 0, 0);
                     //var imgdata = context.getImageData(0, 0, img.width, img.height);
                     // 处理imgdata
@@ -83,11 +215,7 @@ $(document).ready(function(){
                 this.$emit('categoryclick',c);
             },
             active:function (category,categoryid) {
-                if (category.id === categoryid){
-                    return "active"
-                }else {
-                    return ""
-                }
+                return category.id === categoryid?"active":"";
             }
         }
     });
@@ -126,7 +254,8 @@ $(document).ready(function(){
                 </div>\
                 <div class="row">\
                     <div class="col-md-10 col-md-offset-1" v-for="item in book.formats">\
-                        <a :href="\'/api/book/bookdown?formatid=\'+item.id+withSession"><h4 v-text="item.title+\'.\'+item.format"></h4></a><a v-if="item.format==\'EPUB\'" :href="\'/read?formatid=\'+item.id" target="_blank"><span v-text="$t(\'lang.read\')"></span></a></p>\
+                        <a @click="download(item)" class="btn"><h4 v-text="item.title+\'.\'+item.format"></h4></a>\
+                        <a v-if="item.format==\'EPUB\'" :href="\'/read?formatid=\'+item.id" target="_blank"><span v-text="$t(\'lang.read\')"></span></a></p>\
                     </div>\
                 </div>\
             </div>\
@@ -138,18 +267,13 @@ $(document).ready(function(){
                 return moment(new Date(d)).format("YYYY-MM-DD")
             },
             markdown2html: function (m) {
-                showdown.setOption('simpleLineBreaks', true);
-                //showdown.setOption('\n', '<br/>');
-                var converter = new showdown.Converter();
-                var html      = converter.makeHtml(m);
-                return html;
+                return markdown2html(m);
             },
             toJson : function (str) {
                 try {
-                    var json = JSON.parse(str);
-                    return json
+                    return JSON.parse(str)
                 }catch (e){
-                    var json = {};
+                    let json = {};
                     json.image = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
                     json.rating = {};
                     json.rating.average = 0.0;
@@ -158,18 +282,15 @@ $(document).ready(function(){
                     json.format = "";
                     return json;
                 }
+            },
+            download:function (item) {
+                if (_.isUndefined(store.get("session"))){
+                    tips("info","after 3 seconds, turn to login");
+                    setTimeout("window.location.href = '/login'",3000);
+                }else {
+                    window.location.href = "/api/book/bookdown?formatid="+item.id+"&session="+store.get("session");
+                }
             }
-        },
-        data:function () {
-            return {
-                withSession: function () {
-                    if (_.isUndefined(store.get("session"))){
-                        return "&session=ok";
-                    }else {
-                        return "&session="+store.get("session");
-                    }
-                }()
-            };
         }
     });
 
@@ -205,24 +326,24 @@ $(document).ready(function(){
         ',
         methods:{
             deleteuser:function (t) {
-                var form = commonData();
+                let form = commonData();
                 form.append("userId",t.target.id);
                 fetch('/api/user/delete',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
-                        var tmpJson = {};
+                        let tmpJson = {};
                         tmpJson.statusCode = 500;
                         return tmpJson;
                     }
                     return response.json();
                 }).then(function(json) {
-                    if (json.statusCode ==200){
+                    if (json.statusCode ===200){
                         //refresh this page
                         $('#userlistpage').pagination($('#userlistpage').pagination('getSelectedPageNum'))
                     }else {
+                        tips("error","delete fail");
                     }
-                }).
-                catch(function(ex) {
-                    console.log('parsing failed', ex)
+                }).catch(function(ex) {
+                    tips("error",ex);
                 });
             }
         }
@@ -256,7 +377,7 @@ $(document).ready(function(){
         ',
         methods:{
             update:function (t) {
-                app.sysconfigupdate(t.target.id);
+                this.$emit("update",t.target.id);
             }
         }
     });
@@ -288,7 +409,7 @@ $(document).ready(function(){
         ',
         methods:{
             deletestatus:function (t) {
-                app.sysstatusdelete(t.target.id);
+                this.$emit("deletestatus",t.target.id);
             }
         }
     });
@@ -352,6 +473,34 @@ $(document).ready(function(){
                 this.$emit('deletecategory',c);
             }
         }
+    });
+
+
+    //tips
+    // 定义名为 categorydiv 的新组件
+    Vue.component('tipsmodaldiv', {
+        // categorydiv 组件现在接受一个
+        // 这个属性名为 category。
+        props: [],
+        template: '\
+       <div class="modal fade" id="tipsModal" tabindex="-1" role="dialog" aria-labelledby="tipsModalLabel">\
+            <div class="modal-dialog" role="document">\
+                <div class="modal-content">\
+                    <div class="modal-header">\
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+                        <h4 class="modal-title" id="tipsModalLabel">Modal title</h4>\
+                    </div>\
+                    <div class="modal-body" id="tipsModelBody">\
+                        ...\
+                    </div>\
+                <div class="modal-footer">\
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->\
+                    <!--<button type="button" class="btn btn-primary">Save changes</button>-->\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+        '
     });
 
 });

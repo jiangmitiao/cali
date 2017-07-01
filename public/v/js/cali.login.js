@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    commonData();
     var app = new Vue({
         i18n,
         el: "#root",
@@ -9,60 +8,53 @@ $(document).ready(function(){
         },
         methods: {
             login:function () {
-                var form = commonData();
+                let form = commonData();
                 form.append("loginName",this.loginName);
                 form.append("loginPassword",this.loginPassword);
                 fetch('/api/user/login',{method:'post',body:form}).then(function(response) {
                     if (response.redirected){
-                        window.location.href = response.url;
+                        tips("info","after 3 seconds, turn to "+response.url);
+                        setTimeout("window.location.href = response.url",3000);
+                    }else {
+                        return response.json();
                     }
-                    return response.json();
                 }).then(function(json) {
-                    if (json.statusCode ==200){
+                    if (json.statusCode ===200){
                         store.set("session", json.info);
-                        var form = commonData();
+                        let form = commonData();
                         form.append("session",json.info);
                         fetch('/api/user/info',{method:'post',body:form}).then(function(response) {
                             return response.json()
                         }).then(function(user) {
-                            if (user.statusCode ==200){
+                            if (user.statusCode ===200){
                                 store.set("user", user.info);
                                 store.set("session", json.info);
-                                if (store.get("location") != undefined && store.get("location") != ""){
-                                    window.location = store.get("location");
+                                if (store.get("location") !== undefined && store.get("location") !== ""){
+                                    tips("info","after 3 seconds, turn to "+store.get("location"));
+                                    setTimeout("window.location.href = store.get('location')",3000);
                                 }else {
-                                    window.location = "/";
+                                    tips("info","after 3 seconds, turn to index");
+                                    setTimeout("window.location.href = '/'",3000);
                                 }
                             }else {
-                                alert(user.message);
+                                tips("warn",user.message);
                             }
-                        }).
-                        catch(function(ex) {
-                            console.log('parsing failed', ex)
+                        }).catch(function(ex) {
+                            tips("error",ex);
                         });
                     }else {
-                        alert(json.message);
+                        tips("error",json.message);
                     }
-                }).
-                catch(function(ex) {
-                    console.log('parsing failed', ex)
+                }).catch(function(ex) {
+                    tips("error",ex);
                 });
             }
         },
-        computed: {
-
-        },
         created: function() {
-            //console.log("created");
             if (!_.isUndefined(store.get("session")) && !_.isUndefined(store.get("user"))){
-                window.location = "/"
+                tips("info","<p>you has login.</p><p>after 3 seconds, turn to index</p>");
+                setTimeout("window.location.href = '/'",3000);
             }
-        },
-        beforeMount: function () {
-            //console.log("beforeMount");
-        },
-        mounted: function () {
-            //console.log("mounted");
         }
     });
 });

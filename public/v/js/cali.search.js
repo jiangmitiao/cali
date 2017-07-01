@@ -1,22 +1,5 @@
 $(document).ready(function(){
-    //console.log("start");
-    function UrlSearch(){
-        var name,value;
-        var str=location.href; //取得整个地址栏
-        var num=str.indexOf("?");
-        str=str.substr(num+1); //取得所有参数stringvar.substr(start [, length ]
-
-        var arr=str.split("&"); //各个参数放到数组里
-        for(var i=0;i < arr.length;i++){
-            num=arr[i].indexOf("=");
-            if(num>0){
-                name=arr[i].substring(0,num);
-                value=arr[i].substr(num+1);
-                this[name]=value;
-            }
-        }
-    }
-    var Request=new UrlSearch(); //实例化
+    const Request = new UrlSearch(); //实例化
 
     //the instance is only one html's Vue's instance on search.html
     var app = new Vue({
@@ -37,14 +20,17 @@ $(document).ready(function(){
             form.append("q",Request.q);
             fetch('/api/book/searchcount',{method:'post',body:form}).then(function(response) {
                 if (response.redirected){
-                    window.location.href = response.url;
+                    let tmpJson = {};
+                    tmpJson.statusCode = 500;
+                    return tmpJson;
+                }else {
+                    return response.json();
                 }
-                return response.json();
             }).then(function(json) {
-                if (json.statusCode ==200 && json.info !=0){
+                if (json.statusCode ===200 && json.info !==0){
                     $('#searchbookspage').pagination({
                         dataSource:function (done) {
-                            var tmp = [];
+                            let tmp = [];
                             for(var i=0; i<json.info;i++){
                                 tmp.push(i)
                             }
@@ -52,46 +38,40 @@ $(document).ready(function(){
                         },
                         pageRange:1,
                         totalNumber:json.info,
-                        pageSize: 24,
+                        pageSize: 12,
                         showGoInput: true,
                         showGoButton: true,
                         callback: function(data, pagination) {
-                            var form = commonData();
+                            let form = commonData();
                             form.append("start",_.min(data));
                             form.append("limit",data.length);
                             form.append("q",Request.q);
                             fetch('/api/book/search',{method:'post',body:form}).then(function(response) {
                                 if (response.redirected){
-                                    window.location.href = response.url;
+                                    let tmpJson = {};
+                                    tmpJson.statusCode = 500;
+                                    return tmpJson;
+                                }else {
+                                    return response.json();
                                 }
-                                return response.json();
                             }).then(function(json) {
-                                if (json.statusCode ==200){
+                                if (json.statusCode ===200){
                                     app.searchbooks = json.info
+                                }else {
+                                    tips("error","server error");
                                 }
                             }).
                             catch(function(ex) {
-                                console.log('parsing failed', ex)
+                                tips("error",ex);
                             });
                         }
                     });
-                }{
-
+                }else if (json.statusCode ===500){
+                    tips("error","server error");
                 }
-            }).
-            catch(function(ex) {
-                console.log('parsing failed', ex)
+            }).catch(function(ex) {
+                tips("error",ex);
             });
-        },
-        beforeMount: function () {
-            //console.log("beforeMount");
-        },
-        mounted: function () {
-            //console.log("mounted");
-        },
-        activated:function () {
-            //console.log("activated");
-
         }
     });
 });

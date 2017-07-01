@@ -67,7 +67,7 @@ func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) 
 	}
 
 	//add books download count
-	book := bookService.QueryBook(format.CaliBook)
+	_, book := bookService.QueryBook(format.CaliBook)
 	book.DownloadCount += 1
 	bookService.UpdateCaliBookDownload(book)
 
@@ -82,15 +82,19 @@ func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) 
 //query a book by bookid
 func (c Book) Book() revel.Result {
 	bookid := rcali.ValueOrDefault(c.Request.FormValue("bookid"), "0")
-	bookvo := models.CaliBookVo{CaliBook: bookService.QueryBook(bookid)}
-
-	if bookvo.Id != "" {
+	if has, book := bookService.QueryBook(bookid); has {
+		bookvo := models.CaliBookVo{CaliBook: book}
 		bookvo.Formats = formatService.QueryByCaliBook(bookvo.Id)
+		return c.RenderJSONP(
+			c.Request.FormValue("callback"),
+			models.NewOKApiWithInfo(bookvo),
+		)
+	} else {
+		return c.RenderJSONP(
+			c.Request.FormValue("callback"),
+			models.NewErrorApiWithMessageAndInfo(c.Message("nofindbook"), nil),
+		)
 	}
-	return c.RenderJSONP(
-		c.Request.FormValue("callback"),
-		models.NewOKApiWithInfo(bookvo),
-	)
 }
 
 //query a book's info from //https://developers.douban.com/wiki/?title=book_v2#get_isbn_book by bookid by bookname
@@ -110,14 +114,14 @@ func (c *Book) UploadBook() revel.Result {
 			c.addUploadRecord(format, user)
 			return c.RenderJSON(models.NewOKApiWithMessageAndInfo("add book success", format))
 		} else {
-			return c.RenderJSON(models.NewErrorApiWithInfo("add book error"))
+			return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("add book error",nil))
 
 		}
 	} else {
 		rcali.Logger.Debug("read file error :", err.Error())
-		return c.RenderJSON(models.NewErrorApiWithInfo(err))
+		return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(err.Error(),nil))
 	}
-	return c.RenderJSON(models.NewOKApi())
+	return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("file read error",nil))
 }
 
 func (c Book) addUploadRecord(format models.CaliFormat, user models.UserInfo) {

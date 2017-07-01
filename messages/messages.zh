@@ -23,6 +23,9 @@ emailOrUsernameIsTooLong=email或昵称太长
 ## public
 library=图书馆
 
+## book
+nofindbook=Not find book
+
 ## other
 uncatchedError=未知错误
 needLogin=需要登录

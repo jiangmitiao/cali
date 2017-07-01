@@ -160,11 +160,11 @@ func SendActiveMail(realto, key string) {
 		go func() {
 			subject := "Cali"
 			body := "<a href='http://" + domain + "/api/user/active?key=" + key + "'>http://" + domain + "/api/user/active?key=" + key + "</a>"
-			err :=SendToMail(useremail, password, host, realto, subject, body, "html")
-			if err!=nil {
-				Logger.Info("send email to "+realto+" status : "+err.Error())
-			}else {
-				Logger.Info("send email to "+realto+" status : success")
+			err := SendToMail(useremail, password, host, realto, subject, body, "html")
+			if err != nil {
+				Logger.Info("send email to " + realto + " status : " + err.Error())
+			} else {
+				Logger.Info("send email to " + realto + " status : success")
 			}
 
 		}()
