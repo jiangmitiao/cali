@@ -34,7 +34,7 @@ $(document).ready(function(){
                         $('#bookspage').pagination({
                             dataSource: function (done) {
                                 let tmp = [];
-                                for (var i = 0; i < json.info; i++) {
+                                for (let i = 0; i < json.info; i++) {
                                     tmp.push(i);
                                 }
                                 return done(tmp);

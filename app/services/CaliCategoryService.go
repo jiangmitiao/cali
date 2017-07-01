@@ -38,5 +38,21 @@ func (service CaliCategoryService) UpdateCategoryName(categoryId, categoryName s
 }
 
 func (service CaliCategoryService) DeleteById(categoryId string) {
+	if categoryId==models.DefaultCaliCategory.Id {
+		return
+	}
 	engine.Where("id = ?", categoryId).Delete(models.CaliCategory{})
+	engine.Where("cali_category = ?",categoryId).Delete(models.CaliBookCategory{})
+}
+
+func (service CaliCategoryService) DeleteBookCategoryByBookId(bookId string) {
+	engine.Where("cali_book = ?", bookId).Delete(models.CaliBookCategory{})
+}
+
+func (service CaliCategoryService) QueryByBookIdWithOutDefault(bookid string)(categories []models.CaliCategory)  {
+	engine.Where("id in  (select cali_category from cali_book_category where cali_book = ?)",bookid).And("id != ?","default").Find(&categories)
+	if len(categories)==0 {
+		engine.Where("id = ?","default").Find(&categories)
+	}
+	return
 }

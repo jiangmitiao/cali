@@ -23,9 +23,9 @@ func (service CaliFormatService) GetById(formatid string) (ok bool, format model
 	return
 }
 
-func (service CaliFormatService) QueryByCaliBook(bookid string) []models.CaliFormat {
+func (service CaliFormatService) QueryByBookId(bookId string) []models.CaliFormat {
 	formats := make([]models.CaliFormat, 0)
-	engine.Where("cali_book = ?", bookid).Find(&formats)
+	engine.Where("cali_book = ?", bookId).Find(&formats)
 	return formats
 }
 
@@ -63,6 +63,15 @@ func (service CaliFormatService)GetNoBookLink()(formats []models.CaliFormat)  {
 	return formats
 }
 
-func (service CaliFormatService) DeleteById(formatid string)  {
-	engine.Where("id = ?",formatid).Delete(models.CaliFormat{})
+func (service CaliFormatService) DeleteById(formatId string)  {
+	engine.Where("id = ?",formatId).Delete(models.CaliFormat{})
+}
+
+func (service CaliFormatService) DeleteByBookId(bookId string)  {
+	engine.Where("cali_book = ?",bookId).Delete(models.CaliFormat{})
+}
+
+func (service CaliFormatService) DeleteUserUploadDownload(formatId string)  {
+	engine.Where("cali_format = ?",formatId).Delete(models.UserInfoBookUploadLink{})
+	engine.Where("cali_format = ?",formatId).Delete(models.UserInfoBookDownloadLink{})
 }

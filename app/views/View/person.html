@@ -32,6 +32,7 @@
                         <button v-if="sysconfigseen" @click="changeseen('sysconfig')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysconfig')"></span></button>
                         <button v-if="sysstatusseen" @click="changeseen('sysstatus')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysstatus')"></span></button>
                         <button v-if="categoryseen" @click="changeseen('categoryseen')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.categories')"></span></button>
+                        <button v-if="bookseen" @click="changeseen('bookseen')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.bookname')"></span></button>
                         <button @click="changeseen('download')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.download')"></span></button>
                         <button @click="changeseen('upload')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></button>
                         <button @click="changeseen('changeuserinfo')" class="list-group-item"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></button>
@@ -85,6 +86,16 @@
                     </div>
                 </div>
 
+                <div v-show="needseen('bookseen')" class="panel panel-default">
+                    <div class="panel-heading"><span v-text="$t('lang.bookname')"></span></div>
+                    <div class="panel-body">
+                        <bookeditdiv v-bind:books="books" v-bind:categorylist="categories" v-on:updatebook="updatebook" v-on:deletebook="deletebook"></bookeditdiv>
+                        <div class="col-md-6 col-md-offset-3 col-xs-12">
+                            <div id="bookspage" class="col-center-block"> </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div v-if="needseen('download')" class="panel panel-default">
                     <div class="panel-heading"><span v-text="$t('lang.download')"></span></div>
                     <div class="panel-body">
@@ -132,7 +143,7 @@
                                     <input type="text" class="form-control" id="author" name="author" :value="uploadbook.author">
                                 </div>
                             </div>
-                            <categoriesselectdiv v-bind:categorylist="categories"></categoriesselectdiv>
+                            <!--<categoriesselectdiv v-bind:categorylist="categories"></categoriesselectdiv>-->
                             <div class="form-group">
                                 <label for="Search" class="col-sm-2 control-label"><span >Search</span>:</label>
                                 <div class="col-sm-10">

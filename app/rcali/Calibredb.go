@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"mime/multipart"
+	"io/ioutil"
 )
 
 /**
@@ -33,26 +35,41 @@ func calibredbPath() string {
 	return ""
 }
 
-func GetRealBookInfo(bookpath string) (books.Ebook, bool) {
-	ebook := books.GetEBook(bookpath)
+func WriteBook(file multipart.File,bookfilepath string)error  {
+	defer file.Close()
+	b, _ := ioutil.ReadAll(file)
+	if len(b)==0 {
+		Logger.Error("==== upload error size is 0 "+bookfilepath)
+	}
+	err :=ioutil.WriteFile(bookfilepath, b, 0755)
+	if err != nil {
+		os.Remove(bookfilepath)
+	}
+	return err
+}
+
+func GetRealBookInfo(bookfilepath string) (books.Ebook, bool) {
+	ebook := books.GetEBook(bookfilepath)
 	if ebook == nil {
-		Logger.Error("==== can not parse "+bookpath)
+		Logger.Error("==== can not parse "+bookfilepath)
 		return nil, false
 	} else {
 		return ebook, true
 	}
 }
 
-func AddBook(bookpath string) (books.Ebook, string) {
-	ebook := books.GetEBook(bookpath)
+func AddBook(bookfilepath string) (books.Ebook, string) {
+	ebook := books.GetEBook(bookfilepath)
 	if ebook != nil {
 		bookspath, _ := GetBooksPath()
-		filename := path.Join(bookspath, uuid.New().String()+filepath.Ext(bookpath))
-		if err := CopyFile(bookpath, filename); err == nil {
+		filename := path.Join(bookspath, uuid.New().String()+filepath.Ext(bookfilepath))
+		if err := CopyFile(bookfilepath, filename); err == nil {
+			os.Remove(bookfilepath)
 			return ebook, filename
 		}
 	}
-	Logger.Error("==== can not parse "+bookpath)
+	Logger.Error("==== can not parse "+bookfilepath)
+	os.Remove(bookfilepath)
 	return nil, ""
 }
 

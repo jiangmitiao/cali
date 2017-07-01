@@ -475,6 +475,56 @@ $(document).ready(function(){
         }
     });
 
+    // 定义名为 categoryselectdiv 的新组件
+    Vue.component('categoryselectdiv', {
+        // categoryselectdiv 组件现在接受一个
+        // 这个属性名为 categorylist。
+        props: ['categorylist','category'],
+        template: '\
+            <select class="form-control" v-model="category.id">\
+                <option  v-for="item in categorylist" :value="item.id"><span v-text=item.category></span></option>\
+            </select>\
+        '
+    });
+    // 定义名为 bookeditdiv 的新组件
+    Vue.component('bookeditdiv', {
+        // bookeditdiv 组件现在接受一个
+        // 这个属性名为 books。
+        props: ['books','categorylist'],
+        template: '\
+        <table class="table">\
+            <thead>\
+                <tr>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                    <th>#</th>\
+                </tr>\
+            </thead>\
+            <tbody>\
+                <tr v-for="item in books" v-bind:categorylist="categorylist">\
+                    <td><input type="text" maxlength="12" v-model="item.title" class="form-control"></td>\
+                    <td><input type="text" maxlength="12" v-model="item.author" class="form-control"></td>\
+                    <td><input type="text" maxlength="12" v-model="item.douban_id" class="form-control"></td>\
+                    <td><categoryselectdiv v-bind:categorylist="categorylist" v-bind:category="item.categories[0]"></categoryselectdiv></td>\
+                    <td><a class="btn btn-warning" @click="updatebook(item)">update</a></td>\
+                    <td><a class="btn btn-danger" @click="deletebook(item)">delete</a></td>\
+                </tr>\
+            </tbody>\
+        </table>\
+        ',
+        methods:{
+            updatebook:function (c) {
+                this.$emit('updatebook',c);
+            },
+            deletebook:function (c) {
+                this.$emit('deletebook',c);
+            }
+        }
+    });
+
 
     //tips
     // 定义名为 categorydiv 的新组件

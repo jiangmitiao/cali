@@ -132,6 +132,11 @@ func (service CaliBookService) GetBookOrInsertByTitleAndAuthor(title, author str
 	}
 }
 
+func (service CaliBookService) GetBookByTitleAndAuthor(title, author string) (book models.CaliBook) {
+	engine.Where("title = ?", title).And("author = ?", author).Get(&book)
+	return
+}
+
 func (service CaliBookService) UpdateCaliBook(book models.CaliBook) {
 	book.UpdatedAt = time.Now().Unix()
 	engine.ID(book.Id).Update(book)
@@ -149,4 +154,8 @@ func (service CaliBookService) AddBookCategory(bookid, categoryid string) {
 		bc := models.CaliBookCategory{Id: uuid.New().String(), CaliBook: bookid, CaliCategory: categoryid, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
 		engine.InsertOne(bc)
 	}
+}
+
+func (service CaliBookService)DeleteById(bookId string)  {
+	engine.Where("id = ?",bookId).Delete(models.CaliBook{})
 }

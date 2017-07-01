@@ -34,6 +34,11 @@ $(document).ready(function(){
             categories:[],
             newcategory:{},
 
+            //book edit
+            bookseen:false,
+            books:[],
+
+
             //download
             downloadstats:{},
 
@@ -387,6 +392,114 @@ $(document).ready(function(){
                 }).catch(function(ex) {
                     tips("error", ex);
                 });
+            },
+            showbooks:function () {
+                //books展示分页
+                this.books = [];
+                let form = commonData();
+                form.append("categoryid", "default");
+                fetch('/api/book/bookscount', {method: 'post', body: form}).then(function (response) {
+                    if (response.redirected) {
+                        let tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        return tmpJson;
+                    }else {
+                        return response.json();
+                    }
+                }).then(function (json) {
+                    if (json.statusCode === 200) {
+                        $('#bookspage').pagination({
+                            dataSource: function (done) {
+                                let tmp = [];
+                                for (let i = 0; i < json.info; i++) {
+                                    tmp.push(i);
+                                }
+                                return done(tmp);
+                            },
+                            pageRange: 1,
+                            totalNumber: json.info,
+                            pageSize: 2,
+                            showGoInput: true,
+                            showGoButton: true,
+                            callback: function (data, pagination) {
+                                let form = commonData();
+                                form.append("start", _.min(data));
+                                form.append("limit", data.length);
+                                form.append("categoryid", "default");
+                                form.append("more","more");
+                                fetch('/api/book/books', {method: 'post', body: form}).then(function (response) {
+                                    if (response.redirected) {
+                                        let tmpJson = {};
+                                        tmpJson.statusCode = 500;
+                                        return tmpJson;
+                                    }else {
+                                        return response.json();
+                                    }
+                                }).then(function (json) {
+                                    if (json.statusCode === 200) {
+                                        app.books = json.info;
+                                    }else {
+                                        tips("error","server error");
+                                    }
+                                }).catch(function (ex) {
+                                    tips("error",ex);
+                                });
+                            }
+                        });
+                    }
+                }).catch(function (ex) {
+                    tips("error",ex);
+                });
+            },
+            deletebook:function (c) {
+                let form = commonData();
+                form.append("bookId",c.id);
+                fetch('/api/book/delete',{method:'post',body:form}).then(function(response) {
+                    if (response.redirected){
+                        let tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        tmpJson.message = "role action setting error !";
+                        return tmpJson;
+                    }else {
+                        return response.json();
+                    }
+                }).then(function(json) {
+                    if (json.statusCode ===200){
+                        app.showbooks();
+                        tips("info","delete book success");
+                    }else {
+                        tips("error",json.message);
+                    }
+                }).catch(function(ex) {
+                    tips("error", ex);
+                });
+            },
+            updatebook:function (c) {
+                let form = commonData();
+                form.append("bookId",c.id);
+                form.append("bookTitle",c.title);
+                form.append("bookAuthor",c.author);
+                form.append("bookDoubanId",c.douban_id);
+                form.append("bookCategoryId",c.categories[0].id);
+                fetch('/api/book/update',{method:'post',body:form}).then(function(response) {
+                    if (response.redirected){
+                        let tmpJson = {};
+                        tmpJson.statusCode = 500;
+                        tmpJson.message = "role action setting error !";
+                        return tmpJson;
+                    }else {
+                        return response.json();
+                    }
+                }).then(function(json) {
+                    if (json.statusCode ===200){
+                        tips("info","update book success");
+                        app.showbooks();
+                    }else {
+                        tips("error",json.message);
+                    }
+                }).catch(function(ex) {
+                    tips("error", ex);
+                });
             }
         },
         computed: {
@@ -419,7 +532,7 @@ $(document).ready(function(){
             }).then(function(text) {
                 app.discover = text;
             }).catch(function(ex) {
-                tips("error",'parsing failed');
+                tips("error",ex);
             });
 
 
@@ -537,6 +650,25 @@ $(document).ready(function(){
                 if (json.statusCode ===200){
                     app.categoryseen = true;
                     app.showcategories();
+                }
+            }).catch(function(ex) {
+                tips("error", ex);
+            });
+
+            //是否显示book edit
+            fetch('/api/sysstatus/status',{method:'post',body:commonData()}).then(function(response) {
+                if (response.redirected){
+                    app.bookseen = false;
+                    let tmpJson = {};
+                    tmpJson.statusCode = 500;
+                    //app.showbooks();
+                    return tmpJson;
+                }
+                return response.json();
+            }).then(function(json) {
+                if (json.statusCode ===200){
+                    app.bookseen = true;
+                    app.showbooks();
                 }
             }).catch(function(ex) {
                 tips("error", ex);
