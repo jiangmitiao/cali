@@ -255,7 +255,7 @@ func (c *Book)Update()revel.Result  {
 	bookId :=rcali.ValueOrDefault(c.Request.FormValue("bookId"),"0")
 	bookTitle :=rcali.ValueOrDefault(c.Request.FormValue("bookTitle"),"0")
 	bookAuthor :=rcali.ValueOrDefault(c.Request.FormValue("bookAuthor"),"0")
-	bookDoubanId :=rcali.ValueOrDefault(c.Request.FormValue("bookDoubanId"),"0")
+	bookDoubanId :=rcali.ValueOrDefault(c.Request.FormValue("bookDoubanId"),"")
 	bookCategoryId :=rcali.ValueOrDefault(c.Request.FormValue("bookCategoryId"),"0")
 	if has,book :=bookService.QueryBook(bookId);has{
 		if newBook :=bookService.GetBookByTitleAndAuthor(bookTitle,bookAuthor);newBook.Id!=""{//has
