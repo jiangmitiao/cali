@@ -54,7 +54,7 @@ $(document).ready(function(){
                                     <li role="separator" class="divider"></li>\
                                     <li v-if="!islogin"><a href="/login"><span v-text="$t(\'lang.login\')"></span></a></li>\
                                     <li v-if="!islogin"><a href="/signup"><span v-text="$t(\'lang.signup\')"></span></a></li>\
-                                    <li v-if="islogin"><a @click="logout"><span v-text="$t(\'lang.logout\')"></span></a></li>\
+                                    <li v-if="islogin"><a @click="logout" role="button"><span v-text="$t(\'lang.logout\')"></span></a></li>\
                                 </ul>\
                             </li>\
                         </ul>\
@@ -142,24 +142,28 @@ $(document).ready(function(){
         // 这个属性名为 book。
         props: ['book'],
         template: '\
-        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">\
-            <div class="content-box">\
+        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6 book">\
+            <div class="panel panel-default">\
+                <div class="panel-heading">\
+                    <a :href="\'/book?bookId=\'+book.id" target="_blank">\
+                        <nobr v-text="maxstring(book.title,10)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></nobr>\
+                    </a>\
+                </div>\
                 <div class="panel-body text-center">\
                     <a :href="\'/book?bookId=\'+book.id" target="_blank" class="text-center">\
-                        <canvas :id="book.id" :src="fakePic(toJson(book.douban_json).image,book.id)"></canvas>\
+                        <img :id="book.id" width="100px" height="150px" :src="toJson(book.douban_json).image"/>\
                     </a>\
-                    <p class="text-center">\
-                        <a :href="\'/book?bookId=\'+book.id" target="_blank">\
-                            <nobr v-text="maxstring(book.title,5)" :title="book.title" style="word-break: keep-all;white-space: nowrap;"></nobr>\
-                        </a>\
-                    </p>\
                     <p class="text-center">\
                         <a :href="\'/search?q=\'+book.author" target="_blank">\
                         <nobr v-text="maxstring(book.author,5)"></nobr>\
                         </a>\
                     </p>\
-                    <p class="text-center badge" style="background-color: #2c3742"><span v-text="$t(\'lang.rating\')"></span>:<span  v-text="toJson(book.douban_json).rating.average"></span></p>\
-                    <br>\
+                </div>\
+                <div class="panel-footer" >\
+                    <p class="text-center">\
+                        <span class="text-center badge" style="background-color: #2c3742"><span class="glyphicon glyphicon-arrow-down"></span><span v-text="tokmg(book.download_count)"></span></span>\
+                        <span class="text-center badge" style="background-color: #2c3742"><span class="glyphicon glyphicon-star"></span><span  v-text="toJson(book.douban_json).rating.average"></span></span>\
+                    </p>\
                 </div>\
             </div>\
         </div>\
@@ -178,25 +182,27 @@ $(document).ready(function(){
                     return JSON.parse(str)
                 }catch (e){
                     let json = {};
-                    json.image = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
+                    json.image = "";
                     json.rating = {};
                     json.rating.average = 0.0;
                     return json;
                 }
             },
-            fakePic:function (src,id) {
-                let img = new Image();
-                img.src = src;
-                img.onload = function(){
-                    myCanvas = document.getElementById(id);
-                    myCanvas.width = 100;
-                    myCanvas.height = 150;
-                    let context = myCanvas.getContext('2d');
-                    context.drawImage(img, 0, 0);
-                    //var imgdata = context.getImageData(0, 0, img.width, img.height);
-                    // 处理imgdata
-                };
-                return "src"
+            fakePic:function (src,book) {
+                if (src.length === 0){
+                        return DrawCanvasByText(book.title+"\n"+book.author,"teoo",100,150);
+                }else {
+                        return DrawCanvasByImg(src,"teoo",100,150);
+                    }
+                return "src";
+            },
+            tokmg:function(num){
+                if (num >=1000){
+                    return parseInt(parseFloat(num)/(1000.0),10)+"k";
+                }else if(num >=1000*1000) {
+                    return parseInt(parseFloat(num)/(1000.0*1000.0),10)+"m";
+                }
+                return parseInt(parseFloat(num));
             }
         }
     });
@@ -229,14 +235,14 @@ $(document).ready(function(){
         // 这个属性名为 book。
         props: ['book'],
         template: '\
-        <div class="content-box-large">\
+        <div class="panel panel-default">\
             <div class="panel-heading">\
-                    <div class="panel-title"><span v-text="book.title"></span></div>\
+                    <span v-text="book.title"></span>\
             </div>\
             <div class="panel-body">\
                 <div class="row">\
                     <div class="col-md-3 col-md-offset-1">\
-                        <img width="100%" height="100%" :src="toJson(book.douban_json).images.large"/>\
+                        <img :id="book.id" :src="toJson(book.douban_json).images.large"/>\
                     </div>\
                     <div class="col-md-5">\
                         <p <span v-text="$t(\'lang.bookname\')"></span>: <span v-text="book.title"></span></p>\
@@ -253,10 +259,16 @@ $(document).ready(function(){
                     </div>\
                 </div>\
                 <div class="row">\
-                    <div class="col-md-10 col-md-offset-1" v-for="item in book.formats">\
-                        <a @click="download(item)" class="btn"><h4 v-text="item.title+\'.\'+item.format"></h4></a>\
-                        <a v-if="item.format==\'EPUB\'" :href="\'/read?formatid=\'+item.id" target="_blank"><span v-text="$t(\'lang.read\')"></span></a></p>\
-                    </div>\
+                     <ul class="list-group col-md-10 col-md-offset-1">\
+                        <li class="list-group-item" v-for="item in book.formats">\
+                            <a @click="download(item)" class="btn btn-success"><span v-text="item.title+\'-\'+item.author+\'.\'+item.format"></span></a>\
+                            \
+                            <span class="badge"><span class="glyphicon glyphicon-arrow-down"></span><span v-text="item.download_count"></span></span>\
+                            <span class="badge"><span class="glyphicon glyphicon-arrow-up glyphicon-time"></span><span v-text="formatdate(item.created*1000)"></span></span>\
+                        <a v-if="item.format==\'EPUB\' && islogin()" :href="\'/read?formatid=\'+item.id" target="_blank"><span v-text="$t(\'lang.read\')"></span></a>\
+                        <span v-if="tagsformat(item.tag).length!=0" class="badge"><span class="glyphicon glyphicon-tags"></span>&nbsp;<span v-text="tagsformat(item.tag)"></span></span>\
+                        </li>\
+                     </ul>\
                 </div>\
             </div>\
         </div>\
@@ -274,14 +286,14 @@ $(document).ready(function(){
                     return JSON.parse(str)
                 }catch (e){
                     let json = {};
-                    json.image = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
+                    json.image = "";
                     json.rating = {};
                     json.rating.average = 0.0;
                     json.pubdate = "0";
                     json.isbn13 = "0";
                     json.format = "";
                     json.images = {};
-                    json.images.large = "https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png";
+                    json.images.large = "";
                     return json;
                 }
             },
@@ -291,6 +303,39 @@ $(document).ready(function(){
                     setTimeout("window.location.href = '/login'",3000);
                 }else {
                     window.location.href = "/api/book/bookdown?formatId="+item.id+"&session="+store.get("session");
+                }
+            },
+            fakePic:function (src,book) {
+                if (src.length === 0){
+                    setTimeout(function () {
+                        DrawCanvasByText(book.title+"\n"+book.author,book.id,200,300);
+                    },100);
+                }else {
+                    setTimeout(function () {
+                        DrawCanvasByImg(src,book.id,200,300);
+                    },100);
+                }
+
+                return "src";
+            },
+            tagsformat:function (tags) {
+                let tmpTags = tags.split(",");
+                let result = [];
+                for (let tmp in tmpTags){
+                    let anothers = tmpTags[tmp].split("，");
+                    for (let another in anothers){
+                        if (_(anothers[another]).chain().trim().value().length !==0){
+                            result.push(anothers[another]);
+                        }
+                    }
+                }
+                return result.join(",")
+            },
+            islogin:function () {
+                if (store.get("session") !==undefined && store.get("session")!=="" && store.get("session")!=="watcher"){
+                    return true;
+                }else {
+                    return false;
                 }
             }
         }
@@ -529,10 +574,10 @@ $(document).ready(function(){
 
 
     //tips
-    // 定义名为 categorydiv 的新组件
+    // 定义名为 tipsmodaldiv 的新组件
     Vue.component('tipsmodaldiv', {
-        // categorydiv 组件现在接受一个
-        // 这个属性名为 category。
+        // tipsmodaldiv 组件现在接受一个
+        // 这个属性名为 。
         props: [],
         template: '\
        <div class="modal fade" id="tipsModal" tabindex="-1" role="dialog" aria-labelledby="tipsModalLabel">\

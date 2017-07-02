@@ -2,11 +2,12 @@
 <html xmlns:v-show="http://www.w3.org/1999/xhtml">
 <head>
     <title>Cali {{msg . "person"}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
 
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
     <link href="/public/v/css/styles.css" rel="stylesheet">
+    <link href="/public/v/css/cali.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,20 +26,18 @@
     <div class="page-content">
         <div class="row">
             <div class="col-md-3">
-                <div class="sidebar content-box" style="display: block;">
-                    <div class="list-group">
-                        <button @click="changeseen('discover')" class="list-group-item"><i class="glyphicon glyphicon-eye-open"></i><span v-text="$t('lang.discover')"></span></button>
-                        <button v-if="userlistseen" @click="changeseen('userlist')" class="list-group-item"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.userlist')"></span></button>
-                        <button v-if="sysconfigseen" @click="changeseen('sysconfig')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysconfig')"></span></button>
-                        <button v-if="sysstatusseen" @click="changeseen('sysstatus')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysstatus')"></span></button>
-                        <button v-if="categoryseen" @click="changeseen('categoryseen')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.categories')"></span></button>
-                        <button v-if="bookseen" @click="changeseen('bookseen')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.bookname')"></span></button>
-                        <button @click="changeseen('download')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.download')"></span></button>
-                        <button @click="changeseen('upload')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></button>
-                        <button @click="changeseen('changeuserinfo')" class="list-group-item"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></button>
-                        <button @click="changeseen('changepassword')" class="list-group-item list-group-item-danger"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.changepassword')"></span></button>
+                <div class="list-group">
+                    <button @click="changeseen('discover')" class="list-group-item"><i class="glyphicon glyphicon-eye-open"></i><span v-text="$t('lang.discover')"></span></button>
+                    <button v-if="userlistseen" @click="changeseen('userlist')" class="list-group-item"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.userlist')"></span></button>
+                    <button v-if="sysconfigseen" @click="changeseen('sysconfig')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysconfig')"></span></button>
+                    <button v-if="sysstatusseen" @click="changeseen('sysstatus')" class="list-group-item"><i class="glyphicon glyphicon-cog"></i> <span v-text="$t('lang.sysstatus')"></span></button>
+                    <button v-if="categoryseen" @click="changeseen('categoryseen')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.categories')"></span></button>
+                    <button v-if="bookseen" @click="changeseen('bookseen')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.bookname')"></span></button>
+                    <button @click="changeseen('download')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.download')"></span></button>
+                    <button @click="changeseen('upload')" class="list-group-item"><i class="glyphicon glyphicon-star"></i> <span v-text="$t('lang.upload')"></span></button>
+                    <button @click="changeseen('changeuserinfo')" class="list-group-item"><i class="glyphicon glyphicon-user"></i> <span v-text="$t('lang.changeuserinfo')"></span></button>
+                    <button @click="changeseen('changepassword')" class="list-group-item list-group-item-danger"><i class="glyphicon glyphicon-eye-close"></i> <span v-text="$t('lang.changepassword')"></span></button>
 
-                    </div>
                 </div>
             </div>
             <div class="col-md-9">
@@ -122,17 +121,17 @@
                                     <input type="text" maxlength="64" class="form-control" id="tag" name="tag">
                                 </div>
                             </div>
-                            <div v-if="!uploadfileconfirmseen" class="form-group">
+                            <div v-if="!uploadFileConfirmSeen" class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <input type="button" :value="$t('lang.upload')" class="btn btn-default" @click="uploadfile">
+                                    <input type="button" :disabled="disabledUpload" :value="disabledUpload?'Waiting...':$t('lang.upload')" class="btn btn-default" @click="uploadfile">
                                 </div>
                             </div>
 
                         </form>
 
-                        <form v-if="uploadfileconfirmseen" id="uploadfileconfirm" method="post" action="/api/book/uploadbookconfirm" enctype="multipart/form-data" class="form-horizontal">
+                        <form v-if="uploadFileConfirmSeen" id="uploadfileconfirm" method="post" action="/api/book/uploadbookconfirm" enctype="multipart/form-data" class="form-horizontal">
                             <input type="hidden" name="session" :value="session">
-                            <input type="hidden" name="formatid" :value="formatid">
+                            <input type="hidden" name="formatId" :value="formatId">
                             <div class="form-group">
                                 <label for="title" class="col-sm-2 control-label"><span v-text="$t('lang.bookname')"></span>:</label>
                                 <div class="col-sm-10">
@@ -161,7 +160,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-10">
-                                    <input type="button" :value="$t('lang.submit')" class="btn btn-default" @click="uploadfileconfirm">
+                                    <input type="button" :disabled="disabledConfirm" :value="disabledConfirm?'Waiting...':$t('lang.submit')" class="btn btn-default" @click="uploadfileconfirm">
                                 </div>
                             </div>
 
@@ -232,6 +231,7 @@
 
     <tipsmodaldiv></tipsmodaldiv>
 </div>
+<script src="https://cdn.bootcss.com/pixi.js/4.5.3/pixi.min.js"></script>
 <script src="https://cdn.bootcss.com/store.js/1.3.20/store.min.js"></script>
 <script src="https://cdn.bootcss.com/fetch/2.0.3/fetch.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>

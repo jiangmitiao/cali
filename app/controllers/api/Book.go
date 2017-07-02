@@ -175,8 +175,8 @@ func (c *Book) UploadBookConfirm() revel.Result {
 	bookService.AddBookCategory(book.Id, models.DefaultCaliCategory.Id)
 
 	//format
-	formatid := rcali.ValueOrDefault(c.Request.FormValue("formatid"), "")
-	formatService.UpdateBookid(formatid, book.Id)
+	formatId := rcali.ValueOrDefault(c.Request.FormValue("formatId"), "")
+	formatService.UpdateBookid(formatId, book.Id)
 
 	return c.RenderJSON(models.NewOKApi())
 }

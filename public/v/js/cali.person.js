@@ -44,9 +44,11 @@ $(document).ready(function(){
             downloadstats:{},
 
             //upload
-            uploadfileconfirmseen:false,
-            formatid:"",
-            uploadbook:{}
+            uploadFileConfirmSeen:false,
+            formatId:"",
+            uploadbook:{},
+            disabledUpload:false,
+            disabledConfirm:false
         },
         methods: {
             changeseen:function (e) {
@@ -71,6 +73,7 @@ $(document).ready(function(){
                     tips("info","please open file or choose .epub/.mobi");
                     return;
                 }
+                app.disabledUpload = true;
                 let form = new FormData(document.getElementById("uploadfile"));
                 form.append('session',store.get("session"));
                 fetch("/api/book/uploadbook", {method: "post",body: form}).then(function(response) {
@@ -84,20 +87,24 @@ $(document).ready(function(){
                     }
                 }).then(function(json) {
                     if (json.statusCode ===200){
-                        app.formatid = json.info.id;
+                        app.formatId = json.info.id;
                         app.uploadbook.title = _(json.info.title).chain().trim().value();
                         app.uploadbook.author = _(json.info.author).chain().trim().value();
                         app.uploadbook.douban_id = "";
-                        app.uploadfileconfirmseen = true;
+                        app.uploadFileConfirmSeen = true;
+                        app.disabledUpload = false;
                     }else {
                         tips("error",json.message);
+                        app.disabledUpload = false;
                     }
                 }).catch(function(ex) {
                     tips("error",ex);
+                    app.disabledUpload = false;
                 });
             },
             //上传文件确认
             uploadfileconfirm :function () {
+                app.disabledConfirm = true;
                 let form = new FormData(document.getElementById("uploadfileconfirm"));
                 form.append('session',store.get("session"));
                 fetch("/api/book/uploadbookconfirm", {method: "post",body: form}).then(function(response) {
@@ -113,12 +120,16 @@ $(document).ready(function(){
                     if (json.statusCode ===200){
                         tips("info","upload success!");
                         document.getElementById("book").value = "";
-                        app.uploadfileconfirmseen = false;
+                        app.uploadFileConfirmSeen = false;
+
+                        app.disabledConfirm = false;
                     }else {
                         tips("error",json.message);
+                        app.disabledConfirm = false;
                     }
                 }).catch(function(ex) {
                     tips("error",ex);
+                    app.disabledConfirm = false;
                 });
             },
             //搜索用户
@@ -600,7 +611,8 @@ $(document).ready(function(){
             }).then(function(text) {
                 app.discover = text;
             }).catch(function(ex) {
-                tips("error",ex);
+                app.discover = url;
+                //tips("error",ex);
             });
 
 

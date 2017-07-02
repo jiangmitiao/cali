@@ -29,8 +29,8 @@ func (service CaliFormatService) QueryByBookId(bookId string) []models.CaliForma
 	return formats
 }
 
-func (service CaliFormatService) UpdateBookid(formatid, bookid string) bool {
-	service.UpdateBookFormatCaliBook(models.CaliFormat{Id: formatid, CaliBook: bookid})
+func (service CaliFormatService) UpdateBookid(formatId, bookId string) bool {
+	service.UpdateBookFormatCaliBook(models.CaliFormat{Id: formatId, CaliBook: bookId})
 	return true
 }
 
