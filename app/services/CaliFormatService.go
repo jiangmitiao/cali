@@ -57,21 +57,21 @@ func (service CaliFormatService) GetFormatBySize(size int64) (format models.Cali
 	return
 }
 
-func (service CaliFormatService)GetNoBookLink()(formats []models.CaliFormat)  {
-	formats = make([]models.CaliFormat,0)
-	engine.Where("cali_book = ?","").Find(&formats)
+func (service CaliFormatService) GetNoBookLink() (formats []models.CaliFormat) {
+	formats = make([]models.CaliFormat, 0)
+	engine.Where("cali_book = ?", "").Find(&formats)
 	return formats
 }
 
-func (service CaliFormatService) DeleteById(formatId string)  {
-	engine.Where("id = ?",formatId).Delete(models.CaliFormat{})
+func (service CaliFormatService) DeleteById(formatId string) {
+	engine.Where("id = ?", formatId).Delete(models.CaliFormat{})
 }
 
-func (service CaliFormatService) DeleteByBookId(bookId string)  {
-	engine.Where("cali_book = ?",bookId).Delete(models.CaliFormat{})
+func (service CaliFormatService) DeleteByBookId(bookId string) {
+	engine.Where("cali_book = ?", bookId).Delete(models.CaliFormat{})
 }
 
-func (service CaliFormatService) DeleteUserUploadDownload(formatId string)  {
-	engine.Where("cali_format = ?",formatId).Delete(models.UserInfoBookUploadLink{})
-	engine.Where("cali_format = ?",formatId).Delete(models.UserInfoBookDownloadLink{})
+func (service CaliFormatService) DeleteUserUploadDownload(formatId string) {
+	engine.Where("cali_format = ?", formatId).Delete(models.UserInfoBookUploadLink{})
+	engine.Where("cali_format = ?", formatId).Delete(models.UserInfoBookDownloadLink{})
 }

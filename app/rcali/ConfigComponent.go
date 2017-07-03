@@ -74,6 +74,10 @@ func (d Log) Error(a ...interface{}) {
 	fmt.Println("Error:", a)
 }
 
+func (d Log) Printf(format string, a ...interface{}) {
+	fmt.Printf(format, a)
+}
+
 var Logger = Log("")
 
 // Home returns the home directory for the executing user.

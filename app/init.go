@@ -5,6 +5,8 @@ import (
 	"github.com/jiangmitiao/cali/app/rcali"
 	"github.com/jiangmitiao/cali/app/services"
 	"github.com/revel/revel"
+	"net/http"
+	_ "net/http/pprof"
 	"time"
 )
 
@@ -44,6 +46,7 @@ func init() {
 
 	revel.OnAppStart(InitDebug)
 	revel.OnAppStart(InitDB)
+	revel.OnAppStart(Monitor)
 }
 
 // HeaderFilter adds common security headers
@@ -65,6 +68,12 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
 //		// Dev mode
 //	}
 //}
+
+func Monitor() {
+	go func() {
+		http.ListenAndServe("0.0.0.0:6060", nil)
+	}()
+}
 
 //init db on first view
 func InitDB() {
