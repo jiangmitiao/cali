@@ -13,7 +13,7 @@ type SysStatusService struct {
 
 func (service SysStatusService) Get(key string) models.SysStatus {
 	sysStatus := models.SysStatus{}
-	engine.Where("key = ?", key).Get(&sysStatus)
+	engine.Where("ikey = ?", key).Get(&sysStatus)
 	return sysStatus
 }
 
@@ -25,7 +25,7 @@ func (service SysStatusService) QuerySysStatus(limit, start int) []models.SysSta
 
 func (service SysStatusService) UpdateStatus(sysStatus models.SysStatus) bool {
 	sysStatus.UpdatedAt = time.Now().Unix()
-	_, err := engine.Id(sysStatus.Id).Cols("key", "value", "updated").Update(sysStatus)
+	_, err := engine.Id(sysStatus.Id).Cols("ikey", "value", "updated").Update(sysStatus)
 	if err == nil {
 		return true
 	} else {

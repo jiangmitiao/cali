@@ -46,7 +46,7 @@ func init() {
 
 	revel.OnAppStart(InitDebug)
 	revel.OnAppStart(InitDB)
-	revel.OnAppStart(Monitor)
+	//revel.OnAppStart(Monitor)
 }
 
 // HeaderFilter adds common security headers
@@ -77,14 +77,24 @@ func Monitor() {
 
 //init db on first view
 func InitDB() {
-	if dbPath, found := rcali.GetSqliteDbPath(); found {
-		if ok, err := services.DbInit(dbPath); ok {
-			rcali.Logger.Info("---------------------dbok---------------------")
-		} else {
+	if mysqlEnable, mysqlEnableFund := rcali.MysqlEnable(); mysqlEnableFund && mysqlEnable {
+		//mysql
+		mysqlDsn, _ := rcali.MysqlDsn()
+		if err := services.DbInitByMysql(mysqlDsn); err != nil {
+			panic(err)
+		}
+	} else if dbPath, dbPathFund := rcali.GetSqliteDbPath(); dbPathFund {
+		if err := services.DbInitBySqlite(dbPath); err != nil {
 			panic(err)
 		}
 	} else {
 		panic(errors.New("sqlite path not found"))
+	}
+
+	if ok, err := services.DbInit(); ok {
+		rcali.Logger.Info("---------------------dbok---------------------")
+	} else {
+		panic(err)
 	}
 }
 

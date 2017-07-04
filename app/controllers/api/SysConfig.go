@@ -26,7 +26,7 @@ func (c SysConfig) Update() revel.Result {
 	value := c.Request.FormValue("value")
 	sysConfig := models.SysConfig{
 		Id:    id,
-		Key:   key,
+		Ikey:  key,
 		Value: value,
 	}
 	if ok := sysConfigService.UpdateConfig(sysConfig); ok {

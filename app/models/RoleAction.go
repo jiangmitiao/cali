@@ -1,11 +1,11 @@
 package models
 
 type RoleAction struct {
-	Id         string `json:"id" xorm:"pk 'id'"`
-	Role       string `json:"role" xorm:"varchar(32) 'role'"`
-	Controller string `json:"controller" xorm:"'controller'"`
-	Method     string `json:"method" xorm:"'method'"`
-	Comments   string `json:"comments" xorm:"'comments'"` //zhu shi
+	Id         string `json:"id" xorm:"pk varchar(64) 'id'"`
+	Role       string `json:"role" xorm:"varchar(64) notnull 'role'"`
+	Controller string `json:"controller" xorm:"varchar(64) notnull 'controller'"`
+	Method     string `json:"method" xorm:"varchar(64) notnull 'method'"`
+	Comments   string `json:"comments" xorm:"varchar(64) notnull 'comments'"` //zhu shi
 }
 
 func (RoleAction) TableName() string {

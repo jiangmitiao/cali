@@ -49,9 +49,9 @@ func (service CaliBookService) QueryBooks(limit, start int, categoryid string) [
 //}
 
 //book's file
-func (service CaliBookService) QueryBookFileByte(formatid string) []byte {
+func (service CaliBookService) QueryBookFileByte(formatId string) []byte {
 	format := models.CaliFormat{}
-	engine.Where("id=?", formatid).Get(&format)
+	engine.Where("id = ?", formatId).Get(&format)
 	if bookpath, ok := rcali.GetBooksPath(); ok {
 		bytes, _ := ioutil.ReadFile(path.Join(bookpath, format.FileName))
 		return bytes
@@ -147,11 +147,11 @@ func (service CaliBookService) UpdateCaliBookDownload(book models.CaliBook) {
 	engine.ID(book.Id).Cols("download_count", "updated").Update(book)
 }
 
-func (service CaliBookService) AddBookCategory(bookid, categoryid string) {
+func (service CaliBookService) AddBookCategory(bookId, categoryId string) {
 	tmp := models.CaliBookCategory{}
-	engine.Where("cali_book ? ", bookid).And("cali_category = ?", categoryid).Get(tmp)
+	engine.Where("cali_book = ? ", bookId).And("cali_category = ?", categoryId).Get(tmp)
 	if tmp.Id == "" {
-		bc := models.CaliBookCategory{Id: uuid.New().String(), CaliBook: bookid, CaliCategory: categoryid, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
+		bc := models.CaliBookCategory{Id: uuid.New().String(), CaliBook: bookId, CaliCategory: categoryId, CreatedAt: time.Now().Unix(), UpdatedAt: time.Now().Unix()}
 		engine.InsertOne(bc)
 	}
 }

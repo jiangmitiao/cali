@@ -1,9 +1,9 @@
 package models
 
 type UserInfoRoleLink struct {
-	Id       string `json:"id" xorm:"pk 'id'"`
-	UserInfo string `json:"user_info" xorm:"'user_info'"`
-	Role     string `json:"role" xorm:"'role'"`
+	Id       string `json:"id" xorm:"pk varchar(64) 'id'"`
+	UserInfo string `json:"user_info" xorm:"varchar(64) notnull 'user_info'"`
+	Role     string `json:"role" xorm:"varchar(64) notnull 'role'"`
 }
 
 func (UserInfoRoleLink) TableName() string {

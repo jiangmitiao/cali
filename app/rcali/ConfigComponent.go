@@ -25,6 +25,14 @@ func GetUploadPath() (string, bool) {
 	return revel.Config.String("books.uploadpath")
 }
 
+func MysqlEnable() (bool, bool) {
+	return revel.Config.Bool("mysqlenable")
+}
+
+func MysqlDsn() (string, bool) {
+	return revel.Config.String("mysqldsn")
+}
+
 func FileExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {

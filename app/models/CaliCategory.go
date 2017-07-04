@@ -3,11 +3,11 @@ package models
 import "time"
 
 type CaliCategory struct {
-	Id       string `json:"id" xorm:"pk 'id'"`
-	Category string `json:"category" xorm:"'category'"`
+	Id       string `json:"id" xorm:"pk varchar(64) 'id'"`
+	Category string `json:"category" xorm:"varchar(64) notnull 'category'"`
 
-	CreatedAt int64 `json:"created" xorm:"'created'"`
-	UpdatedAt int64 `json:"updated" xorm:"'updated'"`
+	CreatedAt int64 `json:"created" xorm:"bigint default 0 'created'"`
+	UpdatedAt int64 `json:"updated" xorm:"bigint default 0 'updated'"`
 }
 
 func (CaliCategory) TableName() string {

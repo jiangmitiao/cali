@@ -11,7 +11,7 @@ type SysConfigService struct {
 
 func (service SysConfigService) Get(key string) models.SysConfig {
 	sysConfig := models.SysConfig{}
-	engine.Where("key = ?", key).Get(&sysConfig)
+	engine.Where("ikey like ?", key).Get(&sysConfig)
 	return sysConfig
 }
 
@@ -23,7 +23,7 @@ func (service SysConfigService) QuerySysConfigs(limit, start int) []models.SysCo
 
 func (service SysConfigService) UpdateConfig(sysConfig models.SysConfig) bool {
 	sysConfig.UpdatedAt = time.Now().Unix()
-	_, err := engine.Id(sysConfig.Id).Cols("key", "value", "updated").Update(sysConfig)
+	_, err := engine.Id(sysConfig.Id).Cols("ikey", "value", "updated").Update(sysConfig)
 	if err == nil {
 		return true
 	} else {
@@ -32,10 +32,10 @@ func (service SysConfigService) UpdateConfig(sysConfig models.SysConfig) bool {
 }
 
 func (service SysConfigService) AddSysConfig(sysConfig models.SysConfig) bool {
-	if count, err := engine.Where("key = ?", sysConfig.Key).Count(models.SysConfig{}); err == nil {
+	if count, err := engine.Where("ikey = ?", sysConfig.Ikey).Count(models.SysConfig{}); err == nil {
 		if count == 1 {
 			sysConfig.UpdatedAt = time.Now().Unix()
-			if _, err := engine.Where("key = ?", sysConfig.Key).Cols("value", "updated").Update(sysConfig); err == nil {
+			if _, err := engine.Where("ikey = ?", sysConfig.Ikey).Cols("value", "updated").Update(sysConfig); err == nil {
 				return true
 			} else {
 				return false

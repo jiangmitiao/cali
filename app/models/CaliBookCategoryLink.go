@@ -1,12 +1,12 @@
 package models
 
 type CaliBookCategory struct {
-	Id           string `json:"id" xorm:"pk 'id'"`
-	CaliCategory string `json:"cali_category" xorm:"'cali_category'"`
-	CaliBook     string `json:"cali_book" xorm:"'cali_book'"`
+	Id           string `json:"id" xorm:"pk varchar(64) 'id'"`
+	CaliCategory string `json:"cali_category" xorm:"varchar(64) notnull 'cali_category'"`
+	CaliBook     string `json:"cali_book" xorm:"varchar(64) notnull 'cali_book'"`
 
-	CreatedAt int64 `json:"created" xorm:"'created'"`
-	UpdatedAt int64 `json:"updated" xorm:"'updated'"`
+	CreatedAt int64 `json:"created" xorm:"bigint default 0 'created'"`
+	UpdatedAt int64 `json:"updated" xorm:"bigint default 0 'updated'"`
 }
 
 func (CaliBookCategory) TableName() string {

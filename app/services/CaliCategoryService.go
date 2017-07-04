@@ -21,7 +21,7 @@ func (service CaliCategoryService) Query() []models.CaliCategory {
 }
 
 func (service CaliCategoryService) GetOrInsertCategoryByName(categoryName string) (category models.CaliCategory) {
-	if ok, _ := engine.Where("category = ?", categoryName).Get(&category); ok {
+	if ok, _ := engine.Where("category like ?", categoryName).Get(&category); ok {
 		return
 	} else {
 		category.Id = uuid.New().String()
@@ -49,8 +49,8 @@ func (service CaliCategoryService) DeleteBookCategoryByBookId(bookId string) {
 	engine.Where("cali_book = ?", bookId).Delete(models.CaliBookCategory{})
 }
 
-func (service CaliCategoryService) QueryByBookIdWithOutDefault(bookid string) (categories []models.CaliCategory) {
-	engine.Where("id in  (select cali_category from cali_book_category where cali_book = ?)", bookid).And("id != ?", "default").Find(&categories)
+func (service CaliCategoryService) QueryByBookIdWithOutDefault(bookId string) (categories []models.CaliCategory) {
+	engine.Where("id in  (select cali_category from cali_book_category where cali_book = ?)", bookId).And("id != ?", "default").Find(&categories)
 	if len(categories) == 0 {
 		engine.Where("id = ?", "default").Find(&categories)
 	}

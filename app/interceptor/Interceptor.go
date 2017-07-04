@@ -1,22 +1,22 @@
 package interceptor
 
 import (
+	"fmt"
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
 	"github.com/jiangmitiao/cali/app/services"
 	"github.com/juju/ratelimit"
 	"github.com/revel/revel"
+	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
+	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
+	"github.com/shirou/gopsutil/net"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
-	"github.com/shirou/gopsutil/cpu"
-	"github.com/shirou/gopsutil/disk"
-	"github.com/shirou/gopsutil/host"
-	"fmt"
-	"github.com/shirou/gopsutil/net"
-	"runtime"
+	//"runtime"
 )
 
 var (
@@ -169,13 +169,13 @@ func downloadLimitInterceptor(c *revel.Controller) revel.Result {
 		}
 		// add status to sys status
 		key := time.Now().Format("20060102") + "-downnum"
-		if status := sysStatusService.Get(key); status.Key != "" {
+		if status := sysStatusService.Get(key); status.Ikey != "" {
 			value, _ := strconv.ParseInt(status.Value, 10, 0)
 			value += 1
 			status.Value = strconv.FormatInt(value, 10)
 			sysStatusService.UpdateStatus(status)
 		} else {
-			status = models.SysStatus{Key: key, Value: strconv.FormatInt(1, 10)}
+			status = models.SysStatus{Ikey: key, Value: strconv.FormatInt(1, 10)}
 			sysStatusService.AddSysStatus(status)
 		}
 	}
@@ -228,7 +228,7 @@ func sysStatusInterceptor(c *revel.Controller) revel.Result {
 			status.Value = strconv.FormatInt(pvi+1, 10)
 			sysStatusService.UpdateStatus(status)
 		} else {
-			sysStatusService.AddSysStatus(models.SysStatus{Key: key, Value: strconv.Itoa(1)})
+			sysStatusService.AddSysStatus(models.SysStatus{Ikey: key, Value: strconv.Itoa(1)})
 		}
 	}
 	return nil
@@ -237,7 +237,7 @@ func sysStatusInterceptor(c *revel.Controller) revel.Result {
 func monitorInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
-	if controller == "View" && method == "Person" {
+	if controller == "Book" && method == "DelJSON" {
 		v, _ := mem.VirtualMemory()
 		c, _ := cpu.Info()
 		cc, _ := cpu.Percent(time.Second, false)
@@ -269,7 +269,7 @@ func monitorInterceptor(c *revel.Controller) revel.Result {
 		fmt.Printf("        Hostname  : %v  \n", n.Hostname)
 	}
 
-	runtime.GC()
+	//runtime.GC()
 	return nil
 }
 

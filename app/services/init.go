@@ -26,21 +26,33 @@ var (
 	DefaultUserConfigService = UserConfigService{}
 )
 
-//init the db,should take a db filepath
-func DbInit(SqliteDbPath string) (bool, error) { //username, password, host, database string
-	SqliteDbPath = path.Join(SqliteDbPath, "cali.db")
-	//OPEN
+func DbInitBySqlite(sqliteDbPath string) error {
+	sqliteDbPath = path.Join(sqliteDbPath, "cali.db")
 	var err error
-	if engine, err = xorm.NewEngine("sqlite3", SqliteDbPath); err != nil {
-		rcali.Logger.Error("open sqlitedb fail on ", SqliteDbPath, err)
-		return false, err
+	if engine, err = xorm.NewEngine("sqlite3", sqliteDbPath); err != nil {
+		rcali.Logger.Error("open sqlitedb fail on ", sqliteDbPath, err)
+		return err
 	}
+	return nil
+}
 
+func DbInitByMysql(mysqlDsn string) error {
+	var err error
+	if engine, err = xorm.NewEngine("mysql", mysqlDsn); err != nil {
+		rcali.Logger.Error("open mysql fail on ", mysqlDsn, err)
+		return err
+	}
+	return nil
+}
+
+//init the db,should take a db filepath
+func DbInit() (bool, error) { //username, password, host, database string
+	var err error
 	//CONFIG CHECK
 	engine.ShowSQL(true)
 	engine.Logger().SetLevel(core.LOG_DEBUG)
 	if err = engine.Ping(); err != nil {
-		rcali.Logger.Error("ping sqlitedb fail on ", SqliteDbPath, err)
+		rcali.Logger.Error("ping sqlitedb fail on ", err)
 		return false, err
 	}
 

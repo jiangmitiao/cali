@@ -73,13 +73,13 @@ func (c Book) BookDown() revel.Result {
 func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) {
 	// add status to sys status
 	key := time.Now().Format("20060102") + "-downsize"
-	if status := sysStatusService.Get(key); status.Key != "" {
+	if status := sysStatusService.Get(key); status.Ikey != "" {
 		value, _ := strconv.ParseInt(status.Value, 10, 0)
 		value += format.UncompressedSize
 		status.Value = strconv.FormatInt(value, 10)
 		sysStatusService.UpdateStatus(status)
 	} else {
-		status = models.SysStatus{Key: key, Value: strconv.FormatInt(format.UncompressedSize, 10)}
+		status = models.SysStatus{Ikey: key, Value: strconv.FormatInt(format.UncompressedSize, 10)}
 		sysStatusService.AddSysStatus(status)
 	}
 
@@ -146,13 +146,13 @@ func (c Book) addUploadRecord(format models.CaliFormat, user models.UserInfo) {
 	// add status to sys status
 	key := time.Now().Format("20060102") + "-uploadsize"
 
-	if status := sysStatusService.Get(key); status.Key != "" {
+	if status := sysStatusService.Get(key); status.Ikey != "" {
 		value, _ := strconv.ParseInt(status.Value, 10, 0)
 		value += format.UncompressedSize
 		status.Value = strconv.FormatInt(value, 10)
 		sysStatusService.UpdateStatus(status)
 	} else {
-		status = models.SysStatus{Key: key, Value: strconv.FormatInt(format.UncompressedSize, 10)}
+		status = models.SysStatus{Ikey: key, Value: strconv.FormatInt(format.UncompressedSize, 10)}
 		sysStatusService.AddSysStatus(status)
 	}
 
