@@ -22,12 +22,14 @@ $(document).ready(function(){
             }
         },
         created: function() {
+            loadingStart();
             let form = commonData();
             form.append("bookId",Request.bookId);
             fetch('/api/book/book',{method:'post',body:form}).then(function(response) {
                 if (response.redirected){
                     tips("info","after 3 seconds, turn to "+response.url);
                     setTimeout("window.location.href = response.url",3000);
+                    loadingStop();
                 }else {
                     return response.json();
                 }
@@ -38,8 +40,10 @@ $(document).ready(function(){
                 }else {
                     tips("error",json.message);
                 }
+                loadingStop();
             }).catch(function(ex) {
                 tips("error",ex);
+                loadingStop();
             });
         }
     });

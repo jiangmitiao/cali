@@ -65,6 +65,7 @@ $(document).ready(function(){
         ',
         methods:{
             logout:function () {
+                loadingStart();
                 fetch('/api/user/logout',{method:'post',body:commonData()}).then(function(response) {
                     store.remove('user');
                     store.remove('session');
@@ -73,8 +74,10 @@ $(document).ready(function(){
                     }else {
                         window.location.reload(true);
                     }
+                    loadingStop();
                 }).catch(function(ex) {
                     tips("error",ex);
+                    loadingStop();
                 });
                 return false;
             }
@@ -189,11 +192,6 @@ $(document).ready(function(){
                 }
             },
             fakePic:function (src,book) {
-                if (src.length === 0){
-                        return DrawCanvasByText(book.title+"\n"+book.author,"teoo",100,150);
-                }else {
-                        return DrawCanvasByImg(src,"teoo",100,150);
-                    }
                 return "src";
             },
             tokmg:function(num){
@@ -306,16 +304,6 @@ $(document).ready(function(){
                 }
             },
             fakePic:function (src,book) {
-                if (src.length === 0){
-                    setTimeout(function () {
-                        DrawCanvasByText(book.title+"\n"+book.author,book.id,200,300);
-                    },100);
-                }else {
-                    setTimeout(function () {
-                        DrawCanvasByImg(src,book.id,200,300);
-                    },100);
-                }
-
                 return "src";
             },
             tagsformat:function (tags) {

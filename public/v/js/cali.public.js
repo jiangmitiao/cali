@@ -75,6 +75,7 @@ $(document).ready(function(){
             }
         },
         created: function() {
+            loadingStart();
             fetch('/api/category/all',{method:'post',body:commonData()}).then(function(response) {
                 if (response.redirected){
                     let tmpJson = {};
@@ -97,6 +98,9 @@ $(document).ready(function(){
             }).catch(function(ex) {
                 tips("error",ex);
             });
+        },
+        mounted: function () {
+            loadingStop();
         }
     });
 });

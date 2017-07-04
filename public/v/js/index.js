@@ -4,13 +4,6 @@ $(document).ready(function(){
         el: "#root",
         data: {},
         methods: {
-            test1:function () {
-                appLoading.setColor('#f83');
-                appLoading.start();
-                setTimeout(function () {
-                    appLoading.stop();
-                },3000)
-            }
         },
         omputed: {},
         created: function() {

@@ -13,6 +13,7 @@ $(document).ready(function(){
                     tips("warn","please enter correct info");
                     return;
                 }
+                loadingStart();
                 let form = commonData();
                 form.append("loginName",app.loginName);
                 form.append("loginPassword",app.loginPassword);
@@ -28,8 +29,10 @@ $(document).ready(function(){
                     }else {
                         tips("error",json.message);
                     }
+                    loadingStop();
                 }).catch(function(ex) {
                     tips("error",ex);
+                    loadingStop();
                 });
             }
         },

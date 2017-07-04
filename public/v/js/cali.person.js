@@ -73,6 +73,7 @@ $(document).ready(function(){
                     tips("info","please open file or choose .epub/.mobi");
                     return;
                 }
+                loadingStart();
                 app.disabledUpload = true;
                 let form = new FormData(document.getElementById("uploadfile"));
                 form.append('session',store.get("session"));
@@ -97,13 +98,16 @@ $(document).ready(function(){
                         tips("error",json.message);
                         app.disabledUpload = false;
                     }
+                    loadingStop();
                 }).catch(function(ex) {
                     tips("error",ex);
                     app.disabledUpload = false;
+                    loadingStop();
                 });
             },
             //上传文件确认
             uploadfileconfirm :function () {
+                loadingStop();
                 app.disabledConfirm = true;
                 let form = new FormData(document.getElementById("uploadfileconfirm"));
                 form.append('session',store.get("session"));
@@ -127,9 +131,11 @@ $(document).ready(function(){
                         tips("error",json.message);
                         app.disabledConfirm = false;
                     }
+                    loadingStop();
                 }).catch(function(ex) {
                     tips("error",ex);
                     app.disabledConfirm = false;
+                    loadingStop();
                 });
             },
             //搜索用户
@@ -593,6 +599,7 @@ $(document).ready(function(){
             }
         },
         created: function() {
+            loadingStart();
             if (_.isUndefined(store.get("session")) || _.isUndefined(store.get("user"))){
                 window.location = "/login";
             }
@@ -754,6 +761,9 @@ $(document).ready(function(){
                 tips("error", ex);
             });
 
+        },
+        mounted: function () {
+            loadingStop();
         }
     });
 });

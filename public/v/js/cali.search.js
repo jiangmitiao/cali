@@ -16,7 +16,8 @@ $(document).ready(function(){
             //when page's instance created,we should get the data to render the page
             //console.log("created");
             //searchbooks展示分页
-            var form = commonData();
+            loadingStart();
+            let form = commonData();
             form.append("q",Request.q);
             fetch('/api/book/searchcount',{method:'post',body:form}).then(function(response) {
                 if (response.redirected){
@@ -60,17 +61,21 @@ $(document).ready(function(){
                                 }else {
                                     tips("error","server error");
                                 }
+                                loadingStop();
                             }).
                             catch(function(ex) {
                                 tips("error",ex);
+                                loadingStop();
                             });
                         }
                     });
                 }else if (json.statusCode ===500){
                     tips("error","server error");
+                    loadingStop();
                 }
             }).catch(function(ex) {
                 tips("error",ex);
+                loadingStop();
             });
         }
     });

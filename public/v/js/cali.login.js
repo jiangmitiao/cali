@@ -8,6 +8,7 @@ $(document).ready(function(){
         },
         methods: {
             login:function () {
+                loadingStart();
                 let form = commonData();
                 form.append("loginName",this.loginName);
                 form.append("loginPassword",this.loginPassword);
@@ -15,6 +16,7 @@ $(document).ready(function(){
                     if (response.redirected){
                         tips("info","after 3 seconds, turn to "+response.url);
                         setTimeout("window.location.href = response.url",3000);
+                        loadingStop();
                     }else {
                         return response.json();
                     }
@@ -45,8 +47,10 @@ $(document).ready(function(){
                     }else {
                         tips("error",json.message);
                     }
+                    loadingStop();
                 }).catch(function(ex) {
                     tips("error",ex);
+                    loadingStop();
                 });
             }
         },

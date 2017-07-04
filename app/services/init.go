@@ -227,10 +227,20 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 		}
 	}
 
+	src.Sync2(models.UserInfo{})
+	rcali.Logger.Info("================================================")
 	if has,_:=src.IsTableExist(models.UserInfo{});has {
 		users := make([]models.UserInfo, 0)
 		src.Find(&users)
-		if affected, err := dst.Insert(users); err == nil && int(affected) == len(users) {
+		tmp :=make([]models.UserInfo, 0)
+		for _,value:=range users{
+			if value.Id!="admin" && value.Id!="init" {
+				tmp = append(tmp,value)
+			}
+		}
+		rcali.Logger.Info("================================================",len(users))
+		rcali.Logger.Info("================================================",len(tmp))
+		if affected, err := dst.Insert(tmp); err == nil && int(affected) == len(tmp) {
 			src.Delete(models.UserInfo{})
 			src.DropTables(models.UserInfo{})
 		}
