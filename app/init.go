@@ -83,6 +83,7 @@ func InitDB() {
 		if err := services.DbInitByMysql(mysqlDsn); err != nil {
 			panic(err)
 		}
+		defer services.UpdateSqlite2Mysql()
 	} else if dbPath, dbPathFund := rcali.GetSqliteDbPath(); dbPathFund {
 		if err := services.DbInitBySqlite(dbPath); err != nil {
 			panic(err)

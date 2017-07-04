@@ -93,3 +93,24 @@ func TestModelNew(t *testing.T) {
 
 	engine.Close()
 }
+
+func TestCaliBook_TableName(t *testing.T) {
+	var engine *xorm.Engine
+	var err error
+	if engine, err = xorm.NewEngine("sqlite3", "./test.db"); err != nil {
+		panic(err)
+	}
+
+	//CONFIG CHECK
+	engine.ShowSQL(true)
+	engine.Logger().SetLevel(core.LOG_DEBUG)
+	if err = engine.Ping(); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(engine.IsTableExist(UserInfo{}))
+
+	engine.Close()
+	os.Remove("./test.db")
+
+}
