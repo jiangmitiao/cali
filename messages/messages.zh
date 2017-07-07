@@ -20,8 +20,10 @@ pleaseactive=请前往邮箱激活
 person=个人中心
 emailOrUsernameIsTooLong=email或昵称太长
 
+hasthesamebook=已经有相同的书
+
 ## public
-library=图书馆
+library=书库
 
 ## book
 nofindbook=Not find book
@@ -32,3 +34,7 @@ needLogin=需要登录
 
 
 limitdownload=限制下载
+
+unknownerror=未知错误
+uploaderrorsizeis0=上传失败0
+fileloaderror=上传失败1

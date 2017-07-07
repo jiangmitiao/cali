@@ -42,7 +42,7 @@ func WriteBook(file multipart.File, bookfilepath string) error {
 	b, _ := ioutil.ReadAll(file)
 	if len(b) == 0 {
 		Logger.Error("==== upload error size is 0 " + bookfilepath)
-		return errors.New("upload error size is 0 " + bookfilepath)
+		return errors.New("uploaderrorsizeis0")
 	}
 	dst, err := os.OpenFile(bookfilepath, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {

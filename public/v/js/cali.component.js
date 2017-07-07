@@ -182,7 +182,11 @@ $(document).ready(function(){
             },
             toJson : function (str) {
                 try {
-                    return JSON.parse(str)
+                    let tmp = JSON.parse(str)
+                    if (_.has(tmp,"msg") && _.has(tmp,"code") && tmp.msg === "book_not_found" && tmp.code ===6000){
+                        throw "error";
+                    }
+                    return tmp;
                 }catch (e){
                     let json = {};
                     json.image = "";

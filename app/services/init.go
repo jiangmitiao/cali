@@ -169,12 +169,12 @@ func DbInit() (bool, error) { //username, password, host, database string
 
 }
 
-func UpdateSqlite2Mysql()  {
+func UpdateSqlite2Mysql() {
 	if dbPath, dbPathFund := rcali.GetSqliteDbPath(); dbPathFund {
 		dbPath = path.Join(dbPath, "cali.db")
-		if has,_ :=rcali.FileExists(dbPath);has {
+		if has, _ := rcali.FileExists(dbPath); has {
 			if srcEngine, err := xorm.NewEngine("sqlite3", dbPath); err == nil {
-				UpdateSql2Sql(engine,srcEngine)
+				UpdateSql2Sql(engine, srcEngine)
 				defer srcEngine.Close()
 			}
 		}
@@ -182,7 +182,7 @@ func UpdateSqlite2Mysql()  {
 }
 
 func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
-	if has,_:=src.IsTableExist(models.CaliBook{});has {
+	if has, _ := src.IsTableExist(models.CaliBook{}); has {
 		books := make([]models.CaliBook, 0)
 		src.Find(&books)
 		if affected, err := dst.Insert(books); err == nil && int(affected) == len(books) {
@@ -191,7 +191,7 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 		}
 	}
 
-	if has,_:=src.IsTableExist(models.CaliCategory{});has {
+	if has, _ := src.IsTableExist(models.CaliCategory{}); has {
 		categories := make([]models.CaliCategory, 0)
 		src.Find(&categories)
 		if affected, err := dst.Insert(categories); err == nil && int(affected) == len(categories) {
@@ -200,7 +200,7 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 		}
 	}
 
-	if has,_:=src.IsTableExist(models.CaliBookCategory{});has {
+	if has, _ := src.IsTableExist(models.CaliBookCategory{}); has {
 		bookCategories := make([]models.CaliBookCategory, 0)
 		src.Find(&bookCategories)
 		if affected, err := dst.Insert(bookCategories); err == nil && int(affected) == len(bookCategories) {
@@ -209,7 +209,7 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 		}
 	}
 
-	if has,_:=src.IsTableExist(models.CaliFormat{});has {
+	if has, _ := src.IsTableExist(models.CaliFormat{}); has {
 		formats := make([]models.CaliFormat, 0)
 		src.Find(&formats)
 		if affected, err := dst.Insert(formats); err == nil && int(affected) == len(formats) {
@@ -218,7 +218,7 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 		}
 	}
 
-	if has,_:=src.IsTableExist(models.UserConfig{});has {
+	if has, _ := src.IsTableExist(models.UserConfig{}); has {
 		userConfigs := make([]models.UserConfig, 0)
 		src.Find(&userConfigs)
 		if affected, err := dst.Insert(userConfigs); err == nil && int(affected) == len(userConfigs) {
@@ -229,24 +229,24 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 
 	src.Sync2(models.UserInfo{})
 	rcali.Logger.Info("================================================")
-	if has,_:=src.IsTableExist(models.UserInfo{});has {
+	if has, _ := src.IsTableExist(models.UserInfo{}); has {
 		users := make([]models.UserInfo, 0)
 		src.Find(&users)
-		tmp :=make([]models.UserInfo, 0)
-		for _,value:=range users{
-			if value.Id!="admin" && value.Id!="init" {
-				tmp = append(tmp,value)
+		tmp := make([]models.UserInfo, 0)
+		for _, value := range users {
+			if value.Id != "admin" && value.Id != "init" {
+				tmp = append(tmp, value)
 			}
 		}
-		rcali.Logger.Info("================================================",len(users))
-		rcali.Logger.Info("================================================",len(tmp))
+		rcali.Logger.Info("================================================", len(users))
+		rcali.Logger.Info("================================================", len(tmp))
 		if affected, err := dst.Insert(tmp); err == nil && int(affected) == len(tmp) {
 			src.Delete(models.UserInfo{})
 			src.DropTables(models.UserInfo{})
 		}
 	}
 
-	if has,_:=src.IsTableExist(models.UserInfoBookDownloadLink{});has {
+	if has, _ := src.IsTableExist(models.UserInfoBookDownloadLink{}); has {
 		userDowns := make([]models.UserInfoBookDownloadLink, 0)
 		src.Find(&userDowns)
 		if affected, err := dst.Insert(userDowns); err == nil && int(affected) == len(userDowns) {
@@ -255,7 +255,7 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 		}
 	}
 
-	if has,_:=src.IsTableExist(models.UserInfoBookUploadLink{});has {
+	if has, _ := src.IsTableExist(models.UserInfoBookUploadLink{}); has {
 		userUps := make([]models.UserInfoBookUploadLink, 0)
 		src.Find(&userUps)
 		if affected, err := dst.Insert(userUps); err == nil && int(affected) == len(userUps) {
@@ -264,7 +264,7 @@ func UpdateSql2Sql(dst *xorm.Engine, src *xorm.Engine) {
 		}
 	}
 
-	if has,_:=src.IsTableExist(models.UserInfoRoleLink{});has {
+	if has, _ := src.IsTableExist(models.UserInfoRoleLink{}); has {
 		userRoles := make([]models.UserInfoRoleLink, 0)
 		src.Find(&userRoles)
 		if affected, err := dst.Insert(userRoles); err == nil && int(affected) == len(userRoles) {

@@ -123,23 +123,23 @@ func (c *Book) UploadBook() revel.Result {
 	tag := rcali.ValueOrDefault(c.Request.FormValue("tag"), "")
 	if file, header, err := c.Request.FormFile("book"); err == nil {
 		tmpPath := path.Join(uploadpath, header.Filename)
-		if rcali.WriteBook(file, tmpPath) == nil {
-			if ok, format := bookService.UploadBookFormat(tmpPath, tag); ok {
+		if err := rcali.WriteBook(file, tmpPath); err == nil {
+			if ok, err, format := bookService.UploadBookFormat(tmpPath, tag); ok && err == nil {
 				user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 				c.addUploadRecord(format, user)
 				return c.RenderJSON(models.NewOKApiWithMessageAndInfo("add book success", format))
 			} else {
-				return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("add book error", nil))
+				return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(c.Message(err.Error()), nil))
 
 			}
 		} else {
-			return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("file upload error", nil))
+			return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(c.Message(err.Error()), nil))
 		}
 	} else {
-		rcali.Logger.Debug("read file error :", err.Error())
-		return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(err.Error(), nil))
+		rcali.Logger.Error("read file error :", err.Error())
+		return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(c.Message("fileloaderror"), nil))
 	}
-	return c.RenderJSON(models.NewErrorApiWithMessageAndInfo("file read error", nil))
+	return c.RenderJSON(models.NewErrorApiWithMessageAndInfo(c.Message("fileloaderror"), nil))
 }
 
 func (c Book) addUploadRecord(format models.CaliFormat, user models.UserInfo) {

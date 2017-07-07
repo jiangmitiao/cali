@@ -92,7 +92,7 @@ func (service CaliBookService) SearchBooks(searchStr, categoryId string, limit, 
 	return books
 }
 
-func (service CaliBookService) UploadBookFormat(filePath, tag string) (bool, models.CaliFormat) {
+func (service CaliBookService) UploadBookFormat(filePath, tag string) (bool, error, models.CaliFormat) {
 	service.lock.Lock()
 	defer service.lock.Unlock()
 	if ebook, ok := rcali.GetRealBookInfo(filePath); ok {
@@ -107,14 +107,15 @@ func (service CaliBookService) UploadBookFormat(filePath, tag string) (bool, mod
 					Author:           ebook.Author(),
 					Tag:              tag,
 				}
-				return DefaultFormatService.Add(format), format
+				return DefaultFormatService.Add(format), nil, format
 			}
 		} else {
 			rcali.Logger.Info("has the book id:" + tmpFormat.Id)
+			return false, errors.New("hasthesamebook"), models.CaliFormat{}
 		}
 	}
 
-	return false, models.CaliFormat{}
+	return false, errors.New("unknownerror"), models.CaliFormat{}
 }
 
 func (service CaliBookService) GetBookOrInsertByTitleAndAuthor(title, author string) (book models.CaliBook) {
