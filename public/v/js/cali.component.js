@@ -244,7 +244,7 @@ $(document).ready(function(){
             <div class="panel-body">\
                 <div class="row">\
                     <div class="col-md-3 col-md-offset-1">\
-                        <img :id="book.id" :src="toJson(book.douban_json).images.large"/>\
+                        <img width="100%" height="100%" :id="book.id" :src="toJson(book.douban_json).images.large"/>\
                     </div>\
                     <div class="col-md-5">\
                         <p <span v-text="$t(\'lang.bookname\')"></span>: <span v-text="book.title"></span></p>\

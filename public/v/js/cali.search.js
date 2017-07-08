@@ -32,7 +32,7 @@ $(document).ready(function(){
                     $('#searchbookspage').pagination({
                         dataSource:function (done) {
                             let tmp = [];
-                            for(var i=0; i<json.info;i++){
+                            for(let i=0; i<json.info; i++){
                                 tmp.push(i)
                             }
                             return done(tmp);
@@ -48,6 +48,7 @@ $(document).ready(function(){
                             form.append("limit",data.length);
                             form.append("q",Request.q);
                             fetch('/api/book/search',{method:'post',body:form}).then(function(response) {
+                                loadingStop();
                                 if (response.redirected){
                                     let tmpJson = {};
                                     tmpJson.statusCode = 500;
@@ -61,7 +62,6 @@ $(document).ready(function(){
                                 }else {
                                     tips("error","server error");
                                 }
-                                loadingStop();
                             }).
                             catch(function(ex) {
                                 tips("error",ex);
@@ -71,6 +71,7 @@ $(document).ready(function(){
                     });
                 }else if (json.statusCode ===500){
                     tips("error","server error");
+                }else {
                     loadingStop();
                 }
             }).catch(function(ex) {

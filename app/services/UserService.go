@@ -62,6 +62,8 @@ func (userService UserService) Regist(user models.UserInfo) bool {
 		err := session.Begin()
 
 		user.Id = uuid.New().String()
+		user.CreatedAt = time.Now().Unix()
+		user.UpdatedAt= user.CreatedAt
 		if _, err := session.Insert(user); err == nil {
 
 		} else {
