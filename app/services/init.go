@@ -26,6 +26,10 @@ var (
 	DefaultUserConfigService = UserConfigService{}
 )
 
+const  (
+	BOOK_DESC_DEFAULT = "updated"
+)
+
 func DbInitBySqlite(sqliteDbPath string) error {
 	sqliteDbPath = path.Join(sqliteDbPath, "cali.db")
 	var err error

@@ -5,8 +5,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jiangmitiao/cali/app/models"
 	"github.com/jiangmitiao/cali/app/rcali"
-	"io/ioutil"
-	"os"
 	"path"
 	"sync"
 	"time"
@@ -17,105 +15,60 @@ type CaliBookService struct {
 }
 
 //all books count
-func (service CaliBookService) QueryBooksCount(categoryid string) int64 {
-	count, _ := engine.Where("id in (select cali_book from cali_book_category where cali_category = ?)", categoryid).Count(models.CaliBook{})
+func (service CaliBookService) QueryBooksCount(categoryId string) int64 {
+	count, _ := engine.Where("id in (select cali_book from cali_book_category where cali_category = ?)", categoryId).Count(models.CaliBook{})
 	return count
 }
 
 //all books info
-func (service CaliBookService) QueryBooks(limit, start int, categoryid string) []models.CaliBook {
+func (service CaliBookService) QueryBooks(limit, start int, categoryId, desc string) []models.CaliBook {
 	books := make([]models.CaliBook, 0)
-	engine.Where("id in (select cali_book from cali_book_category where cali_category = ?)", categoryid).Desc("updated").Limit(limit, start).Find(&books)
+	engine.Where("id in (select cali_book from cali_book_category where cali_category = ?)", categoryId).Desc(desc).Limit(limit, start).Find(&books)
 	return books
-}
-
-//book's img
-//func (service CaliBookService) QueryCoverImg(bookid int) []byte {
-//	book := models.Book{}
-//	engine.Where("id=?", bookid).Get(&book)
-//	if book.HasCover == 1 {
-//		if basepath, ok := rcali.GetBooksPath(); ok {
-//			//fmt.Println(path + book.Path + string(filepath.Separator) + "cover.jpg")
-//			//bytes, _ := ioutil.ReadFile(path + book.Path + string(filepath.Separator) + "cover.jpg")
-//			pathtmp := path.Join(basepath, book.Path, "cover.jpg")
-//			if f, err := os.Open(pathtmp); err == nil {
-//				img, _, _ := image.Decode(f)
-//				result := rcali.JpegImage2Bytes(rcali.ResizeImage(200, 300, img))
-//				return result
-//			}
-//		}
-//	}
-//	return rcali.JpegImage2Bytes(rcali.EmptyIamge(200, 300))
-//}
-
-//book's file
-func (service CaliBookService) QueryBookFileByte(formatId string) []byte {
-	format := models.CaliFormat{}
-	engine.Where("id = ?", formatId).Get(&format)
-	if bookpath, ok := rcali.GetBooksPath(); ok {
-		bytes, _ := ioutil.ReadFile(path.Join(bookpath, format.FileName))
-		return bytes
-	}
-	return make([]byte, 0)
-}
-
-//book's file
-func (service CaliBookService) QueryBookFile(formatid string) (*os.File, error) {
-	if ok, format := DefaultFormatService.GetById(formatid); ok {
-		if bookpath, ok := rcali.GetBooksPath(); ok {
-			f, err := os.Open(path.Join(bookpath, format.FileName))
-			return f, err
-		}
-	}
-	return nil, errors.New("no exit")
 }
 
 //find a book by bookid
-func (service CaliBookService) QueryBook(bookid string) (has bool, book models.CaliBook) {
-	if has, _ := engine.Where("id = ?", bookid).Get(&book); has {
-		return true, book
-	} else {
-		return false, book
-	}
+func (service CaliBookService) GetById(bookId string) (has bool, book models.CaliBook) {
+	has, _ = engine.Where("id = ?", bookId).Get(&book)
+	return has,book
 }
 
-func (service CaliBookService) SearchBooksCount(searchStr, categoryId string) int {
-	count := 0
+func (service CaliBookService) SearchBooksCount(searchStr, categoryId string) (count int) {
 	engine.SQL("select count(1) from cali_book where id in (select cali_book from cali_book_category where cali_category = ?) and ( title like ? or author like ? )", categoryId, "%"+searchStr+"%", "%"+searchStr+"%").Get(&count)
-	return count
+	return
 }
 
-func (service CaliBookService) SearchBooks(searchStr, categoryId string, limit, start int) []models.CaliBook {
+func (service CaliBookService) SearchBooks(limit, start int,searchStr, categoryId,desc string) []models.CaliBook {
 	books := make([]models.CaliBook, 0)
-	engine.SQL("select * from cali_book where id in (select cali_book from cali_book_category where cali_category = ?) and ( title like ? or author like ? ) limit ?,?", categoryId, "%"+searchStr+"%", "%"+searchStr+"%", start, limit).Desc("updated").Find(&books)
+	engine.SQL("select * from cali_book where id in (select cali_book from cali_book_category where cali_category = ?) and ( title like ? or author like ? ) limit ?,?", categoryId, "%"+searchStr+"%", "%"+searchStr+"%", start, limit).Desc(desc).Find(&books)
 
 	return books
 }
 
-func (service CaliBookService) UploadBookFormat(filePath, tag string) (bool, error, models.CaliFormat) {
+func (service CaliBookService) UploadBookFormat(filePath, tag string) (  models.CaliFormat ,bool,error) {
 	service.lock.Lock()
 	defer service.lock.Unlock()
-	if ebook, ok := rcali.GetRealBookInfo(filePath); ok {
-		if tmpFormat := DefaultFormatService.GetFormatBySize(ebook.UncompressedSize()); tmpFormat.Id == "" {
+	if eBook, ok := rcali.GetRealBookInfo(filePath); ok {
+		if tmpFormat := DefaultFormatService.GetFormatBySize(eBook.UncompressedSize()); tmpFormat.Id == "" {
 			if _, pathname := rcali.AddBook(filePath); pathname != "" {
 				format := models.CaliFormat{
 					Id:               uuid.New().String(),
-					Format:           ebook.Format(),
-					UncompressedSize: ebook.UncompressedSize(),
+					Format:           eBook.Format(),
+					UncompressedSize: eBook.UncompressedSize(),
 					FileName:         path.Base(pathname),
-					Title:            ebook.Title(),
-					Author:           ebook.Author(),
+					Title:            eBook.Title(),
+					Author:           eBook.Author(),
 					Tag:              tag,
 				}
-				return DefaultFormatService.Add(format), nil, format
+				return format,DefaultFormatService.Add(format), nil
 			}
 		} else {
 			rcali.Logger.Info("has the book id:" + tmpFormat.Id)
-			return false, errors.New("hasthesamebook"), models.CaliFormat{}
+			return models.CaliFormat{},false, errors.New("hasthesamebook")
 		}
 	}
 
-	return false, errors.New("unknownerror"), models.CaliFormat{}
+	return models.CaliFormat{},false, errors.New("unknownerror")
 }
 
 func (service CaliBookService) GetBookOrInsertByTitleAndAuthor(title, author string) (book models.CaliBook) {
@@ -133,8 +86,8 @@ func (service CaliBookService) GetBookOrInsertByTitleAndAuthor(title, author str
 	}
 }
 
-func (service CaliBookService) GetBookByTitleAndAuthor(title, author string) (book models.CaliBook) {
-	engine.Where("title = ?", title).And("author = ?", author).Get(&book)
+func (service CaliBookService) GetBookByTitleAndAuthor(title, author string) (book models.CaliBook,err error) {
+	 _,err=engine.Where("title = ?", title).And("author = ?", author).Get(&book)
 	return
 }
 

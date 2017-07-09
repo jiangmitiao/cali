@@ -49,47 +49,39 @@ func (userService UserService) GetLoginUser(loginSession string) (models.UserInf
 }
 
 func (userService UserService) Regist(user models.UserInfo) bool {
-	olduser, has := userService.GetAllUserByLoginName(user.UserName)
-	if has && olduser.Valid == 2 {
-		engine.Delete(olduser)
-		engine.Where("user_info = ?", olduser.Id).Delete(models.UserInfoRoleLink{})
+	oldUser, has := userService.GetAllUserByLoginName(user.UserName)
+	if has && oldUser.Valid == 2 {
+		engine.Delete(oldUser)
+		engine.Where("user_info = ?", oldUser.Id).Delete(models.UserInfoRoleLink{})
 		has = false
 	}
 	if !has {
 		session := engine.NewSession()
 		defer session.Close()
 		// add Begin() before any action
-		err := session.Begin()
+		session.Begin()
 
 		user.Id = uuid.New().String()
 		user.CreatedAt = time.Now().Unix()
 		user.UpdatedAt= user.CreatedAt
 		if _, err := session.Insert(user); err == nil {
-
+			userRole := models.UserInfoRoleLink{
+				Id:       uuid.New().String(),
+				UserInfo: user.Id,
+				Role:     "user",
+			}
+			if _, err := session.Insert(userRole); err == nil {
+				// add Commit() after all actions
+				session.Commit()
+				return true
+			} else {
+				session.Rollback()
+				return false
+			}
 		} else {
 			session.Rollback()
 			return false
 		}
-
-		userRole := models.UserInfoRoleLink{
-			Id:       uuid.New().String(),
-			UserInfo: user.Id,
-			Role:     "user",
-		}
-
-		if _, err := session.Insert(userRole); err == nil {
-
-		} else {
-			session.Rollback()
-			return false
-		}
-
-		// add Commit() after all actions
-		err = session.Commit()
-		if err != nil {
-			panic(err)
-		}
-		return true
 	}
 	return false
 }

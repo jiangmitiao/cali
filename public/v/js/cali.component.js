@@ -129,7 +129,7 @@ $(document).ready(function(){
         template: '\
         <footer class="navbar-fixed-bottom">\
             <div class="container">\
-                <div class="copy text-center">\
+                <div class="text-center">\
                     Copyright 2017 <a href="/">Cali</a>\
                 </div>\
             </div>\

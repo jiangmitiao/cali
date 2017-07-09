@@ -593,7 +593,7 @@ $(document).ready(function(){
             },
             computed_userstatus : function () {
                 if (_.has(this.downloadstats,"count") && _.has(this.downloadstats,"maxcount")){
-                    return "已下载 "+this.downloadstats.count+" 本.可下载 "+(this.downloadstats.maxcount-this.downloadstats.count)+"本";
+                    return "已下载 "+this.downloadstats.count+" 本.每天可下载 "+(this.downloadstats.maxcount-this.downloadstats.count)+"本";
                 }
                 return "暂无信息";
             }

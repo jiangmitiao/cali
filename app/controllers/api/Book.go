@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+	"github.com/jiangmitiao/cali/app/services"
 )
 
 type Book struct {
@@ -34,7 +35,7 @@ func (c Book) Books() revel.Result {
 	start, _ := strconv.Atoi(rcali.ValueOrDefault(c.Request.FormValue("start"), "0"))
 	more := c.Request.FormValue("more")
 
-	books := bookService.QueryBooks(limit, start, categoryid)
+	books := bookService.QueryBooks(limit, start, categoryid,services.BOOK_DESC_DEFAULT)
 	booksVos := make([]models.CaliBookVo, 0)
 	if more != "" {
 		for _, value := range books {
@@ -60,7 +61,7 @@ func (c Book) BookDown() revel.Result {
 	//bytes := rcali.FILE(bookService.QueryBookFile(bookid))
 	formatId := rcali.ValueOrDefault(c.Request.FormValue("formatId"), "0")
 	if ok, format := formatService.GetById(formatId); ok {
-		if f, err := bookService.QueryBookFile(format.Id); err == nil {
+		if f, err := formatService.QueryFormatFile(format.Id); err == nil {
 			user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 			c.addDownloadRecord(format, user)
 			return c.RenderBinary(f, format.Title+"-"+format.Author+"."+format.Format, revel.Attachment, time.Unix(format.UpdatedAt, 0))
@@ -84,7 +85,7 @@ func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) 
 	}
 
 	//add books download count
-	_, book := bookService.QueryBook(format.CaliBook)
+	_, book := bookService.GetById(format.CaliBook)
 	book.DownloadCount += 1
 	bookService.UpdateCaliBookDownload(book)
 
@@ -99,7 +100,7 @@ func (c Book) addDownloadRecord(format models.CaliFormat, user models.UserInfo) 
 //query a book by bookid
 func (c Book) Book() revel.Result {
 	bookId := rcali.ValueOrDefault(c.Request.FormValue("bookId"), "0")
-	if has, book := bookService.QueryBook(bookId); has {
+	if has, book := bookService.GetById(bookId); has {
 		bookvo := models.CaliBookVo{CaliBook: book}
 		bookvo.Formats = formatService.QueryByBookId(bookvo.Id)
 		bookvo.Categories = categoryService.QueryByBookIdWithOutDefault(bookvo.Id)
@@ -124,7 +125,7 @@ func (c *Book) UploadBook() revel.Result {
 	if file, header, err := c.Request.FormFile("book"); err == nil {
 		tmpPath := path.Join(uploadpath, header.Filename)
 		if err := rcali.WriteBook(file, tmpPath); err == nil {
-			if ok, err, format := bookService.UploadBookFormat(tmpPath, tag); ok && err == nil {
+			if format,ok, err := bookService.UploadBookFormat(tmpPath, tag); ok && err == nil {
 				user, _ := userService.GetLoginUser(c.Request.FormValue("session"))
 				c.addUploadRecord(format, user)
 				return c.RenderJSON(models.NewOKApiWithMessageAndInfo("add book success", format))
@@ -175,7 +176,7 @@ func (c *Book) UploadBookConfirm() revel.Result {
 
 	//format
 	formatId := rcali.ValueOrDefault(c.Request.FormValue("formatId"), "")
-	formatService.UpdateBookid(formatId, book.Id)
+	formatService.UpdateBookId(formatId, book.Id)
 
 	return c.RenderJSON(models.NewOKApi())
 }
@@ -202,7 +203,7 @@ func (c *Book) Search() revel.Result {
 	if q == "" {
 		return c.RenderJSONP(c.Request.FormValue("callback"), models.NewErrorApi())
 	} else {
-		books := bookService.SearchBooks(q, categoryId, limit, start)
+		books := bookService.SearchBooks(limit, start,q, categoryId,services.BOOK_DESC_DEFAULT)
 
 		booksVos := make([]models.CaliBookVo, 0)
 		if more != "" {
@@ -236,7 +237,7 @@ func (c *Book) DelJSON() revel.Result {
 
 func (c *Book) Delete() revel.Result {
 	bookId := rcali.ValueOrDefault(c.Request.FormValue("bookId"), "0")
-	if has, book := bookService.QueryBook(bookId); has {
+	if has, book := bookService.GetById(bookId); has {
 		bookService.DeleteById(book.Id)
 		categoryService.DeleteBookCategoryByBookId(book.Id)
 		formats := formatService.QueryByBookId(book.Id)
@@ -255,11 +256,11 @@ func (c *Book) Update() revel.Result {
 	bookAuthor := rcali.ValueOrDefault(c.Request.FormValue("bookAuthor"), "0")
 	bookDoubanId := rcali.ValueOrDefault(c.Request.FormValue("bookDoubanId"), "")
 	bookCategoryId := rcali.ValueOrDefault(c.Request.FormValue("bookCategoryId"), "0")
-	if has, book := bookService.QueryBook(bookId); has {
-		if newBook := bookService.GetBookByTitleAndAuthor(bookTitle, bookAuthor); newBook.Id != "" { //has
+	if has, book := bookService.GetById(bookId); has {
+		if newBook,err := bookService.GetBookByTitleAndAuthor(bookTitle, bookAuthor); newBook.Id != "" && err==nil { //has
 			formats := formatService.QueryByBookId(book.Id)
 			for _, value := range formats {
-				formatService.UpdateBookid(value.Id, newBook.Id)
+				formatService.UpdateBookId(value.Id, newBook.Id)
 			}
 			categoryService.DeleteBookCategoryByBookId(bookId)
 			categoryService.DeleteBookCategoryByBookId(newBook.Id)
